@@ -381,4 +381,32 @@ curl -XPUT http://127.0.0.1:9200/.kibana/dashboard/WinLog-dash/ -d'{
       }
     }' 1>>$log 2>>$errlog
     
+curl -XPUT http://127.0.0.1:9200/.kibana/visualization/refer/ -d'{
+      "title": "refer",
+      "visState": "{\"title\":\"refer\",\"type\":\"markdown\",\"params\":{\"markdown\":\"### Ссылки на дашборды:  \\n[WinLog-dash](/app/kibana#/dashboard/WinLog-dash?) - журнал событий Windows   \\n[NMAP-dash](/app/kibana#/dashboard/NMAP-dash?) - обнаруженные в сети хосты и сервисы  \\n### Краткая инструкция:\\nЕсли вы не видите событий Windows, значит, вы не установили агенты `winlogbeat` на компьютеры. На сервере Littlebeat есть общедоступная папка `agents`. Подключите ее как сетевой диск к машине Windows. Скопируйте в какой-нибудь каталог на диске `c:`, например в `c:\\\\temp` файл `win-audit-set.bat`. Затем из нужного подкаталога `x32` или `x64` скопируйте туда же каталог `winlogbeat`.  \\nТеперь откройте консоль командной строки от имени Администратора и сделайте\\n``` \\n    cd \\\\temp\\n    win-audit-set.bat\\n```\\nЭто настроит систему аудита Windows. Теперь сделайте так:  \\n```\\n    cd \\\\temp\\\\winlogbeat\\n    install.bat\\n```\\nЭто установит и запустит на компьютере сервис `winlogbeat`. Процедуру придется повторить на всех windows-компьютерах в сети, в том числе серверах, включая контроллеры домена, если у вас есть домен Windows. Без него не так интересно.   \\n\\n-------\\n\\nЕсли вы ничего не видите на дашборде NMAP, значит вы не настроили обзор сетей на консоли Littlebeat или ни разу не запускали его. Обзор сетей запускается автоматически каждые два часа, но вы можете запустить его прямо сейчас с консоли сервера Littlebeat. Имеется ввиду физическая консоль или консоль SSH.   \\nСовет: если вы используете PuTTY, то в окне конфигурации в разделе `Connection`, в подразделе `Data`, в окошке `terminal-type string` напишите `linux` вместо `xterm`, иначе псевдографика в меню будет выглядеть смешно.  \\n\\n-----\\nЕсли на дашборде NMAP вы не увидели имена хостов, только IP адреса, значит либо в вашей сети нет сервера DNS, либо на нем нет записей PTR. Это не страшно, просто неудобно, лучше иметь.   \\n\\n-----------\\nБолее подробную документацию следует смотреть на [LittleBeat Wiki](https://github.com/ESGuardian/LittleBeat/wiki).  \\nСпасибо, большое или маленькое, можно сказать на Яндекс кошелек № `410011699232720`\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }' 1>>$log 2>>$errlog
+    
+    
+curl -XPUT http://127.0.0.1:9200/.kibana/dashboard/Main-dash/ -d'{
+      "title": "Main-dash",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"id\":\"NMAP-hosts-by-subnet-table\",\"type\":\"visualization\",\"panelIndex\":1,\"size_x\":4,\"size_y\":4,\"col\":1,\"row\":3},{\"id\":\"WinLog-count\",\"type\":\"visualization\",\"panelIndex\":2,\"size_x\":4,\"size_y\":2,\"col\":1,\"row\":1},{\"id\":\"refer\",\"type\":\"visualization\",\"panelIndex\":3,\"size_x\":8,\"size_y\":6,\"col\":5,\"row\":1}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "timeRestore": true,
+      "timeTo": "now/d",
+      "timeFrom": "now/d",
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}]}"
+      }
+    }' 1>>$log 2>>$errlog
+    
 

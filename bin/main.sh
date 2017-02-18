@@ -409,7 +409,7 @@ if [ ! -e "$install_dir/kibana_started" ]; then
             htpasswd -b -c /etc/nginx/conf.d/kibana.htpasswd kibana $password1 >/dev/nul 2>&1
         fi
     done
-    
+    echo 'kibana.defaultAppId: "dashboard/Main-dash"' >>/opt/kibana/config/kibana.yml
     /bin/systemctl daemon-reload >/dev/nul 2>&1
     /bin/systemctl enable nginx.service >/dev/nul 2>&1
     /bin/systemctl start nginx.service >/dev/nul 2>&1 
@@ -449,7 +449,7 @@ if [ ! -e "$install_dir/kibana_configured" ]; then
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Первоначальная конфигурация Kibana ..." 8 70
     ($homedir/bin/kibana_init_config.sh)
     echo "0  */2	* * * root $homedir/bin/nmap-rep.sh" >>/etc/crontab  
-    echo 'kibana.defaultAppId: "dashboard/Main-dash"' >>/opt/kibana/config/kibana.yml   
+       
     touch "$install_dir/kibana_configured" >/dev/nul 2>&1
 fi
 
