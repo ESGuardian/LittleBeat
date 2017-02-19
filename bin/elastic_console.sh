@@ -1,5 +1,5 @@
 #! /bin/bash
-elk_menu=("Статус Elastic" "" "Индексы и шарды" "" "Удалить индексы" "" "Загрузить шаблон" "" "Откличить лишние реплики" "" "Отслеживать лог Elastic" "" "Отслеживать лог Logstash" "")
+elk_menu=("Статус Elastic" "" "Индексы и шарды" "" "Удалить индексы" "" "Загрузить шаблон" "" "Отключить лишние реплики" "" "Проверить конфиг Logstash" "" "Рестартовать Logstash" "")
 while true; do 
 dialog --title "LITTLEBEAT" --menu " " 14 50 ${#elk_menu[@]} "${elk_menu[@]}" 2>/tmp/choise.$$
 response=$?
@@ -23,13 +23,64 @@ if [ "$choise" == "Индексы и шарды"  ]; then
     curl -s localhost:9200/_cat/shards?v >/tmp/curl.$$ 2>/dev/nul
     dialog --title "LITTLEBEAT" --backtitle "Консоль ELK" --textbox /tmp/curl.$$ 20 78
 fi
-if [ "$choise" == "Удалить индексы" ]; then
-    echo ""
+if [ "$choise" == "Удалить индексы"  ]; then
+
+    index_name=`dialog --stdout --title "LITTLEBEAT" --backtitle "Консоль ELK. Удалить индекс." --inputbox "Имя индекса (можно использовать паттерн *)?" 10 70`
+    case $? in
+    0)
+        dialog --title "LITTLEBEAT" --backtitle "Консоль ELK. Удалить индекс." \
+                        --yesno "Вы уверены, что хотите удалить индекс $index_name?" 8 70 2>/tmp/yesno.$$
+        case $? in
+        0)
+            curl -XDELETE "http://localhost:9200/$index_name/" >/tmp/curl.$$ 2>/dev/nul
+            dialog --title "LITTLEBEAT" --backtitle "Консоль ELK. Результат операции." --textbox /tmp/curl.$$ 10 70
+        ;;
+        1)
+            :
+        ;;
+        255)
+            :
+        ;;
+        esac
+    ;;
+    1)
+        :
+    ;;
+    255)
+        :
+    ;;
+    esac
+
 fi
 if [ "$choise" == "Загрузить шаблон" ]; then
-    echo ""
+
+    template=`dialog --stdout --title "LITTLEBEAT" --backtitle "Консоль ELK. Выбор файла с шаблоном" --fselect / 10 70`
+    case $? in
+    0)
+        template_name=`dialog --stdout --title "LITTLEBEAT" --backtitle "Консоль ELK. Загрузить шаблон." --inputbox "Имя шаблона?" 8 70`
+        case $? in
+        0)
+            curl -XPUT "http://localhost:9200/_template/$template_name" -d@$template >/tmp/curl.$$ 2>/dev/nul
+            dialog --title "LITTLEBEAT" --backtitle "Консоль ELK. Результат загрузки" --textbox /tmp/curl.$$ 10 70
+            
+        ;;
+        1)
+            :
+        ;;
+        255)
+            :
+        ;;
+        esac
+    ;;
+    1)
+        :;;
+    255)
+        :;;
+    esac
+
 fi
-if [ "$choise" == "Откличить лишние реплики"  ]; then
+
+if [ "$choise" == "Отключить лишние реплики"  ]; then
     curl -XPUT 'localhost:9200/_settings' -d '
     {
         "index" : {
@@ -38,11 +89,19 @@ if [ "$choise" == "Откличить лишние реплики"  ]; then
     }' >/dev/nul 2>/dev/nul
     dialog --title "LITTLEBEAT" --backtitle "Консоль ELK" --msgbox "Отключены резервные реплики. В нашей конфигурации они не нужны." 7 70
 fi
-if [ "$choise" == "Отслеживать лог Elastic" ]; then
-    dialog --title "LITTLEBEAT" --backtitle "Elastic лог" --tailbox /var/log/elasticsearch/elastic.log 20 78
+if [ "$choise" == "Проверить конфиг Logstash" ]; then
+
+    dialog --title "LITTLEBEAT" --backtitle "Консоль ELK. Проверка конфига Logstash" --infobox "Проверка запущена. Подождите ..." 7 70
+    result=$(service logstash configtest 2>/dev/nul)
+    if [ "$result" == "" ]; then
+        result="Ошибок в файле конфигурации не обнаружено"
+    fi
+    dialog --title "LITTLEBEAT" --backtitle "Консоль ELK. Проверка конфига Logstash" --msgbox "$result" 15 70    
+
 fi
-if [ "$choise" == "Отслеживать лог Logstash" ]; then
-    dialog --title "LITTLEBEAT" --backtitle "Logstash лог" --tailbox /var/log/logstash/logstash-plain.log 20 78
+if [ "$choise" == "Рестартовать Logstash" ]; then
+    service logstash restart >/dev/nul 2>&1
+    dialog --title "LITTLEBEAT" --backtitle "Консоль ELK" --msgbox "Logstash перезапущен." 7 70
 fi
 
 done;

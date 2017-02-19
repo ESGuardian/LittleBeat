@@ -488,7 +488,7 @@ fi
 
 # Основное меню
 while true; do 
-main_menu=("Настройка обзора сети" "" "Консоль ELK" "" "Управление службами" "" "Дополнения" "" "Выход в Shell" "" "Перезагрузка" "" "Отключение машины" "")
+main_menu=("Настройка обзора сети" "" "Консоль ELK" "" "Дополнения" "" "Выход в Shell" "" "Перезагрузка" "" "Отключение машины" "")
 
 dialog --title "LITTLEBEAT" --backtitle "Главная консоль" --menu " " 15 50 ${#main_menu[@]} "${main_menu[@]}" 2>/tmp/choise.$$
 response=$?
@@ -513,9 +513,7 @@ fi
 if [ "$choise" == "Консоль ELK"  ]; then
     ($homedir/bin/elastic_console.sh)
 fi
-if [ "$choise" == "Управление службами" ]; then
-    ($homedir/bin/service_console.sh)
-fi
+
 if [ "$choise" == "Выход в Shell" ]; then
     clear
     echo "Выход в OS shell. Чтобы вернуться в меню, наберите exit."
