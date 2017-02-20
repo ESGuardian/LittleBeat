@@ -2,9 +2,9 @@
 rem audit set
 rem ** Система **
 rem  Расширение системы безопасности
-auditpol /set /subcategory:"{0CCE9211-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+auditpol /set /subcategory:"{0CCE9211-69AE-11D9-BED3-505054503030}" /success:disable /failure:disable
 rem  Изменение состояния безопасности 
-auditpol /set /subcategory:"{0CCE9210-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+auditpol /set /subcategory:"{0CCE9210-69AE-11D9-BED3-505054503030}" /success:disable /failure:disable
 rem  Целостность системы
 auditpol /set /subcategory:"{0CCE9212-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
 rem  Другие системные события 
@@ -26,13 +26,13 @@ auditpol /set /subcategory:"{0CCE9243-69AE-11D9-BED3-505054503030}" /success:ena
 
 rem ** Доступ к объектам **
 rem  Файловая система
-auditpol /set /subcategory:"{0CCE921D-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+auditpol /set /subcategory:"{0CCE921D-69AE-11D9-BED3-505054503030}" /success:disable /failure:disable
 rem  Реестр
-auditpol /set /subcategory:"{0CCE921E-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+auditpol /set /subcategory:"{0CCE921E-69AE-11D9-BED3-505054503030}" /success:disable /failure:disable
 rem  Объект-задание
-auditpol /set /subcategory:"{0CCE921F-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+auditpol /set /subcategory:"{0CCE921F-69AE-11D9-BED3-505054503030}" /success:disable /failure:disable
 rem  Службы сертификации
-auditpol /set /subcategory:"{0CCE9221-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
+auditpol /set /subcategory:"{0CCE9221-69AE-11D9-BED3-505054503030}" /success:disable /failure:disable
 rem  Создано приложением
 auditpol /set /subcategory:"{0CCE9222-69AE-11D9-BED3-505054503030}" /success:enable /failure:enable
 rem  Общий файловый ресурс

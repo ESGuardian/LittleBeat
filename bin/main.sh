@@ -365,6 +365,7 @@ if [ ! -e "$install_dir/logstash_configured" ]; then
         sed  -i -e 's/"number_of_shards" : 1/"number_of_shards" : 5/' /etc/logstash/templates/metricbeat.template.json
     fi
     cp $homedir/etc/logstash/conf.d/*  /etc/logstash/conf.d/
+    sed -i -e "s/https:\/\/elastic\//https:\/\/$site_name\//" /etc/logstash/conf.d/08-nmap.conf
     /bin/systemctl daemon-reload >/dev/nul 2>&1
     /bin/systemctl enable logstash.service >/dev/nul 2>&1
     /opt/logstash/bin/logstash-plugin install logstash-filter-elasticsearch 1>>$log 2>>$errlog
