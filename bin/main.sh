@@ -100,10 +100,12 @@ if [ ! -e "$install_dir/elastic_configured" ]; then
     echo "node.name: node-1" >>/etc/elasticsearch/elasticsearch.yml
     echo "bootstrap.memory_lock: true" >>/etc/elasticsearch/elasticsearch.yml
     echo "path.data: $es_data_dir/1" >>/etc/elasticsearch/elasticsearch.yml
+    echo "path.repo: [\"$homedir/backups\"]" >>/etc/elasticsearch/elasticsearch.yml
 
     mkdir $es_data_dir >/dev/nul 2>&1
     mkdir $es_data_dir/1 >/dev/nul 2>&1
     chown -R elasticsearch:elasticsearch $es_data_dir >/dev/nul 2>&1
+    chown -R elasticsearch:elasticsearch $homedir/backups >/dev/nul 2>&1
     /bin/systemctl daemon-reload >/dev/nul 2>&1
     /bin/systemctl enable elasticsearch.service >/dev/nul 2>&1
     echo "$recomended_mem" >$install_dir/elastic_configured
@@ -134,6 +136,15 @@ if [ ! -e "$install_dir/elastic_started" ]; then
     if [ -e /tmp/break.$$ ]; then
         rm /tmp/break.$$
         touch "$install_dir/elastic_started" >/dev/nul 2>&1
+        chown -R elasticsearch:elasticsearch /opt/littlebeat/backups
+        curl -XPUT 'http://localhost:9200/_snapshot/littlebeat' -d '{
+            "type": "fs",
+            "settings": {
+                "location": "/opt/littlebeat/backups",
+                "compress": true
+            }
+        }' >/dev/nul 2>&1
+        curl -XPOST 'localhost:9200/_snapshot/littlebeat/snapshot_kibana/_restore?pretty' >/dev/nul 2>&1
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --msgbox "Elasticsearch запустился" 6 70 
     else
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --ok-button "Печалька" --msgbox "Что-то пошло не так. Проконсультируйтесь со специалистом. esguardian@outlook.com" 6 70 
@@ -410,6 +421,8 @@ if [ ! -e "$install_dir/kibana_started" ]; then
         fi
     done
     echo 'kibana.defaultAppId: "dashboard/Main-dash"' >>/opt/kibana/config/kibana.yml
+    cp $homedir/install/kibana.svg /opt/kibana/src/ui/public/images/kibana.svg
+    cp $homedir/install/kibana.svg /opt/kibana/optimize/bundles/src/ui/public/images/kibana.svg
     /bin/systemctl daemon-reload >/dev/nul 2>&1
     /bin/systemctl enable nginx.service >/dev/nul 2>&1
     /bin/systemctl start nginx.service >/dev/nul 2>&1 
@@ -445,13 +458,13 @@ fi
 
 service nginx restart >/dev/nul 2>&1
 
-if [ ! -e "$install_dir/kibana_configured" ]; then
-    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Первоначальная конфигурация Kibana ..." 8 70
-    ($homedir/bin/kibana_init_config.sh)
-    echo "0  */2	* * * root $homedir/bin/nmap-rep.sh" >>/etc/crontab  
-       
-    touch "$install_dir/kibana_configured" >/dev/nul 2>&1
-fi
+#if [ ! -e "$install_dir/kibana_configured" ]; then
+#    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Первоначальная конфигурация Kibana ..." 8 70
+#    ($homedir/bin/kibana_init_config.sh)
+#    echo "0  */2	* * * root $homedir/bin/nmap-rep.sh" >>/etc/crontab  
+#       
+#    touch "$install_dir/kibana_configured" >/dev/nul 2>&1
+#fi
 
 if [ ! -e "$install_dir/samba_configured" ]; then
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурируем общедоступную папку agents ..." 8 70 
