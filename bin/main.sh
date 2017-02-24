@@ -17,7 +17,7 @@ if [ ! -e $install_dir/install_completed ]; then
     apt-get -y upgrade 1>>$log 2>>$errlog
 
     # список пакетов
-    packs=(python-software-properties software-properties-common unzip curl openjdk-7-jre openssl nginx apache2-utils nmap samba samba-common-bin libpam-smbpass)
+    packs=(python-software-properties software-properties-common unzip curl openjdk-7-jre openssl nginx apache2-utils nmap samba samba-common-bin libpam-smbpass python-pip)
 
     err=0
 
@@ -136,6 +136,8 @@ if [ ! -e "$install_dir/elastic_started" ]; then
     if [ -e /tmp/break.$$ ]; then
         rm /tmp/break.$$
         touch "$install_dir/elastic_started" >/dev/nul 2>&1
+        dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --msgbox "Elasticsearch запустился" 6 70 
+        dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурация индексов LittleBeat ..." 6 70 
         chown -R elasticsearch:elasticsearch /opt/littlebeat/backups
         curl -XPUT 'http://localhost:9200/_snapshot/littlebeat' -d '{
             "type": "fs",
@@ -145,7 +147,12 @@ if [ ! -e "$install_dir/elastic_started" ]; then
             }
         }' >/dev/nul 2>&1
         curl -XPOST 'localhost:9200/_snapshot/littlebeat/snapshot_kibana/_restore?pretty' >/dev/nul 2>&1
-        dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --msgbox "Elasticsearch запустился" 6 70 
+        curl -XPUT 'http://localhost:9200/_template/win-proc-list' -d@$homedir/etc/logstash/templates/win-proc-list-template.json >/dev/nul 2>&1
+        pip install pytz 1>>$log 2>>$errlog
+        pip install openpyxl 1>>$log 2>>$errlog
+        pip install elasticsearch 1>>$log 2>>$errlog
+        chmod +x $homedir/py/set_proc_list.py >/dev/nul 2>&1
+        $homedir/py/set_proc_list.py 1>>$log 2>>$errlog
     else
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --ok-button "Печалька" --msgbox "Что-то пошло не так. Проконсультируйтесь со специалистом. esguardian@outlook.com" 6 70 
         exit 1

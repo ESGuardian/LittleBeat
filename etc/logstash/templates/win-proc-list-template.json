@@ -1,0 +1,36 @@
+{
+  "order": 0,
+  "template": "win-proc-list",
+  "settings": {
+    "index.refresh_interval": "60s",
+    "number_of_shards" : 1,
+    "number_of_replicas" : 0
+  },
+  "mappings": {
+    "win-proc-list": {
+      "properties": {        
+        "proc_name": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "severity": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "comment": {
+          "type": "string",
+          "index": "analyzed"
+        },
+        "@timestamp": {
+          "type": "date",
+          "format": "dateOptionalTime",
+          "index": "not_analyzed"
+        },
+        "@version": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
+
