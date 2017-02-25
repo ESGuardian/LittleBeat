@@ -96,7 +96,7 @@ wmiadap.exe:Системный:Компонент WMI
 rdpclip.exe:Системный:RDP Clipboard
 ielowutil.exe:Системный:Компонет IE нужен для проверки новостных лент и веб-фрагментов на наличие обновлений
 rdrcef.exe:Обычный:Компонент Adobe Reader
-consent.exe:системный:согласованный пользовательский интерфейс для административных приложений
+consent.exe:Системный:согласованный пользовательский интерфейс для административных приложений
 reg.exe:Системный:Утилита правки реестра
 defrag.exe:Системный:Утилита дефрагментации диска
 bpclntcmd.exe:Обычный:Veritas (Symantec) NetBackup
@@ -838,7 +838,7 @@ lsass.exe:Системный:Windows
 services.exe:Системный:Windows Services Control Manager
 sihost.exe:Системный:Windows Shell Infrastructure Host
 tniwinagent.exe:Обычный:Total Network Inventory
-wininit.exe:Системный :Windows
+wininit.exe:Системный:Windows
 flashutil_activex.exe:Обычный:Adobe
 hexplatformsetup.exe:Специальный:Установщик Гексагон
 iprosetmonitor.exe:Системный:Intel(R) PROSet Monitoring Service
@@ -1673,3 +1673,22 @@ x2gohelper.exe:Специальный:X2go client
 xcsref.exe:Специальный:Validata
 xpadsi.exe:Системный:Microsoft SQL Server
 ybea8e.tmp:Обычный:Яндекс
+fmapp.exe:Системный:RealTek
+wifitask.exe:Системный:Windows
+appleiedav.exe:Обычный:Apple
+smartscreen.exe:Системный:Windows
+adaptivesleepservice.exe:Системный:ATI Technologies
+btwrsupportservice.exe:Системный:Broadcom Bluetooth
+iclouddrive.exe:Обычный:Apple
+icloudphotos.exe:Обычный:Apple
+icloudservices.exe:Обычный:Apple
+mdmagent.exe:Системный:Windows
+msascuil.exe:Системный:Windows
+officehubtaskhost.exe:Обычный:MS Office
+qttask.exe:Обычный:QuickTime
+radeonsettings.exe:Обычный:AMD Radeon
+secd.exe:Обычный:Apple Application Suppor
+tbaseprovisioning.exe:Системный:Windows
+viber.exe:Обычный:Viber
+video.ui.exe:Обычный:Microsoft .Zune Video
+wlanext.exe:Системный:Windows

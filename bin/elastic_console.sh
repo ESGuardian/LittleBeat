@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 elk_menu=("Статус Elastic" "" "Индексы и шарды" "" "Удалить индексы" "" "Загрузить шаблон" "" "Отключить лишние реплики" "" "Проверить конфиг Logstash" "" "Рестартовать Logstash" "")
 while true; do 
 dialog --title "LITTLEBEAT" --menu " " 14 50 ${#elk_menu[@]} "${elk_menu[@]}" 2>/tmp/choise.$$

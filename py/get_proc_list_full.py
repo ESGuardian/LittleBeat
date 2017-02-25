@@ -49,7 +49,7 @@ def check_process (es,name) :
     return (u"Неизвестный",u"Авто")
     
 period = 1
-full = 0
+full = 1
 if len(sys.argv) > 2:
     full = int(sys.argv[1])
 if len(sys.argv) > 1:

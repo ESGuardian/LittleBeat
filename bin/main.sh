@@ -1,3 +1,4 @@
+#!/bin/bash
 homedir="/opt/littlebeat"
 install_dir="$homedir/install"
 if [ ! -e $install_dir/install_completed ]; then
@@ -509,7 +510,7 @@ fi
 
 # Основное меню
 while true; do 
-main_menu=("Настройка обзора сети" "" "Консоль ELK" "" "Дополнения" "" "Выход в Shell" "" "Перезагрузка" "" "Отключение машины" "")
+main_menu=("Настройка обзора сети" "" "Консоль ELK" "" "Индекс процессов Windows" "" "Дополнения" "" "Выход в Shell" "" "Перезагрузка" "" "Отключение машины" "")
 
 dialog --title "LITTLEBEAT" --backtitle "Главная консоль" --menu " " 15 50 ${#main_menu[@]} "${main_menu[@]}" 2>/tmp/choise.$$
 response=$?
@@ -533,6 +534,9 @@ if [ "$choise" == "Дополнения" ]; then
 fi
 if [ "$choise" == "Консоль ELK"  ]; then
     ($homedir/bin/elastic_console.sh)
+fi
+if [ "$choise" == "Индекс процессов Windows"  ]; then
+    ($homedir/bin/win_proc.sh)
 fi
 
 if [ "$choise" == "Выход в Shell" ]; then
