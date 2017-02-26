@@ -9,6 +9,7 @@ if [ ! -e $install_dir/install_completed ]; then
     touch $log
     touch $errlog
     echo "Пожалуйста, подождите ..."
+    sed -i -e "s/^PermitRootLogin .*/PermitRootLogin yes/" /etc/ssh/sshd_config
     apt-get -y install dialog 1>>$log 2>>$errlog
 
 
@@ -27,7 +28,7 @@ if [ ! -e $install_dir/install_completed ]; then
 
        n=${#packs[*]}; 
 
-       i=0
+       i=-1
 
        for f in "${packs[@]}"
        do
@@ -409,6 +410,7 @@ if [ ! -e "$install_dir/logstash_started" ]; then
     if [ -e /tmp/break.$$ ]; then
         rm /tmp/break.$$
         touch "$install_dir/logstash_started" >/dev/nul 2>&1
+        echo "0  */2 * * * root $homedir/bin/nmap-rep.sh" >>/etc/crontab
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --msgbox "Logstash запустился" 6 70 
     else
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --ok-button "Печалька" --msgbox "Что-то пошло не так. Проконсультируйтесь со специалистом. esguardian@outlook.com" 6 70 
