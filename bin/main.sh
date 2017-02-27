@@ -369,9 +369,9 @@ if [ ! -e "$install_dir/logstash_configured" ]; then
     mkdir /etc/logstash/templates >/dev/nul 2>&1
     cp $homedir/etc/logstash/templates/*  /etc/logstash/templates/
     mem=`cat "$install_dir/elastic_configured"`
-    if [ $mem -lt 4000 ]; then
-        sed  -i -e 's/"number_of_shards" : 1/"number_of_shards" : 5/' /etc/logstash/templates/winlogbeat.template.json
-        sed  -i -e 's/"number_of_shards" : 1/"number_of_shards" : 5/' /etc/logstash/templates/metricbeat.template.json
+    if [ $mem -lt 3000 ]; then
+        sed  -i -e 's/"number_of_shards" : 1/"number_of_shards" : 2/' /etc/logstash/templates/winlogbeat.template.json
+        sed  -i -e 's/"number_of_shards" : 1/"number_of_shards" : 2/' /etc/logstash/templates/metricbeat.template.json
     fi
     cp $homedir/etc/logstash/conf.d/*  /etc/logstash/conf.d/
     sed -i -e "s/https:\/\/elastic\//https:\/\/$site_name\//" /etc/logstash/conf.d/08-nmap.conf
