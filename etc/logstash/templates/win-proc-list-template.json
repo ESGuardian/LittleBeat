@@ -10,21 +10,19 @@
     "win-proc-list": {
       "properties": {        
         "proc_name": {
-          "type": "string",
-          "index": "not_analyzed"
+          "ignore_above": 1024,
+          "type": "keyword"
         },
         "severity": {
-          "type": "string",
-          "index": "not_analyzed"
+          "ignore_above": 1024,
+          "type": "keyword"
         },
         "comment": {
-          "type": "string",
-          "index": "analyzed"
+          "ignore_above": 1024,
+          "type": "keyword"
         },
         "@timestamp": {
-          "type": "date",
-          "format": "dateOptionalTime",
-          "index": "not_analyzed"
+          "type": "date"
         },
         "@version": {
           "type": "string"

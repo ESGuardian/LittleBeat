@@ -2,22 +2,29 @@
   "mappings": {
     "_default_": {
       "_all": {
-        "norms": {
-          "enabled": false
-        }
+        "norms": false
       },
       "_meta": {
         "version": "5.2.0"
       },
+      "date_detection": false,
       "dynamic_templates": [
         {
           "strings_as_keyword": {
             "mapping": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             },
             "match_mapping_type": "string"
+          }
+        },
+        {
+          "system.process.cgroup.cpuacct.percpu": {
+            "mapping": {
+              "type": "long"
+            },
+            "match_mapping_type": "long",
+            "path_match": "system.process.cgroup.cpuacct.percpu.*"
           }
         }
       ],
@@ -30,10 +37,12 @@
             "status": {
               "properties": {
                 "bytes_per_request": {
-                  "type": "float"
+                  "scaling_factor": 1000,
+                  "type": "scaled_float"
                 },
                 "bytes_per_sec": {
-                  "type": "float"
+                  "scaling_factor": 1000,
+                  "type": "scaled_float"
                 },
                 "connections": {
                   "properties": {
@@ -58,42 +67,50 @@
                 "cpu": {
                   "properties": {
                     "children_system": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "children_user": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "load": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "system": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "user": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     }
                   }
                 },
                 "hostname": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "load": {
                   "properties": {
                     "1": {
-                      "type": "float"
+                      "scaling_factor": 100,
+                      "type": "scaled_float"
                     },
                     "15": {
-                      "type": "float"
+                      "scaling_factor": 100,
+                      "type": "scaled_float"
                     },
                     "5": {
-                      "type": "float"
+                      "scaling_factor": 100,
+                      "type": "scaled_float"
                     }
                   }
                 },
                 "requests_per_sec": {
-                  "type": "float"
+                  "scaling_factor": 1000,
+                  "type": "scaled_float"
                 },
                 "scoreboard": {
                   "properties": {
@@ -169,18 +186,179 @@
           "properties": {
             "hostname": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             },
             "name": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             },
             "version": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
+            }
+          }
+        },
+        "ceph": {
+          "properties": {
+            "cluster_disk": {
+              "properties": {
+                "available": {
+                  "properties": {
+                    "bytes": {
+                      "type": "long"
+                    }
+                  }
+                },
+                "total": {
+                  "properties": {
+                    "bytes": {
+                      "type": "long"
+                    }
+                  }
+                },
+                "used": {
+                  "properties": {
+                    "bytes": {
+                      "type": "long"
+                    }
+                  }
+                }
+              }
+            },
+            "cluster_health": {
+              "properties": {
+                "overall_status": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "timechecks": {
+                  "properties": {
+                    "epoch": {
+                      "type": "long"
+                    },
+                    "round": {
+                      "properties": {
+                        "status": {
+                          "ignore_above": 1024,
+                          "type": "keyword"
+                        },
+                        "value": {
+                          "type": "long"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "monitor_health": {
+              "properties": {
+                "available": {
+                  "properties": {
+                    "kb": {
+                      "type": "long"
+                    },
+                    "pct": {
+                      "type": "long"
+                    }
+                  }
+                },
+                "health": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "last_updated": {
+                  "type": "date"
+                },
+                "name": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "store_stats": {
+                  "properties": {
+                    "last_updated": {
+                      "type": "long"
+                    },
+                    "log": {
+                      "properties": {
+                        "bytes": {
+                          "type": "long"
+                        }
+                      }
+                    },
+                    "misc": {
+                      "properties": {
+                        "bytes": {
+                          "type": "long"
+                        }
+                      }
+                    },
+                    "sst": {
+                      "properties": {
+                        "bytes": {
+                          "type": "long"
+                        }
+                      }
+                    },
+                    "total": {
+                      "properties": {
+                        "bytes": {
+                          "type": "long"
+                        }
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "properties": {
+                    "kb": {
+                      "type": "long"
+                    }
+                  }
+                },
+                "used": {
+                  "properties": {
+                    "kb": {
+                      "type": "long"
+                    }
+                  }
+                }
+              }
+            },
+            "pool_disk": {
+              "properties": {
+                "id": {
+                  "type": "long"
+                },
+                "name": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "stats": {
+                  "properties": {
+                    "available": {
+                      "properties": {
+                        "bytes": {
+                          "type": "long"
+                        }
+                      }
+                    },
+                    "objects": {
+                      "type": "long"
+                    },
+                    "used": {
+                      "properties": {
+                        "bytes": {
+                          "type": "long"
+                        },
+                        "kb": {
+                          "type": "long"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         },
@@ -229,8 +407,7 @@
                 },
                 "name": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "ops_per_sec": {
                   "type": "long"
@@ -247,7 +424,8 @@
                     "use": {
                       "properties": {
                         "pct": {
-                          "type": "float"
+                          "scaling_factor": 1000,
+                          "type": "scaled_float"
                         }
                       }
                     }
@@ -255,8 +433,7 @@
                 },
                 "type": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 }
               }
             },
@@ -410,14 +587,14 @@
                   "properties": {
                     "docs": {
                       "properties": {
-                        "actual_disk_size": {
+                        "data_size": {
                           "properties": {
                             "bytes": {
                               "type": "long"
                             }
                           }
                         },
-                        "data_size": {
+                        "disk_size": {
                           "properties": {
                             "bytes": {
                               "type": "long"
@@ -446,14 +623,14 @@
                     },
                     "views": {
                       "properties": {
-                        "actual_disk_size": {
+                        "data_size": {
                           "properties": {
                             "bytes": {
                               "type": "long"
                             }
                           }
                         },
-                        "data_size": {
+                        "disk_size": {
                           "properties": {
                             "bytes": {
                               "type": "long"
@@ -467,7 +644,8 @@
                 "cpu_utilization_rate": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     }
                   }
                 },
@@ -489,8 +667,7 @@
                 },
                 "hostname": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "mcd_memory": {
                   "properties": {
@@ -576,26 +753,22 @@
               "properties": {
                 "command": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "created": {
                   "type": "date"
                 },
                 "id": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "image": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "name": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "size": {
                   "properties": {
@@ -609,8 +782,7 @@
                 },
                 "status": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 }
               }
             },
@@ -619,7 +791,8 @@
                 "kernel": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -629,7 +802,8 @@
                 "system": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -639,14 +813,16 @@
                 "total": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     }
                   }
                 },
                 "user": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -658,13 +834,73 @@
             "diskio": {
               "properties": {
                 "reads": {
-                  "type": "float"
+                  "scaling_factor": 1000,
+                  "type": "scaled_float"
                 },
                 "total": {
-                  "type": "float"
+                  "scaling_factor": 1000,
+                  "type": "scaled_float"
                 },
                 "writes": {
-                  "type": "float"
+                  "scaling_factor": 1000,
+                  "type": "scaled_float"
+                }
+              }
+            },
+            "healthcheck": {
+              "properties": {
+                "event": {
+                  "properties": {
+                    "end_date": {
+                      "type": "date"
+                    },
+                    "exit_code": {
+                      "type": "long"
+                    },
+                    "output": {
+                      "ignore_above": 1024,
+                      "type": "keyword"
+                    },
+                    "start_date": {
+                      "type": "date"
+                    }
+                  }
+                },
+                "failingstreak": {
+                  "type": "long"
+                },
+                "status": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                }
+              }
+            },
+            "image": {
+              "properties": {
+                "created": {
+                  "type": "date"
+                },
+                "id": {
+                  "properties": {
+                    "current": {
+                      "ignore_above": 1024,
+                      "type": "keyword"
+                    },
+                    "parent": {
+                      "ignore_above": 1024,
+                      "type": "keyword"
+                    }
+                  }
+                },
+                "size": {
+                  "properties": {
+                    "regular": {
+                      "type": "long"
+                    },
+                    "virtual": {
+                      "type": "long"
+                    }
+                  }
                 }
               }
             },
@@ -688,8 +924,7 @@
                 },
                 "id": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "images": {
                   "type": "long"
@@ -701,7 +936,8 @@
                 "fail": {
                   "properties": {
                     "count": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     }
                   }
                 },
@@ -711,7 +947,8 @@
                 "rss": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "total": {
                       "type": "long"
@@ -724,7 +961,8 @@
                       "type": "long"
                     },
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "total": {
                       "type": "long"
@@ -741,7 +979,8 @@
                       "type": "long"
                     },
                     "dropped": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "errors": {
                       "type": "long"
@@ -753,8 +992,7 @@
                 },
                 "interface": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "out": {
                   "properties": {
@@ -762,7 +1000,8 @@
                       "type": "long"
                     },
                     "dropped": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "errors": {
                       "type": "long"
@@ -842,7 +1081,8 @@
                 "idle": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     }
                   }
                 },
@@ -953,7 +1193,8 @@
                         "session_reuse": {
                           "properties": {
                             "pct": {
-                              "type": "float"
+                              "scaling_factor": 1000,
+                              "type": "scaled_float"
                             }
                           }
                         }
@@ -1028,14 +1269,14 @@
                           "type": "long"
                         },
                         "last": {
-                          "type": "long"
+                          "ignore_above": 1024,
+                          "type": "keyword"
                         }
                       }
                     },
                     "status": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     }
                   }
                 },
@@ -1128,8 +1369,7 @@
                     },
                     "name": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     }
                   }
                 },
@@ -1254,8 +1494,7 @@
                 },
                 "service_name": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "session": {
                   "properties": {
@@ -1285,13 +1524,13 @@
                 },
                 "status": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "throttle": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     }
                   }
                 },
@@ -1317,8 +1556,7 @@
                   "properties": {
                     "address": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "id": {
                       "type": "long"
@@ -1329,18 +1567,15 @@
                   "properties": {
                     "host": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "id": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "member_id": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     }
                   }
                 },
@@ -1353,15 +1588,11 @@
                 },
                 "id": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "meta": {
-                  "index": "analyzed",
-                  "norms": {
-                    "enabled": false
-                  },
-                  "type": "string"
+                  "norms": false,
+                  "type": "text"
                 },
                 "offset": {
                   "type": "long"
@@ -1371,8 +1602,7 @@
                 },
                 "topic": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 }
               }
             },
@@ -1382,8 +1612,7 @@
                   "properties": {
                     "address": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "id": {
                       "type": "long"
@@ -1434,8 +1663,7 @@
                     },
                     "name": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     }
                   }
                 }
@@ -1449,33 +1677,27 @@
               "properties": {
                 "availability_zone": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "instance_id": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "machine_type": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "project_id": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "provider": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "region": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 }
               }
             }
@@ -1485,23 +1707,19 @@
           "properties": {
             "host": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             },
             "module": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             },
             "name": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             },
             "namespace": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             },
             "rtt": {
               "type": "long"
@@ -1510,6 +1728,92 @@
         },
         "mongodb": {
           "properties": {
+            "dbstats": {
+              "properties": {
+                "avg_obj_size": {
+                  "properties": {
+                    "bytes": {
+                      "type": "long"
+                    }
+                  }
+                },
+                "collections": {
+                  "type": "long"
+                },
+                "data_file_version": {
+                  "properties": {
+                    "major": {
+                      "type": "long"
+                    },
+                    "minor": {
+                      "type": "long"
+                    }
+                  }
+                },
+                "data_size": {
+                  "properties": {
+                    "bytes": {
+                      "type": "long"
+                    }
+                  }
+                },
+                "db": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "extent_free_list": {
+                  "properties": {
+                    "num": {
+                      "type": "long"
+                    },
+                    "size": {
+                      "properties": {
+                        "bytes": {
+                          "type": "long"
+                        }
+                      }
+                    }
+                  }
+                },
+                "file_size": {
+                  "properties": {
+                    "bytes": {
+                      "type": "long"
+                    }
+                  }
+                },
+                "index_size": {
+                  "properties": {
+                    "bytes": {
+                      "type": "long"
+                    }
+                  }
+                },
+                "indexes": {
+                  "type": "long"
+                },
+                "ns_size_mb": {
+                  "properties": {
+                    "mb": {
+                      "type": "long"
+                    }
+                  }
+                },
+                "num_extents": {
+                  "type": "long"
+                },
+                "objects": {
+                  "type": "long"
+                },
+                "storage_size": {
+                  "properties": {
+                    "bytes": {
+                      "type": "long"
+                    }
+                  }
+                }
+              }
+            },
             "status": {
               "properties": {
                 "asserts": {
@@ -1779,8 +2083,7 @@
                   "properties": {
                     "name": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     }
                   }
                 },
@@ -1793,8 +2096,7 @@
                 },
                 "version": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "wired_tiger": {
                   "properties": {
@@ -2062,8 +2364,7 @@
                 },
                 "hostname": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "reading": {
                   "type": "long"
@@ -2081,14 +2382,48 @@
             }
           }
         },
+        "php_fpm": {
+          "properties": {
+            "pool": {
+              "properties": {
+                "connections": {
+                  "properties": {
+                    "accepted": {
+                      "type": "long"
+                    },
+                    "queued": {
+                      "type": "long"
+                    }
+                  }
+                },
+                "name": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "processes": {
+                  "properties": {
+                    "active": {
+                      "type": "long"
+                    },
+                    "idle": {
+                      "type": "long"
+                    }
+                  }
+                },
+                "slow_requests": {
+                  "type": "long"
+                }
+              }
+            }
+          }
+        },
         "postgresql": {
           "properties": {
             "activity": {
               "properties": {
                 "application_name": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "backend_start": {
                   "type": "date"
@@ -2097,13 +2432,11 @@
                   "properties": {
                     "address": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "hostname": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "port": {
                       "type": "long"
@@ -2114,8 +2447,7 @@
                   "properties": {
                     "name": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "oid": {
                       "type": "long"
@@ -2127,16 +2459,14 @@
                 },
                 "query": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "query_start": {
                   "type": "date"
                 },
                 "state": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "state_change": {
                   "type": "date"
@@ -2151,8 +2481,7 @@
                     },
                     "name": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     }
                   }
                 },
@@ -2256,8 +2585,7 @@
                 },
                 "name": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "number_of_backends": {
                   "type": "long"
@@ -2375,16 +2703,20 @@
                     "used": {
                       "properties": {
                         "sys": {
-                          "type": "float"
+                          "scaling_factor": 1000,
+                          "type": "scaled_float"
                         },
                         "sys_children": {
-                          "type": "float"
+                          "scaling_factor": 1000,
+                          "type": "scaled_float"
                         },
                         "user": {
-                          "type": "float"
+                          "scaling_factor": 1000,
+                          "type": "scaled_float"
                         },
                         "user_children": {
-                          "type": "float"
+                          "scaling_factor": 1000,
+                          "type": "scaled_float"
                         }
                       }
                     }
@@ -2394,8 +2726,7 @@
                   "properties": {
                     "allocator": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "used": {
                       "properties": {
@@ -2423,8 +2754,7 @@
                           "properties": {
                             "last_status": {
                               "ignore_above": 1024,
-                              "index": "not_analyzed",
-                              "type": "string"
+                              "type": "keyword"
                             }
                           }
                         },
@@ -2459,8 +2789,7 @@
                           "properties": {
                             "last_status": {
                               "ignore_above": 1024,
-                              "index": "not_analyzed",
-                              "type": "string"
+                              "type": "keyword"
                             }
                           }
                         }
@@ -2485,8 +2814,7 @@
                             },
                             "last_status": {
                               "ignore_above": 1024,
-                              "index": "not_analyzed",
-                              "type": "string"
+                              "type": "keyword"
                             },
                             "last_time": {
                               "properties": {
@@ -2537,8 +2865,7 @@
                     },
                     "role": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     }
                   }
                 },
@@ -2546,33 +2873,27 @@
                   "properties": {
                     "arch_bits": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "build_id": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "config_file": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "gcc_version": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "git_dirty": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "git_sha1": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "hz": {
                       "type": "long"
@@ -2582,26 +2903,22 @@
                     },
                     "mode": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "multiplexing_api": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "os": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "process_id": {
                       "type": "long"
                     },
                     "run_id": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "tcp_port": {
                       "type": "long"
@@ -2611,8 +2928,7 @@
                     },
                     "version": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     }
                   }
                 },
@@ -2634,13 +2950,15 @@
                     "instantaneous": {
                       "properties": {
                         "input_kbps": {
-                          "type": "float"
+                          "scaling_factor": 1000,
+                          "type": "scaled_float"
                         },
                         "ops_per_sec": {
                           "type": "long"
                         },
                         "output_kbps": {
-                          "type": "float"
+                          "scaling_factor": 1000,
+                          "type": "scaled_float"
                         }
                       }
                     },
@@ -2729,8 +3047,7 @@
                 },
                 "id": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "keys": {
                   "type": "long"
@@ -2749,7 +3066,8 @@
                 "idle": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2759,7 +3077,8 @@
                 "iowait": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2769,7 +3088,8 @@
                 "irq": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2779,7 +3099,8 @@
                 "nice": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2789,7 +3110,8 @@
                 "softirq": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2799,7 +3121,8 @@
                 "steal": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2809,7 +3132,8 @@
                 "system": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2819,7 +3143,8 @@
                 "user": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2836,7 +3161,8 @@
                 "idle": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2846,7 +3172,8 @@
                 "iowait": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2856,7 +3183,8 @@
                 "irq": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2866,7 +3194,8 @@
                 "nice": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2876,7 +3205,8 @@
                 "softirq": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2886,7 +3216,8 @@
                 "steal": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2896,7 +3227,8 @@
                 "system": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2906,7 +3238,8 @@
                 "user": {
                   "properties": {
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     },
                     "ticks": {
                       "type": "long"
@@ -2926,8 +3259,7 @@
                 },
                 "name": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "read": {
                   "properties": {
@@ -2944,8 +3276,7 @@
                 },
                 "serial_number": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "write": {
                   "properties": {
@@ -2969,8 +3300,7 @@
                 },
                 "device_name": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "files": {
                   "type": "long"
@@ -2983,8 +3313,7 @@
                 },
                 "mount_point": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "total": {
                   "type": "long"
@@ -2995,7 +3324,8 @@
                       "type": "long"
                     },
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     }
                   }
                 }
@@ -3027,24 +3357,30 @@
             "load": {
               "properties": {
                 "1": {
-                  "type": "float"
+                  "scaling_factor": 100,
+                  "type": "scaled_float"
                 },
                 "15": {
-                  "type": "float"
+                  "scaling_factor": 100,
+                  "type": "scaled_float"
                 },
                 "5": {
-                  "type": "float"
+                  "scaling_factor": 100,
+                  "type": "scaled_float"
                 },
                 "norm": {
                   "properties": {
                     "1": {
-                      "type": "float"
+                      "scaling_factor": 100,
+                      "type": "scaled_float"
                     },
                     "15": {
-                      "type": "float"
+                      "scaling_factor": 100,
+                      "type": "scaled_float"
                     },
                     "5": {
-                      "type": "float"
+                      "scaling_factor": 100,
+                      "type": "scaled_float"
                     }
                   }
                 }
@@ -3063,7 +3399,8 @@
                           "type": "long"
                         },
                         "pct": {
-                          "type": "float"
+                          "scaling_factor": 1000,
+                          "type": "scaled_float"
                         }
                       }
                     }
@@ -3086,7 +3423,8 @@
                           "type": "long"
                         },
                         "pct": {
-                          "type": "float"
+                          "scaling_factor": 1000,
+                          "type": "scaled_float"
                         }
                       }
                     }
@@ -3101,7 +3439,8 @@
                       "type": "long"
                     },
                     "pct": {
-                      "type": "float"
+                      "scaling_factor": 1000,
+                      "type": "scaled_float"
                     }
                   }
                 }
@@ -3127,8 +3466,7 @@
                 },
                 "name": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "out": {
                   "properties": {
@@ -3156,13 +3494,11 @@
                       "properties": {
                         "id": {
                           "ignore_above": 1024,
-                          "index": "not_analyzed",
-                          "type": "string"
+                          "type": "keyword"
                         },
                         "path": {
                           "ignore_above": 1024,
-                          "index": "not_analyzed",
-                          "type": "string"
+                          "type": "keyword"
                         },
                         "total": {
                           "properties": {
@@ -3201,13 +3537,11 @@
                         },
                         "id": {
                           "ignore_above": 1024,
-                          "index": "not_analyzed",
-                          "type": "string"
+                          "type": "keyword"
                         },
                         "path": {
                           "ignore_above": 1024,
-                          "index": "not_analyzed",
-                          "type": "string"
+                          "type": "keyword"
                         },
                         "rt": {
                           "properties": {
@@ -3250,13 +3584,11 @@
                       "properties": {
                         "id": {
                           "ignore_above": 1024,
-                          "index": "not_analyzed",
-                          "type": "string"
+                          "type": "keyword"
                         },
                         "path": {
                           "ignore_above": 1024,
-                          "index": "not_analyzed",
-                          "type": "string"
+                          "type": "keyword"
                         },
                         "stats": {
                           "properties": {
@@ -3287,15 +3619,13 @@
                     },
                     "id": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "memory": {
                       "properties": {
                         "id": {
                           "ignore_above": 1024,
-                          "index": "not_analyzed",
-                          "type": "string"
+                          "type": "keyword"
                         },
                         "kmem": {
                           "properties": {
@@ -3411,8 +3741,7 @@
                         },
                         "path": {
                           "ignore_above": 1024,
-                          "index": "not_analyzed",
-                          "type": "string"
+                          "type": "keyword"
                         },
                         "stats": {
                           "properties": {
@@ -3518,15 +3847,13 @@
                     },
                     "path": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     }
                   }
                 },
                 "cmdline": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "cpu": {
                   "properties": {
@@ -3539,7 +3866,8 @@
                     "total": {
                       "properties": {
                         "pct": {
-                          "type": "float"
+                          "scaling_factor": 1000,
+                          "type": "scaled_float"
                         },
                         "ticks": {
                           "type": "long"
@@ -3576,7 +3904,8 @@
                           "type": "long"
                         },
                         "pct": {
-                          "type": "float"
+                          "scaling_factor": 1000,
+                          "type": "scaled_float"
                         }
                       }
                     },
@@ -3590,8 +3919,7 @@
                 },
                 "name": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "pgid": {
                   "type": "long"
@@ -3604,13 +3932,11 @@
                 },
                 "state": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "username": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 }
               }
             },
@@ -3618,20 +3944,16 @@
               "properties": {
                 "direction": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "family": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "local": {
                   "properties": {
                     "ip": {
-                      "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "ip"
                     },
                     "port": {
                       "type": "long"
@@ -3642,18 +3964,15 @@
                   "properties": {
                     "cmdline": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "command": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "exe": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "pid": {
                       "type": "long"
@@ -3664,23 +3983,18 @@
                   "properties": {
                     "etld_plus_one": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "host": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "host_error": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     },
                     "ip": {
-                      "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "ip"
                     },
                     "port": {
                       "type": "long"
@@ -3694,8 +4008,7 @@
                     },
                     "name": {
                       "ignore_above": 1024,
-                      "index": "not_analyzed",
-                      "type": "string"
+                      "type": "keyword"
                     }
                   }
                 }
@@ -3705,13 +4018,11 @@
         },
         "tags": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "type": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "zookeeper": {
           "properties": {
@@ -3728,8 +4039,7 @@
                 },
                 "hostname": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "latency": {
                   "properties": {
@@ -3771,16 +4081,14 @@
                 },
                 "server_state": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "synced_followers": {
                   "type": "long"
                 },
                 "version": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "watch_count": {
                   "type": "long"
@@ -3797,6 +4105,7 @@
   },
   "order": 0,
   "settings": {
+    "index.mapping.total_fields.limit": 10000,
     "index.refresh_interval": "5s",
     "number_of_shards" : 1,
     "number_of_replicas" : 0

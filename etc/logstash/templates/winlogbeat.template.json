@@ -2,20 +2,18 @@
   "mappings": {
     "_default_": {
       "_all": {
-        "norms": {
-          "enabled": false
-        }
+        "norms": false
       },
       "_meta": {
-        "version": "5.1.1"
+        "version": "5.2.0"
       },
+      "date_detection": false,
       "dynamic_templates": [
         {
           "strings_as_keyword": {
             "mapping": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             },
             "match_mapping_type": "string"
           }
@@ -27,95 +25,50 @@
         },
         "activity_id": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
-        },
-        "event_data": {
-          "properties": {
-            "NewProcessSeverityComment": {
-              "ignore_above": 1024,
-              "index": "analyzed",
-              "type": "string"
-            },
-            "NewProcessBareName": {
-              "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string",
-              "doc_values": "true"
-            },
-            "NewProcessName": {
-              "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string",
-              "doc_values": "true"
-            },
-            "NewProcessSeverity": {
-              "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string",
-              "doc_values": "true"
-            },
-            "ServiceName": {
-              "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string",
-              "doc_values": "true"
-            }
-          }
+          "type": "keyword"
         },
         "beat": {
           "properties": {
             "hostname": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             },
             "name": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             },
             "version": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             }
           }
         },
         "computer_name": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "event_id": {
           "type": "long"
         },
         "keywords": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "level": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "log_name": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "message": {
-          "index": "analyzed",
-          "norms": {
-            "enabled": false
-          },
-          "type": "string"
+          "norms": false,
+          "type": "text"
         },
         "message_error": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "meta": {
           "properties": {
@@ -123,33 +76,27 @@
               "properties": {
                 "availability_zone": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "instance_id": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "machine_type": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "project_id": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "provider": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 },
                 "region": {
                   "ignore_above": 1024,
-                  "index": "not_analyzed",
-                  "type": "string"
+                  "type": "keyword"
                 }
               }
             }
@@ -157,71 +104,59 @@
         },
         "opcode": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "process_id": {
           "type": "long"
         },
         "provider_guid": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "record_number": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "related_activity_id": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "source_name": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "tags": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "task": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "thread_id": {
           "type": "long"
         },
         "type": {
           "ignore_above": 1024,
-          "index": "not_analyzed",
-          "type": "string"
+          "type": "keyword"
         },
         "user": {
           "properties": {
             "domain": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             },
             "identifier": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             },
             "name": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             },
             "type": {
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "string"
+              "type": "keyword"
             }
           }
         },
@@ -229,17 +164,15 @@
           "type": "long"
         },
         "xml": {
-          "index": "analyzed",
-          "norms": {
-            "enabled": false
-          },
-          "type": "string"
+          "norms": false,
+          "type": "text"
         }
       }
     }
   },
   "order": 0,
   "settings": {
+    "index.mapping.total_fields.limit": 10000,
     "index.refresh_interval": "5s",
     "number_of_shards" : 1,
     "number_of_replicas" : 0

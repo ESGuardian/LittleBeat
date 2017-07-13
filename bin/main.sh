@@ -139,16 +139,16 @@ if [ ! -e "$install_dir/elastic_started" ]; then
         rm /tmp/break.$$
         touch "$install_dir/elastic_started" >/dev/nul 2>&1
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --msgbox "Elasticsearch запустился" 6 70 
-        dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурация индексов LittleBeat ..." 6 70 
-        chown -R elasticsearch:elasticsearch /opt/littlebeat/backups
-        curl -XPUT 'http://localhost:9200/_snapshot/littlebeat' -d '{
-            "type": "fs",
-            "settings": {
-                "location": "/opt/littlebeat/backups",
-                "compress": true
-            }
-        }' >/dev/nul 2>&1
-        curl -XPOST 'localhost:9200/_snapshot/littlebeat/snapshot_kibana/_restore?pretty' >/dev/nul 2>&1
+#        dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурация индексов LittleBeat ..." 6 70 
+#        chown -R elasticsearch:elasticsearch /opt/littlebeat/backups
+#        curl -XPUT 'http://localhost:9200/_snapshot/littlebeat' -d '{
+#            "type": "fs",
+#            "settings": {
+#                "location": "/opt/littlebeat/backups",
+#                "compress": true
+#            }
+#        }' >/dev/nul 2>&1
+#        curl -XPOST 'localhost:9200/_snapshot/littlebeat/snapshot_kibana/_restore?pretty' >/dev/nul 2>&1
         curl -XPUT 'http://localhost:9200/_template/win-proc-list' -d@$homedir/etc/logstash/templates/win-proc-list-template.json >/dev/nul 2>&1
         pip install pytz 1>>$log 2>>$errlog
         pip install openpyxl 1>>$log 2>>$errlog
@@ -432,8 +432,8 @@ if [ ! -e "$install_dir/kibana_started" ]; then
         fi
     done
     echo 'kibana.defaultAppId: "dashboard/Main-dash"' >>/etc/kibana/config/kibana.yml
-    cp $homedir/install/kibana.svg /usr/share/kibana/src/ui/public/images/kibana.svg
-    cp $homedir/install/kibana.svg /usr/share/kibana/optimize/bundles/src/ui/public/images/kibana.svg
+#    cp $homedir/install/kibana.svg /usr/share/kibana/src/ui/public/images/kibana.svg
+#    cp $homedir/install/kibana.svg /usr/share/kibana/optimize/bundles/src/ui/public/images/kibana.svg
     /bin/systemctl daemon-reload >/dev/nul 2>&1
     /bin/systemctl enable nginx.service >/dev/nul 2>&1
     /bin/systemctl start nginx.service >/dev/nul 2>&1 
