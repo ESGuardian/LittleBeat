@@ -19,7 +19,7 @@ if [ ! -e $install_dir/install_completed ]; then
     apt-get -y upgrade 1>>$log 2>>$errlog
 
     # список пакетов
-    packs=(python-software-properties software-properties-common unzip curl openjdk-7-jre openssl nginx apache2-utils nmap samba samba-common-bin libpam-smbpass python-pip)
+    packs=(python-software-properties software-properties-common unzip curl openjdk-8-jre openssl nginx apache2-utils nmap samba samba-common-bin libpam-smbpass python-pip)
 
     err=0
 
@@ -49,19 +49,19 @@ EOF
     
     
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Установка Elasticsearch ..." 6 70
-    dpkg --install $homedir/pkgs/elasticsearch-2.4.4.deb 1>>$log 2>>$errlog
+    dpkg --install $homedir/pkgs/elasticsearch-5.5.0.deb 1>>$log 2>>$errlog
     if [ $? -ne 0 ]; then
             err=1
     fi
     
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Установка Logstash ..." 6 70
-    dpkg --install $homedir/pkgs/logstash-2.4.1_all.deb 1>>$log 2>>$errlog
+    dpkg --install $homedir/pkgs/logstash-5.5.0.deb 1>>$log 2>>$errlog
     if [ $? -ne 0 ]; then
             err=1
     fi
     
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Установка Kibana ..." 6 70
-    dpkg --install $homedir/pkgs/kibana-4.6.1-amd64.deb 1>>$log 2>>$errlog
+    dpkg --install $homedir/pkgs/kibana-5.5.0-amd64.deb 1>>$log 2>>$errlog
     if [ $? -ne 0 ]; then
             err=1
     fi
@@ -377,8 +377,8 @@ if [ ! -e "$install_dir/logstash_configured" ]; then
     sed -i -e "s/https:\/\/elastic\//https:\/\/$site_name\//" /etc/logstash/conf.d/08-nmap.conf
     /bin/systemctl daemon-reload >/dev/nul 2>&1
     /bin/systemctl enable logstash.service >/dev/nul 2>&1
-    /opt/logstash/bin/logstash-plugin install logstash-filter-elasticsearch 1>>$log 2>>$errlog
-    /opt/logstash/bin/logstash-plugin install logstash-codec-nmap 1>>$log 2>>$errlog
+    /usr/share/logstash/bin/logstash-plugin install logstash-filter-elasticsearch 1>>$log 2>>$errlog
+    /usr/share/logstash/bin/logstash-plugin install logstash-codec-nmap 1>>$log 2>>$errlog
     
     touch "$install_dir/logstash_configured" >/dev/nul 2>&1
 fi
@@ -431,9 +431,9 @@ if [ ! -e "$install_dir/kibana_started" ]; then
             htpasswd -b -c /etc/nginx/conf.d/kibana.htpasswd kibana $password1 >/dev/nul 2>&1
         fi
     done
-    echo 'kibana.defaultAppId: "dashboard/Main-dash"' >>/opt/kibana/config/kibana.yml
-    cp $homedir/install/kibana.svg /opt/kibana/src/ui/public/images/kibana.svg
-    cp $homedir/install/kibana.svg /opt/kibana/optimize/bundles/src/ui/public/images/kibana.svg
+    echo 'kibana.defaultAppId: "dashboard/Main-dash"' >>/etc/kibana/config/kibana.yml
+    cp $homedir/install/kibana.svg /usr/share/kibana/src/ui/public/images/kibana.svg
+    cp $homedir/install/kibana.svg /usr/share/kibana/optimize/bundles/src/ui/public/images/kibana.svg
     /bin/systemctl daemon-reload >/dev/nul 2>&1
     /bin/systemctl enable nginx.service >/dev/nul 2>&1
     /bin/systemctl start nginx.service >/dev/nul 2>&1 
