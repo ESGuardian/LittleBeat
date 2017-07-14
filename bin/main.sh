@@ -1,25 +1,27 @@
 #!/bin/bash
 homedir="/opt/littlebeat"
 install_dir="$homedir/install"
+log="$install_dir/install.log" 
+errlog="$install_dir/install.err"
 if [ ! -e $install_dir/install_completed ]; then
-    log="$install_dir/install.log" 
-    errlog="$install_dir/install.err"
     rm $log >/dev/nul 2>&1
     rm $errlog >/dev/nul 2>&1
     touch $log
     touch $errlog
     echo "Пожалуйста, подождите ..."
+    sed -i -e "s/^#PermitRootLogin .*/PermitRootLogin yes/" /etc/ssh/sshd_config
     sed -i -e "s/^PermitRootLogin .*/PermitRootLogin yes/" /etc/ssh/sshd_config
     apt-get -y install dialog 1>>$log 2>>$errlog
 
 
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Обновление списка пакетов ....\nУстановка обновлений системы ..." 6 70
-
+    echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee /etc/apt/sources.list.d/webupd8team-java.list 1>>$log 2>>$errlog
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 1>>$log 2>>$errlog
     apt-get -y update 1>>$log 2>>$errlog
     apt-get -y upgrade 1>>$log 2>>$errlog
-
+    echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections 
     # список пакетов
-    packs=(python-software-properties software-properties-common unzip curl openjdk-8-jre openssl nginx apache2-utils nmap samba samba-common-bin libpam-smbpass python-pip)
+    packs=(python-software-properties software-properties-common unzip curl oracle-java8-installer openssl nginx apache2-utils nmap samba samba-common-bin libpam-smbpass python-pip)
 
     err=0
 
@@ -84,9 +86,9 @@ if [ ! -e "$install_dir/elastic_configured" ]; then
     es_data_dir="/var/lib/elasticsearch"
     
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурируем и запускаем Elastic. Это займет примерно 30 секунд ..." 10 70 
-    cp $homedir/etc/default/elasticsearch /etc/default/elasticsearch
+#    cp $homedir/etc/default/elasticsearch /etc/default/elasticsearch
     cp $homedir/usr/lib/systemd/system/elasticsearch.service /usr/lib/systemd/system/elasticsearch.service
-    sed  -i -e "s/^ES_HEAP_SIZE=.*/ES_HEAP_SIZE=$mem/" /etc/default/elasticsearch
+#    sed  -i -e "s/^ES_HEAP_SIZE=.*/ES_HEAP_SIZE=$mem/" /etc/default/elasticsearch
     
     if [ ! -e "$install_dir/elastic_system_configured" ]; then
         echo "elasticsearch soft memlock unlimited" >>/etc/security/limits.conf
@@ -100,9 +102,11 @@ if [ ! -e "$install_dir/elastic_configured" ]; then
     echo "cluster.name: $claster_name" >>/etc/elasticsearch/elasticsearch.yml
     echo "cluster.routing.allocation.node_initial_primaries_recoveries: 10" >>/etc/elasticsearch/elasticsearch.yml
     echo "node.name: node-1" >>/etc/elasticsearch/elasticsearch.yml
-    echo "bootstrap.memory_lock: true" >>/etc/elasticsearch/elasticsearch.yml
+#    echo "bootstrap.memory_lock: true" >>/etc/elasticsearch/elasticsearch.yml
     echo "path.data: $es_data_dir/1" >>/etc/elasticsearch/elasticsearch.yml
     echo "path.repo: [\"$homedir/backups\"]" >>/etc/elasticsearch/elasticsearch.yml
+    sed  -i -e "s/^-Xms.*/-Xms$mem/" /etc/elasticsearch/jvm.options
+    sed  -i -e "s/^-Xmx.*/-Xmx$mem/" /etc/elasticsearch/jvm.options
 
     mkdir $es_data_dir >/dev/nul 2>&1
     mkdir $es_data_dir/1 >/dev/nul 2>&1
@@ -390,7 +394,7 @@ if [ ! -e "$install_dir/logstash_started" ]; then
     while [ $c -ne 202 ]
         do
             if [ -e /var/log/logstash/logstash.log ]; then
-                str=$(grep -i "Pipeline main started" /var/log/logstash/logstash.log)
+                str=$(grep -i "Pipeline main started" /var/log/logstash/logstash-plain.log)
             else
                 str=""
             fi
