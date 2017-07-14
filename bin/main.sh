@@ -1,4 +1,8 @@
 #!/bin/bash
+if [[ $(id -u) -ne 0 ]] ; then 
+  whiptail --title "LITTLEBEAT" --backtitle "Недостаточно полномочий" --msgbox "Вы должны иметь полномочия root для работы с консолью" 6 70
+  exit 1  
+fi
 homedir="/opt/littlebeat"
 install_dir="$homedir/install"
 log="$install_dir/install.log" 
@@ -9,8 +13,9 @@ if [ ! -e $install_dir/install_completed ]; then
     touch $log
     touch $errlog
     echo "Пожалуйста, подождите ..."
-    sed -i -e "s/^#PermitRootLogin .*/PermitRootLogin yes/" /etc/ssh/sshd_config
-    sed -i -e "s/^PermitRootLogin .*/PermitRootLogin yes/" /etc/ssh/sshd_config
+#    sed -i -e "s/^#PermitRootLogin .*/PermitRootLogin yes/" /etc/ssh/sshd_config
+#    sed -i -e "s/^PermitRootLogin .*/PermitRootLogin yes/" /etc/ssh/sshd_config
+    apt-get update 1>>$log 2>>$errlog
     apt-get -y install dialog 1>>$log 2>>$errlog
 
 
@@ -393,7 +398,7 @@ if [ ! -e "$install_dir/logstash_started" ]; then
 
     while [ $c -ne 202 ]
         do
-            if [ -e /var/log/logstash/logstash.log ]; then
+            if [ -e /var/log/logstash/logstash-plain.log ]; then
                 str=$(grep -i "Pipeline main started" /var/log/logstash/logstash-plain.log)
             else
                 str=""
