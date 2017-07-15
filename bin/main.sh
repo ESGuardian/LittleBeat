@@ -1,6 +1,6 @@
 #!/bin/bash
 if [[ $(id -u) -ne 0 ]] ; then 
-  whiptail --title "LITTLEBEAT" --backtitle "Недостаточно полномочий" --msgbox "Вы должны иметь полномочия root для работы с консолью" 6 70
+  dialog --title "LITTLEBEAT" --backtitle "Недостаточно полномочий" --msgbox "Вы должны иметь полномочия root для работы с консолью" 6 70
   exit 1  
 fi
 homedir="/opt/littlebeat"
@@ -12,13 +12,6 @@ if [ ! -e $install_dir/install_completed ]; then
     rm $errlog >/dev/nul 2>&1
     touch $log
     touch $errlog
-    echo "Пожалуйста, подождите ..."
-#    sed -i -e "s/^#PermitRootLogin .*/PermitRootLogin yes/" /etc/ssh/sshd_config
-#    sed -i -e "s/^PermitRootLogin .*/PermitRootLogin yes/" /etc/ssh/sshd_config
-    apt-get update 1>>$log 2>>$errlog
-    apt-get -y install dialog 1>>$log 2>>$errlog
-
-
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Обновление списка пакетов ....\nУстановка обновлений системы ..." 6 70
     echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee /etc/apt/sources.list.d/webupd8team-java.list 1>>$log 2>>$errlog
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 1>>$log 2>>$errlog
@@ -148,16 +141,16 @@ if [ ! -e "$install_dir/elastic_started" ]; then
         rm /tmp/break.$$
         touch "$install_dir/elastic_started" >/dev/nul 2>&1
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --msgbox "Elasticsearch запустился" 6 70 
-#        dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурация индексов LittleBeat ..." 6 70 
-#        chown -R elasticsearch:elasticsearch /opt/littlebeat/backups
-#        curl -XPUT 'http://localhost:9200/_snapshot/littlebeat' -d '{
-#            "type": "fs",
-#            "settings": {
-#                "location": "/opt/littlebeat/backups",
-#                "compress": true
-#            }
-#        }' >/dev/nul 2>&1
-#        curl -XPOST 'localhost:9200/_snapshot/littlebeat/snapshot_kibana/_restore?pretty' >/dev/nul 2>&1
+        dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурация индексов LittleBeat ..." 6 70 
+        chown -R elasticsearch:elasticsearch /opt/littlebeat/backups
+        curl -XPUT 'http://localhost:9200/_snapshot/littlebeat' -d '{
+            "type": "fs",
+            "settings": {
+                "location": "/opt/littlebeat/backups",
+                "compress": true
+            }
+        }' >/dev/nul 2>&1
+        curl -XPOST 'localhost:9200/_snapshot/littlebeat/snapshot_kibana/_restore?pretty' >/dev/nul 2>&1
         curl -XPUT 'http://localhost:9200/_template/win-proc-list' -d@$homedir/etc/logstash/templates/win-proc-list-template.json >/dev/nul 2>&1
         pip install pytz 1>>$log 2>>$errlog
         pip install openpyxl 1>>$log 2>>$errlog
@@ -172,6 +165,7 @@ fi
 
 if [ ! -e "$install_dir/net_configured" ]; then
 
+    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Поиск и выбор сетевых интерфейсов ..." 6 70 
     site_name=$(hostname -f)
     dns_ip=$(nslookup $site_name | grep Server | grep -oP "(\d+\.\d+\.\d+\.\d+)" | head -1)
     check_ip=$(nslookup $site_name | grep $site_name -A 1 | grep Address | grep -oP "(\d+\.\d+\.\d+\.\d+)")
@@ -440,9 +434,9 @@ if [ ! -e "$install_dir/kibana_started" ]; then
             htpasswd -b -c /etc/nginx/conf.d/kibana.htpasswd kibana $password1 >/dev/nul 2>&1
         fi
     done
-    echo 'kibana.defaultAppId: "dashboard/Main-dash"' >>/etc/kibana/config/kibana.yml
-#    cp $homedir/install/kibana.svg /usr/share/kibana/src/ui/public/images/kibana.svg
-#    cp $homedir/install/kibana.svg /usr/share/kibana/optimize/bundles/src/ui/public/images/kibana.svg
+    echo 'kibana.defaultAppId: "dashboard/Main-dash"' >>/etc/kibana/kibana.yml
+    cp $homedir/install/kibana.svg /usr/share/kibana/src/ui/public/images/kibana.svg
+    cp $homedir/install/kibana.svg /usr/share/kibana/optimize/bundles/0cebf3d61338c454670b1c5bdf5d6d8d.svg
     /bin/systemctl daemon-reload >/dev/nul 2>&1
     /bin/systemctl enable nginx.service >/dev/nul 2>&1
     /bin/systemctl start nginx.service >/dev/nul 2>&1 
