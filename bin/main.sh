@@ -1,25 +1,25 @@
 #!/bin/bash
+if [[ $(id -u) -ne 0 ]] ; then 
+  dialog --title "LITTLEBEAT" --backtitle "Недостаточно полномочий" --msgbox "Вы должны иметь полномочия root для работы с консолью" 6 70
+  exit 1  
+fi
 homedir="/opt/littlebeat"
 install_dir="$homedir/install"
+log="$install_dir/install.log" 
+errlog="$install_dir/install.err"
 if [ ! -e $install_dir/install_completed ]; then
-    log="$install_dir/install.log" 
-    errlog="$install_dir/install.err"
     rm $log >/dev/nul 2>&1
     rm $errlog >/dev/nul 2>&1
     touch $log
     touch $errlog
-    echo "Пожалуйста, подождите ..."
-    sed -i -e "s/^PermitRootLogin .*/PermitRootLogin yes/" /etc/ssh/sshd_config
-    apt-get -y install dialog 1>>$log 2>>$errlog
-
-
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Обновление списка пакетов ....\nУстановка обновлений системы ..." 6 70
-
+    echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee /etc/apt/sources.list.d/webupd8team-java.list 1>>$log 2>>$errlog
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 1>>$log 2>>$errlog
     apt-get -y update 1>>$log 2>>$errlog
     apt-get -y upgrade 1>>$log 2>>$errlog
-
+    echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections 
     # список пакетов
-    packs=(python-software-properties software-properties-common unzip curl openjdk-7-jre openssl nginx apache2-utils nmap samba samba-common-bin libpam-smbpass python-pip)
+    packs=(python-software-properties software-properties-common unzip curl oracle-java8-installer openssl nginx apache2-utils nmap samba samba-common-bin libpam-smbpass python-pip)
 
     err=0
 
@@ -49,19 +49,19 @@ EOF
     
     
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Установка Elasticsearch ..." 6 70
-    dpkg --install $homedir/pkgs/elasticsearch-2.4.4.deb 1>>$log 2>>$errlog
+    dpkg --install $homedir/pkgs/elasticsearch-5.5.0.deb 1>>$log 2>>$errlog
     if [ $? -ne 0 ]; then
             err=1
     fi
     
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Установка Logstash ..." 6 70
-    dpkg --install $homedir/pkgs/logstash-2.4.1_all.deb 1>>$log 2>>$errlog
+    dpkg --install $homedir/pkgs/logstash-5.5.0.deb 1>>$log 2>>$errlog
     if [ $? -ne 0 ]; then
             err=1
     fi
     
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Установка Kibana ..." 6 70
-    dpkg --install $homedir/pkgs/kibana-4.6.1-amd64.deb 1>>$log 2>>$errlog
+    dpkg --install $homedir/pkgs/kibana-5.5.0-amd64.deb 1>>$log 2>>$errlog
     if [ $? -ne 0 ]; then
             err=1
     fi
@@ -84,9 +84,9 @@ if [ ! -e "$install_dir/elastic_configured" ]; then
     es_data_dir="/var/lib/elasticsearch"
     
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурируем и запускаем Elastic. Это займет примерно 30 секунд ..." 10 70 
-    cp $homedir/etc/default/elasticsearch /etc/default/elasticsearch
+#    cp $homedir/etc/default/elasticsearch /etc/default/elasticsearch
     cp $homedir/usr/lib/systemd/system/elasticsearch.service /usr/lib/systemd/system/elasticsearch.service
-    sed  -i -e "s/^ES_HEAP_SIZE=.*/ES_HEAP_SIZE=$mem/" /etc/default/elasticsearch
+#    sed  -i -e "s/^ES_HEAP_SIZE=.*/ES_HEAP_SIZE=$mem/" /etc/default/elasticsearch
     
     if [ ! -e "$install_dir/elastic_system_configured" ]; then
         echo "elasticsearch soft memlock unlimited" >>/etc/security/limits.conf
@@ -100,9 +100,11 @@ if [ ! -e "$install_dir/elastic_configured" ]; then
     echo "cluster.name: $claster_name" >>/etc/elasticsearch/elasticsearch.yml
     echo "cluster.routing.allocation.node_initial_primaries_recoveries: 10" >>/etc/elasticsearch/elasticsearch.yml
     echo "node.name: node-1" >>/etc/elasticsearch/elasticsearch.yml
-    echo "bootstrap.memory_lock: true" >>/etc/elasticsearch/elasticsearch.yml
+#    echo "bootstrap.memory_lock: true" >>/etc/elasticsearch/elasticsearch.yml
     echo "path.data: $es_data_dir/1" >>/etc/elasticsearch/elasticsearch.yml
     echo "path.repo: [\"$homedir/backups\"]" >>/etc/elasticsearch/elasticsearch.yml
+    sed  -i -e "s/^-Xms.*/-Xms$mem/" /etc/elasticsearch/jvm.options
+    sed  -i -e "s/^-Xmx.*/-Xmx$mem/" /etc/elasticsearch/jvm.options
 
     mkdir $es_data_dir >/dev/nul 2>&1
     mkdir $es_data_dir/1 >/dev/nul 2>&1
@@ -163,6 +165,7 @@ fi
 
 if [ ! -e "$install_dir/net_configured" ]; then
 
+    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Поиск и выбор сетевых интерфейсов ..." 6 70 
     site_name=$(hostname -f)
     dns_ip=$(nslookup $site_name | grep Server | grep -oP "(\d+\.\d+\.\d+\.\d+)" | head -1)
     check_ip=$(nslookup $site_name | grep $site_name -A 1 | grep Address | grep -oP "(\d+\.\d+\.\d+\.\d+)")
@@ -377,8 +380,8 @@ if [ ! -e "$install_dir/logstash_configured" ]; then
     sed -i -e "s/https:\/\/elastic\//https:\/\/$site_name\//" /etc/logstash/conf.d/08-nmap.conf
     /bin/systemctl daemon-reload >/dev/nul 2>&1
     /bin/systemctl enable logstash.service >/dev/nul 2>&1
-    /opt/logstash/bin/logstash-plugin install logstash-filter-elasticsearch 1>>$log 2>>$errlog
-    /opt/logstash/bin/logstash-plugin install logstash-codec-nmap 1>>$log 2>>$errlog
+    /usr/share/logstash/bin/logstash-plugin install logstash-filter-elasticsearch 1>>$log 2>>$errlog
+    /usr/share/logstash/bin/logstash-plugin install logstash-codec-nmap 1>>$log 2>>$errlog
     
     touch "$install_dir/logstash_configured" >/dev/nul 2>&1
 fi
@@ -389,8 +392,8 @@ if [ ! -e "$install_dir/logstash_started" ]; then
 
     while [ $c -ne 202 ]
         do
-            if [ -e /var/log/logstash/logstash.log ]; then
-                str=$(grep -i "Pipeline main started" /var/log/logstash/logstash.log)
+            if [ -e /var/log/logstash/logstash-plain.log ]; then
+                str=$(grep -i "Pipeline main started" /var/log/logstash/logstash-plain.log)
             else
                 str=""
             fi
@@ -431,9 +434,9 @@ if [ ! -e "$install_dir/kibana_started" ]; then
             htpasswd -b -c /etc/nginx/conf.d/kibana.htpasswd kibana $password1 >/dev/nul 2>&1
         fi
     done
-    echo 'kibana.defaultAppId: "dashboard/Main-dash"' >>/opt/kibana/config/kibana.yml
-    cp $homedir/install/kibana.svg /opt/kibana/src/ui/public/images/kibana.svg
-    cp $homedir/install/kibana.svg /opt/kibana/optimize/bundles/src/ui/public/images/kibana.svg
+    echo 'kibana.defaultAppId: "dashboard/Main-dash"' >>/etc/kibana/kibana.yml
+    cp $homedir/install/kibana.svg /usr/share/kibana/src/ui/public/images/kibana.svg
+    cp $homedir/install/kibana.svg /usr/share/kibana/optimize/bundles/0cebf3d61338c454670b1c5bdf5d6d8d.svg
     /bin/systemctl daemon-reload >/dev/nul 2>&1
     /bin/systemctl enable nginx.service >/dev/nul 2>&1
     /bin/systemctl start nginx.service >/dev/nul 2>&1 
@@ -510,53 +513,6 @@ if [ ! -e "$install_dir/agents_configured" ]; then
     touch "$install_dir/agents_configured" >/dev/nul 2>&1
 fi
 
-# Основное меню
-while true; do 
-main_menu=("Настройка обзора сети" "" "Консоль ELK" "" "Индекс процессов Windows" "" "Дополнения" "" "Выход в Shell" "" "Перезагрузка" "" "Отключение машины" "")
-
-dialog --title "LITTLEBEAT" --backtitle "Главная консоль" --menu " " 15 50 ${#main_menu[@]} "${main_menu[@]}" 2>/tmp/choise.$$
-response=$?
-case $response in
-  0) 
-    choise=`cat /tmp/choise.$$`
-    rm /tmp/choise.$$ 
-    ;;
-  1) 
-    choise=""
-    ;;
-  255) 
-    choise=""
-    ;;
-esac
-if [ "$choise" == "Настройка обзора сети" ]; then
-    ($homedir/bin/nmap_config.sh)
-fi
-if [ "$choise" == "Дополнения" ]; then
-    ($homedir/bin/addons.sh)
-fi
-if [ "$choise" == "Консоль ELK"  ]; then
-    ($homedir/bin/elastic_console.sh)
-fi
-if [ "$choise" == "Индекс процессов Windows"  ]; then
-    ($homedir/bin/win_proc.sh)
-fi
-
-if [ "$choise" == "Выход в Shell" ]; then
-    clear
-    echo "Выход в OS shell. Чтобы вернуться в меню, наберите exit."
-    (/bin/bash --rcfile $homedir/bin/.bashrc)
-fi
-if [ "$choise" == "Перезагрузка" ]; then
-    clear
-    echo "Перезагрузка машины"
-    reboot now
-fi
-if [ "$choise" == "Отключение машины" ]; then
-    clear
-    echo "Выключение машины"
-    shutdown -h now
-fi
-
-done
+$homedir/bin/main_menu.sh
    
 clear

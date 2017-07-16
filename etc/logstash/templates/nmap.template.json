@@ -10,14 +10,12 @@
     "nmap": {
       "dynamic_templates": [
         {
-          "notanalyzed": {
-            "match": "*",
-            "match_mapping_type": "string",
+          "strings_as_keyword": {
             "mapping": {
-              "type": "string",
-              "index": "not_analyzed",
-              "doc_values": "true"
-            }
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "match_mapping_type": "string"
           }
         }
       ],
@@ -26,9 +24,7 @@
           "type": "string"
         },
         "@timestamp": {
-          "type": "date",
-          "format": "dateOptionalTime",
-          "index": "not_analyzed"
+          "type": "date"
         },
         "@version": {
           "type": "string"
