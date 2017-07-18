@@ -92,11 +92,9 @@ fi
 if [ "$choise" == "Проверить конфиг Logstash" ]; then
 
     dialog --title "LITTLEBEAT" --backtitle "Консоль ELK. Проверка конфига Logstash" --infobox "Проверка запущена. Подождите ..." 7 70
-    result=$(/usr/share/logstash/bin/logstash -t -f /etc/logstash/conf.d 2>/dev/nul)
-    if [ "$result" == "" ]; then
-        result="Ошибок в файле конфигурации не обнаружено"
-    fi
-    dialog --title "LITTLEBEAT" --backtitle "Консоль ELK. Проверка конфига Logstash" --msgbox "$result" 15 70    
+    /usr/share/logstash/bin/logstash -t -f /etc/logstash/conf.d >/tmp/result.$$ 2>/dev/nul
+    
+    dialog --title "LITTLEBEAT" --backtitle "Консоль ELK. Проверка конфига Logstash" --textbox /tmp/result.$$ 18 78    
 
 fi
 if [ "$choise" == "Рестартовать Logstash" ]; then

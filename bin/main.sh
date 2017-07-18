@@ -78,6 +78,9 @@ fi
 
 if [ ! -e "$install_dir/elastic_configured" ]; then
     mem=$(free -m | grep -i mem | grep -oP '(\d+)' | head -1)
+    if [ "$mem" == "" ]; then
+        mem=$(free -m | grep -i память | grep -oP '(\d+)' | head -1)
+    fi
     recomended_mem=$(($mem/2))
     mem="$recomended_mem"m
     claster_name="elastic"
@@ -115,7 +118,6 @@ if [ ! -e "$install_dir/elastic_configured" ]; then
     echo "$recomended_mem" >$install_dir/elastic_configured
 fi
 
-
 if [ ! -e "$install_dir/elastic_started" ]; then
     /bin/systemctl start elasticsearch.service >/dev/nul 2>&1
 
@@ -142,6 +144,7 @@ if [ ! -e "$install_dir/elastic_started" ]; then
         touch "$install_dir/elastic_started" >/dev/nul 2>&1
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --msgbox "Elasticsearch запустился" 6 70 
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурация индексов LittleBeat ..." 6 70 
+        
         chown -R elasticsearch:elasticsearch /opt/littlebeat/backups
         curl -XPUT 'http://localhost:9200/_snapshot/littlebeat' -d '{
             "type": "fs",
@@ -152,6 +155,7 @@ if [ ! -e "$install_dir/elastic_started" ]; then
         }' >/dev/nul 2>&1
         curl -XPOST 'localhost:9200/_snapshot/littlebeat/snapshot_kibana/_restore?pretty' >/dev/nul 2>&1
         curl -XPUT 'http://localhost:9200/_template/win-proc-list' -d@$homedir/etc/logstash/templates/win-proc-list-template.json >/dev/nul 2>&1
+
         pip install pytz 1>>$log 2>>$errlog
         pip install openpyxl 1>>$log 2>>$errlog
         pip install elasticsearch 1>>$log 2>>$errlog
