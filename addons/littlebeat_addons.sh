@@ -43,7 +43,7 @@ if [ "$choise" == "Wazuh HostIDS (OSSEC)" ]; then
         fi
         dpkg --install $homedir/pkgs/wazuh-api_2.0-1xenial_amd64.deb
         if [ ! -e "/etc/logstash/conf.d/02-wazuh.conf" ]; then
-            curl -so /etc/logstash/conf.d/02-wazuh.conf https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/addons/wazuh-ids/02-wasuh.conf
+            curl -so /etc/logstash/conf.d/02-wazuh.conf https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/addons/wazuh-ids/02-wazuh.conf
         fi
         if [ ! -e "/etc/logstash/templates/wazuh-elastic5-template.json" ]; then
             curl -so /etc/logstash/templates/wazuh-elastic5-template.json https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/addons/wazuh-ids/wazuh-elastic5-template.json
