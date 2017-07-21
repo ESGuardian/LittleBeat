@@ -42,6 +42,12 @@ if [ "$choise" == "Wazuh HostIDS (OSSEC)" ]; then
             touch $instal_dir/nodejs_installed
         fi
         dpkg --install $homedir/pkgs/wazuh-api_2.0-1xenial_amd64.deb
+        echo "Необходимо настроить параметры Wazuh API."
+        echo "Запомните или запишите имя юзера и пароль для соединения с API."
+        echo "Вам также понадобится снйчас ввести параметры для генерации"
+        echo "сертификата если вы захотите использовать SSL при соединении с API."
+        echo "По умолчанию визард выбирает SSL."
+        bash /var/ossec/api/scripts/configure_api.sh
         if [ ! -e "/etc/logstash/conf.d/02-wazuh.conf" ]; then
             curl -so /etc/logstash/conf.d/02-wazuh.conf https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/addons/wazuh-ids/02-wazuh.conf
         fi
@@ -49,14 +55,12 @@ if [ "$choise" == "Wazuh HostIDS (OSSEC)" ]; then
             curl -so /etc/logstash/templates/wazuh-elastic5-template.json https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/addons/wazuh-ids/wazuh-elastic5-template.json
         fi
         wget https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/addons/wazuh-ids/kibana_init_config.sh
-        dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --infobox "Настройка индексов Kibana" 6 70
-        curl https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/addons/wazuh-ids/wazuh-elastic5-template.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @
+        echo "Настройка индексов Kibana"
         bash kibana_init_config.sh
-        curl https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/addons/wazuh-ids/alert_sample.json | curl -XPUT "http://localhost:9200/wazuh-alerts-"`date +%Y.%m.%d`"/wazuh/sample" -H 'Content-Type: application/json' -d @-
         service logstash restart
         touch $instal_dir/wazuh_ids_installed
     fi
-    dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "Wazuh HostIDS (OSSEC) установлен" 6 70
+    dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "Wazuh HostIDS (OSSEC) установлен\nПочитайте LittleBeat.wiki прежде чем начинать с ним работать" 6 70
     clear
 fi
 
