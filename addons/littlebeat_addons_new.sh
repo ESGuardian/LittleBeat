@@ -48,11 +48,12 @@ if [ "$choise" == "Wazuh HostIDS (OSSEC)" ]; then
         if [ ! -e "/etc/logstash/templates/wazuh-elastic5-template.json" ]; then
             curl -so /etc/logstash/templates/wazuh-elastic5-template.json https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/addons/wazuh-ids/wazuh-elastic5-template.json
         fi
-        service logstash restart
-        
         wget https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/addons/wazuh-ids/kibana_init_config.sh
         dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --infobox "Настройка индексов Kibana" 6 70
+        curl https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/addons/wazuh-ids/wazuh-elastic5-template.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @
         bash kibana_init_config.sh
+        curl https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/addons/wazuh-ids/alert_sample.json | curl -XPUT "http://localhost:9200/wazuh-alerts-"`date +%Y.%m.%d`"/wazuh/sample" -H 'Content-Type: application/json' -d @-
+        service logstash restart
         touch $instal_dir/wazuh_ids_installed
     fi
     dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "Wazuh HostIDS (OSSEC) установлен" 6 70
