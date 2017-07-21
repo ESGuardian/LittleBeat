@@ -52,7 +52,7 @@ if [ "$choise" == "Wazuh HostIDS (OSSEC)" ]; then
         
         wget https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/addons/wazuh-ids/kibana_init_config.sh
         dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --infobox "Настройка индексов Kibana" 6 70
-        kibana_init_config.sh
+        bash kibana_init_config.sh
         touch $instal_dir/wazuh_ids_installed
     fi
     dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "Wazuh HostIDS (OSSEC) установлен" 6 70

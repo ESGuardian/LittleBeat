@@ -3,7 +3,7 @@ install_dir="$homedir/install"
 log="$install_dir/install.log" 
 errlog="$install_dir/install.err"
 
-curl -XPUT http://127.0.0.1:9200/.kibana/index-pattern/nmap-* -d '{"title" : "wazuh-alerts-*",  "timeFieldName": "@timestamp"}' 1>>$log 2>>$errlog
+curl -XPUT http://127.0.0.1:9200/.kibana/index-pattern/wazuh-alerts-* -d '{"title" : "wazuh-alerts-*",  "timeFieldName": "@timestamp"}' 1>>$log 2>>$errlog
 
 curl -XPUT http://127.0.0.1:9200/.kibana/search/wazuh-alerts/ -d'{
       "title": "wazuh-alerts",
@@ -40,6 +40,18 @@ curl -XPUT http://127.0.0.1:9200/.kibana/visualization/wazuh-total/ -d'{
 curl -XPUT http://127.0.0.1:9200/.kibana/visualization/wazuh-events-by-level/ -d'{
       "title": "Wazuh Уровень событий",
       "visState": "{\"title\":\"Wazuh Уровень событий\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"кол-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"rule.level\",\"size\":20,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"Уровень\"}},{\"id\":\"4\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"rule.description\",\"size\":300,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Описание\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+      "description": "",
+      "savedSearchId": "wazuh-alerts",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }' 1>>$log 2>>$errlog
+    
+    curl -XPUT http://127.0.0.1:9200/.kibana/visualization/wazuh-events-by-host/ -d'{
+      "title": "Wazuh события по хостам",
+      "visState": "{\"title\":\"Wazuh события по хостам\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"кол-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"host\",\"size\":1000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Хост\"}}],\"listeners\":{}}",
       "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
       "description": "",
       "savedSearchId": "wazuh-alerts",
