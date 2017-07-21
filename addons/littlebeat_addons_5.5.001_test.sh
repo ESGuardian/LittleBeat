@@ -58,6 +58,11 @@ if [ "$choise" == "Wazuh HostIDS (OSSEC)" ]; then
         echo "Настройка индексов Kibana"
         bash kibana_init_config.sh
         service logstash restart
+        echo "Установка wazuh plugin для kibana"
+        echo "Это займет некоторое время ..."
+        service kibana stop
+        /usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp.zip
+        service kibana start
         touch $instal_dir/wazuh_ids_installed
     fi
     dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "Wazuh HostIDS (OSSEC) установлен\nПочитайте LittleBeat.wiki прежде чем начинать с ним работать" 6 70
