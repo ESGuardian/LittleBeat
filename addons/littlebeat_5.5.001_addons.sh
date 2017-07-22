@@ -73,8 +73,17 @@ if [ "$choise" == "Wazuh HostIDS (OSSEC)" ]; then
             /usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp.zip
             service kibana start
             touch $install_dir/wazuh-ids-kibana_configured
-        fi
+        fi       
         touch $install_dir/wazuh_ids_installed
+    fi
+    if [ ! -e "$install_dir/wazuh-openscap-installed" ]; then
+        apt-get install libopenscap8 xsltproc
+        touch $install_dir/wazuh-openscap-installed
+    fi
+    if [ ! -e "$install_dir/wazuh-ruleset-crontab-modified" ]; then
+        echo "0  9	* * 7 root cd /var/ossec/bin && ./update_ruleset.py -r" >>/etc/crontab 
+        touch $install_dir/wazuh-ruleset-crontab-modified
+        /var/ossec/bin/update_ruleset.py -r
     fi
     dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "Wazuh HostIDS (OSSEC) установлен\nПочитайте LittleBeat.wiki прежде чем начинать с ним работать" 6 70
     clear
