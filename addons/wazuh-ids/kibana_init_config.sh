@@ -10,7 +10,8 @@ curl -XPUT http://127.0.0.1:9200/.kibana/search/wazuh-alerts/ -d'{
       "description": "",
       "hits": 0,
       "columns": [
-        "host",
+        "agent.name",
+        "dstuser",
         "rule.description",
         "rule.level",
         "full_log"
@@ -109,14 +110,26 @@ curl -XPUT http://127.0.0.1:9200/.kibana/visualization/wazuh-timeline/ -d'{
         "searchSourceJSON": "{\"filter\":[]}"
       }
     }' 1>>$log 2>>$errlog
+    
+curl -XPUT http://127.0.0.1:9200/.kibana/visualization/wazuh-alerts-by-users/ -d'{
+      "title": "Wazuh события по пользователям",
+      "visState": "{\"title\":\"Wazuh события по пользователям\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"событий\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"dstuser\",\"size\":500,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Имя\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+      "description": "",
+      "savedSearchId": "wazuh-alerts",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }' 1>>$log 2>>$errlog
 
 curl -XPUT http://127.0.0.1:9200/.kibana/dashboard/wazuh-main/ -d'{
       "title": "Wazuh Главная",
       "hits": 0,
       "description": "",
-      "panelsJSON": "[{\"col\":1,\"id\":\"wazuh-total\",\"panelIndex\":1,\"row\":1,\"size_x\":2,\"size_y\":2,\"type\":\"visualization\"},{\"col\":1,\"id\":\"wazuh-timeline\",\"panelIndex\":2,\"row\":3,\"size_x\":2,\"size_y\":3,\"type\":\"visualization\"},{\"col\":3,\"id\":\"wazuh-events-by-host\",\"panelIndex\":3,\"row\":1,\"size_x\":4,\"size_y\":5,\"type\":\"visualization\"},{\"col\":7,\"id\":\"wazuh-events-by-level\",\"panelIndex\":4,\"row\":1,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":1,\"id\":\"wazuh-cis\",\"panelIndex\":5,\"row\":6,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":7,\"id\":\"wazuh-pci-dss\",\"panelIndex\":6,\"row\":6,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":1,\"id\":\"wazuh-cve\",\"panelIndex\":7,\"row\":11,\"size_x\":4,\"size_y\":6,\"type\":\"visualization\"},{\"size_x\":8,\"size_y\":6,\"panelIndex\":8,\"type\":\"search\",\"id\":\"wazuh-alerts\",\"col\":5,\"row\":11,\"columns\":[\"host\",\"rule.description\",\"rule.level\",\"full_log\"],\"sort\":[\"@timestamp\",\"desc\"]}]",
+      "panelsJSON": "[{\"col\":1,\"id\":\"wazuh-total\",\"panelIndex\":1,\"row\":1,\"size_x\":2,\"size_y\":2,\"type\":\"visualization\"},{\"col\":1,\"id\":\"wazuh-timeline\",\"panelIndex\":2,\"row\":3,\"size_x\":2,\"size_y\":3,\"type\":\"visualization\"},{\"col\":3,\"id\":\"wazuh-events-by-host\",\"panelIndex\":3,\"row\":1,\"size_x\":2,\"size_y\":5,\"type\":\"visualization\"},{\"col\":8,\"id\":\"wazuh-events-by-level\",\"panelIndex\":4,\"row\":1,\"size_x\":5,\"size_y\":5,\"type\":\"visualization\"},{\"col\":1,\"id\":\"wazuh-cis\",\"panelIndex\":5,\"row\":6,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":7,\"id\":\"wazuh-pci-dss\",\"panelIndex\":6,\"row\":6,\"size_x\":6,\"size_y\":5,\"type\":\"visualization\"},{\"col\":1,\"columns\":[\"agent.name\",\"dstuser\",\"rule.description\",\"rule.level\",\"full_log\"],\"id\":\"wazuh-alerts\",\"panelIndex\":7,\"row\":11,\"size_x\":12,\"size_y\":8,\"sort\":[\"@timestamp\",\"desc\"],\"type\":\"search\"},{\"col\":5,\"id\":\"wazuh-alerts-by-users\",\"panelIndex\":8,\"row\":1,\"size_x\":3,\"size_y\":5,\"type\":\"visualization\"}]",
       "optionsJSON": "{\"darkTheme\":false}",
-      "uiStateJSON": "{\"P-1\":{\"vis\":{\"defaultColors\":{\"0 - 100\":\"rgb(0,104,55)\"}}},\"P-2\":{\"vis\":{\"legendOpen\":false}},\"P-3\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-4\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-5\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-6\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-7\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}}",
+      "uiStateJSON": "{\"P-1\":{\"vis\":{\"defaultColors\":{\"0 - 100\":\"rgb(0,104,55)\"}}},\"P-2\":{\"vis\":{\"colors\":{\"кол-во\":\"#64B0C8\"},\"legendOpen\":false}},\"P-3\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-4\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-5\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-6\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-8\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}}",
       "version": 1,
       "timeRestore": true,
       "timeTo": "now/d",
