@@ -13,6 +13,7 @@ sed -i -e "s/^PermitRootLogin .*/PermitRootLogin yes/" /etc/ssh/sshd_config
 echo "Сделано."
 echo "Распаковка архива ..."
 tar -zxf littlebeat.tar.gz -C /
+chmod -R 755 /opt/littlebeat
 cp /opt/littlebeat/.bashrc /home/little/.bashrc
 echo "Сделано."
 echo "Еще для работы меню нам нужна утилита dialog."
