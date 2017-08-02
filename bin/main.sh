@@ -154,7 +154,8 @@ if [ ! -e "$install_dir/elastic_started" ]; then
             }
         }' >/dev/nul 2>&1
         curl -XPOST 'localhost:9200/_snapshot/littlebeat/snapshot_kibana/_restore?pretty' >/dev/nul 2>&1
-        curl -XPUT 'http://localhost:9200/_template/win-proc-list' -d@$homedir/etc/logstash/templates/win-proc-list-template.json >/dev/nul 2>&1
+        curl -XPUT 'http://localhost:9200/_template/win-proc-list' -d@$homedir/etc/logstash/templates/win-proc-list-template.json 1>>$log 2>>$errlog
+        curl -XPUT 'http://localhost:9200/_template/winlogbeat' -d@$homedir/etc/logstash/templates/winlogbeat.template.json 1>>$log 2>>$errlog
 
         pip install pytz 1>>$log 2>>$errlog
         pip install openpyxl 1>>$log 2>>$errlog
