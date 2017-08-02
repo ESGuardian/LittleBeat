@@ -161,6 +161,7 @@ if [ ! -e "$install_dir/elastic_started" ]; then
         pip install elasticsearch 1>>$log 2>>$errlog
         chmod +x $homedir/py/set_proc_list.py >/dev/nul 2>&1
         $homedir/py/set_proc_list.py 1>>$log 2>>$errlog
+        curl -XPUT "http://localhost:9200/winlogbeat-"`date +%Y.%m.%d`"/winlogbeat/sample" -H 'Content-Type: application/json' -d @$install_dir/winlogbeat_sample_event.json 1>>$log 2>>$errlog
     else
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --ok-button "Печалька" --msgbox "Что-то пошло не так. Проконсультируйтесь со специалистом. esguardian@outlook.com" 6 70 
         exit 1

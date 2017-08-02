@@ -1,0 +1,54 @@
+{
+    "message": "An account was successfully logged on.\n\nSubject:\n\tSecurity ID:\t\tS-1-0-0\n\tAccount Name:\t\t-\n\tAccount Domain:\t\t-\n\tLogon ID:\t\t0x0\n\nLogon Type:\t\t\t3\n\nImpersonation Level:\t\tImpersonation\n\nNew Logon:\n\tSecurity ID:\t\tS-1-5-21-4288058725-3585147686-3855166459-3007\n\tAccount Name:\t\tsample\n\tAccount Domain:\t\tsample\n\tLogon ID:\t\t0x7D34D491\n\tLogon GUID:\t\t{AC66A3D7-ED2B-CA0D-4623-8AE6C6FE11E8}\n\nProcess Information:\n\tProcess ID:\t\t0x0\n\tProcess Name:\t\t-\n\nNetwork Information:\n\tWorkstation Name:\t\n\tSource Network Address:\t192.168.1.1\n\tSource Port:\t\t52151\n\nDetailed Authentication Information:\n\tLogon Process:\t\tKerberos\n\tAuthentication Package:\tKerberos\n\tTransited Services:\t-\n\tPackage Name (NTLM only):\t-\n\tKey Length:\t\t0\n\nThis event is generated when a logon session is created. It is generated on the computer that was accessed.\n\nThe subject fields indicate the account on the local system which requested the logon. This is most commonly a service such as the Server service, or a local process such as Winlogon.exe or Services.exe.\n\nThe logon type field indicates the kind of logon that occurred. The most common types are 2 (interactive) and 3 (network).\n\nThe New Logon fields indicate the account for whom the new logon was created, i.e. the account that was logged on.\n\nThe network fields indicate where a remote logon request originated. Workstation name is not always available and may be left blank in some cases.\n\nThe impersonation level field indicates the extent to which a process in the logon session can impersonate.\n\nThe authentication information fields provide detailed information about this specific logon request.\n\t- Logon GUID is a unique identifier that can be used to correlate this event with a KDC event.\n\t- Transited services indicate which intermediate services have participated in this logon request.\n\t- Package name indicates which sub-protocol was used among the NTLM protocols.\n\t- Key length indicates the length of the generated session key. This will be 0 if no session key was requested.",
+    "@version": "1",
+    "@timestamp": "2017-08-02T11:30:27.430Z",
+    "computer_name": "sample.sample.local",
+    "process_id": 520,
+    "type": "wineventlog",
+    "source_name": "Microsoft-Windows-Security-Auditing",
+    "record_number": "528818156",
+    "event_id": 4624,
+    "level": "Information",
+    "event_data": {
+      "ProcessName": "-",
+      "ServiceName": "-",
+      "NewProcessBareName": "-",
+      "SubjectUserName": "-",
+      "LogonType": "Сетевой",
+      "TargetUserName": "sample",
+      "TargetDomainName": "sample",
+      "LogonProcessName": "Kerberos",
+      "SubjectDomainName": "-",
+      "LmPackageName": "-",
+      "IpPort": "52151",
+      "IpAddress": "192.168.1.1",
+      "TargetUserSid": "S-1-5-21-4288058725-3585147686-3855166459-3007",
+      "SubjectUserSid": "S-1-0-0",
+      "SubjectLogonId": "0x0",
+      "AuthenticationPackageName": "Kerberos",
+      "ProcessId": "0x0",
+      "LogonGuid": "{AC66A3D7-ED2B-CA0D-4623-8AE6C6FE11E8}",
+      "TransmittedServices": "-",
+      "KeyLength": "0",
+      "TargetLogonId": "0x7d34d491",
+      "ImpersonationLevel": "%%1833"
+    },
+    "thread_id": 19948,
+    "beat": {
+      "name": "samle",
+      "hostname": "sample",
+      "version": "5.1.1"
+    },
+    "keywords": [
+      "Audit Success"
+    ],
+    "version": 1,
+    "log_name": "Security",
+    "task": "Logon",
+    "provider_guid": "{54849625-5478-4994-A5BA-3E3B0328C30D}",
+    "opcode": "Info",
+    "host": "sample",
+    "tags": [
+      "beats_input_codec_plain_applied"
+    ]
+  }
