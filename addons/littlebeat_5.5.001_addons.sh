@@ -68,9 +68,9 @@ if [ "$choise" == "Wazuh HostIDS (OSSEC)" ]; then
             bash kibana_init_config.sh
             service logstash restart
             echo "Установка wazuh plugin для kibana"
-            echo "Это займет некоторое время ..."
+            echo "Это займет некоторое время ... Много времени ..."
             service kibana stop
-            /usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/wazuhapp/wazuhapp.zip
+            /usr/share/kibana/bin/kibana-plugin install https://github.com/ESGuardian/LittleBeat/raw/master/addons/wazuh-ids/wazuhapp_rus.zip
             service kibana start
             touch $install_dir/wazuh-ids-kibana_configured
         fi       
