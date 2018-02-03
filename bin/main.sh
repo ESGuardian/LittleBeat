@@ -299,11 +299,12 @@ if [ ! -e "$install_dir/logstash_configured" ]; then
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурируем и запускаем Logstash. Это займет примерно 4 минуты ..." 10 70 
     mkdir /etc/logstash/templates >/dev/nul 2>&1
 	cd /etc/logstash/templates
-	wget $github_url/etc/logstash/templates/winlogbeat.template.json >/dev/nul 2>&1
-	wget $github_url/etc/logstash/templates/metricbeat.template.json >/dev/nul 2>&1
-	wget $github_url/etc/logstash/templates/nmap.template.json >/dev/nul 2>&1
+	wget $github_url/etc/logstash/templates/winlogbeat-6.1.3-template.json >/dev/nul 2>&1
+	wget $github_url/etc/logstash/templates/nmap-6.x-template.json >/dev/nul 2>&1
 	wget $github_url/etc/logstash/templates/win-proc-list-template.json >/dev/nul 2>&1
 	curl -XPUT 'http://localhost:9200/_template/win-proc-list' -H 'Content-Type: application/json' -d@/etc/logstash/templates/win-proc-list-template.json 1>>$log 2>>$errlog
+	curl -XPUT 'http://localhost:9200/_template/nmap-6.x' -H 'Content-Type: application/json' -d@/etc/logstash/templates/nmap-6.x-template.json 1>>$log 2>>$errlog
+	curl -XPUT 'http://localhost:9200/_template/winlogbeat-6.1.3' -H 'Content-Type: application/json' -d@/etc/logstash/templates/winlogbeat-6.1.3-template.json 1>>$log 2>>$errlog
 	$homedir/py/set_proc_list.py 1>>$log 2>>$errlog
 	
     mem=`cat "$install_dir/elastic_configured"`
