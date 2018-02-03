@@ -8,7 +8,7 @@ install_dir="$homedir/install"
 mkdir $install_dir
 log="$install_dir/install.log" 
 errlog="$install_dir/install.err"
-github_url="https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/"
+github_url="https://raw.githubusercontent.com/ESGuardian/LittleBeat/v-6.1.001"
 if [ ! -e $install_dir/install_completed ]; then
     rm $log >/dev/nul 2>&1
     rm $errlog >/dev/nul 2>&1

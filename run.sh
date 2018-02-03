@@ -1,5 +1,5 @@
 #!/bin/bash
-github_url="https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/"
+github_url="https://raw.githubusercontent.com/ESGuardian/LittleBeat/v-6.1.001"
 echo "Что сейчас произойдет?"
 echo "Сейчас мы создадим пользователя little, установим ему UID=0"
 echo "и разрешим подключаться по SSH."
