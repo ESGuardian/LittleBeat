@@ -18,7 +18,7 @@ if [ ! -e $install_dir/install_completed ]; then
     apt-get -y update 1>>$log 2>>$errlog
     apt-get -y upgrade 1>>$log 2>>$errlog
     # список пакетов
-    packs=(python-software-properties software-properties-common unzip curl openjdk-8-jre openssl nginx apache2-utils nmap samba samba-common-bin libpam-smbpass python-pip)
+    packs=(python-software-properties software-properties-common unzip curl openjdk-8-jre openssl nginx apache2-utils nmap python-pip)
 
     err=0
 
