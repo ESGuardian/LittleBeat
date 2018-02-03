@@ -29,7 +29,7 @@ import codecs
 es = Elasticsearch()
 
 outfilename='proc_list.txt'
-outfullpath='/opt/littlebeat/install/' + outfilename
+outfullpath='/opt/littlebeat/data/' + outfilename
 with codecs.open(outfullpath, 'r', encoding="utf8") as source:
     content = source.readlines()
     content = [x.strip() for x in content]

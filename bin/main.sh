@@ -191,12 +191,12 @@ if [ ! -e "$install_dir/elastic_started" ]; then
 		chmod +x $homedir/py/get_proc_list_full.py >/dev/nul 2>&1
 		mkdir $homedir/data
 		mkdir $homedir/data/dashboards
-		# cd $homedir/data
-		# wget $github_url/data/proc_list.txt >/dev/nul 2>&1		
+		cd $homedir/data
+		wget $github_url/data/proc_list.txt >/dev/nul 2>&1		
 		# cd $homedir/data/dashboards
 		# wget $github_url/data/dashboards/win-log.json >/dev/nul 2>&1
 
-        $homedir/py/set_proc_list.py 1>>$log 2>>$errlog
+        
 		
     else
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --ok-button "Печалька" --msgbox "Что-то пошло не так. Проконсультируйтесь со специалистом. esguardian@outlook.com" 6 70 
@@ -301,6 +301,11 @@ if [ ! -e "$install_dir/logstash_configured" ]; then
 	cd /etc/logstash/templates
 	wget $github_url/etc/logstash/templates/winlogbeat.template.json >/dev/nul 2>&1
 	wget $github_url/etc/logstash/templates/metricbeat.template.json >/dev/nul 2>&1
+	wget $github_url/etc/logstash/templates/nmap.template.json >/dev/nul 2>&1
+	wget $github_url/etc/logstash/templates/win-proc-list-template.json >/dev/nul 2>&1
+	curl -XPOST 'http://localhost:9200/_template/win-proc-list' -H 'Content-Type: application/json' -d@/etc/logstash/templates/win-proc-list-template.json 1>>$log 2>>$errlog
+	$homedir/py/set_proc_list.py 1>>$log 2>>$errlog
+	
     mem=`cat "$install_dir/elastic_configured"`
     if [ $mem -lt 3000 ]; then
         sed  -i -e 's/"number_of_shards" : 1/"number_of_shards" : 2/' /etc/logstash/templates/winlogbeat.template.json

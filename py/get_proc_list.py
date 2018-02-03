@@ -74,7 +74,7 @@ myquery =   {"query":\
 proc_list = []
 
 outfilename='proc_list.txt'
-outfullpath='/opt/littlebeat/install/' + outfilename
+outfullpath='/opt/littlebeat/data/' + outfilename
 with codecs.open(outfullpath, 'w', encoding="utf8") as out:
     try:
         res = es.search(index=getindexes(es,"winlogbeat-",dates),body=myquery,request_timeout=60)
