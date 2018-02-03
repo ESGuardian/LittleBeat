@@ -303,7 +303,7 @@ if [ ! -e "$install_dir/logstash_configured" ]; then
 	wget $github_url/etc/logstash/templates/metricbeat.template.json >/dev/nul 2>&1
 	wget $github_url/etc/logstash/templates/nmap.template.json >/dev/nul 2>&1
 	wget $github_url/etc/logstash/templates/win-proc-list-template.json >/dev/nul 2>&1
-	curl -XPOST 'http://localhost:9200/_template/win-proc-list' -H 'Content-Type: application/json' -d@/etc/logstash/templates/win-proc-list-template.json 1>>$log 2>>$errlog
+	curl -XPUT 'http://localhost:9200/_template/win-proc-list' -H 'Content-Type: application/json' -d@/etc/logstash/templates/win-proc-list-template.json 1>>$log 2>>$errlog
 	$homedir/py/set_proc_list.py 1>>$log 2>>$errlog
 	
     mem=`cat "$install_dir/elastic_configured"`
