@@ -63,7 +63,7 @@ EOF
 	stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { print substr($0,63,3) }' | \
 	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --gauge "Загружаем Elasticsearch" 6 70
 	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "устанавливаем Elasticsearch ..." 6 70
-	dpkg -i elasticsearch-6.1.2.deb 1>>$log 2>>$errlog
+	dpkg -i elasticsearch-6.1.3.deb 1>>$log 2>>$errlog
 	if [ $? -ne 0 ]; then
             err=1
     fi
@@ -74,7 +74,7 @@ EOF
 	stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { print substr($0,63,3) }' | \
 	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --gauge "Загружаем Logstash" 6 70
 	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "устанавливаем Logstash ..." 6 70
-    dpkg -i logstash-6.1.2.deb 1>>$log 2>>$errlog
+    dpkg -i logstash-6.1.3.deb 1>>$log 2>>$errlog
     if [ $? -ne 0 ]; then
             err=1
     fi
@@ -84,7 +84,7 @@ EOF
 	stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { print substr($0,63,3) }' | \
 	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --gauge "Загружаем Kibana" 6 70
 	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "устанавливаем Kibana ..." 6 70
-    dpkg -i kibana-6.1.2-amd64.deb 1>>$log 2>>$errlog
+    dpkg -i kibana-6.1.3-amd64.deb 1>>$log 2>>$errlog
     if [ $? -ne 0 ]; then
             err=1
     fi
