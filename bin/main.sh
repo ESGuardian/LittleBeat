@@ -6,6 +6,7 @@ fi
 homedir="/opt/littlebeat"
 install_dir="$homedir/install"
 mkdir $install_dir
+mkdir $homedir/addons
 log="$install_dir/install.log" 
 errlog="$install_dir/install.err"
 github_url="https://raw.githubusercontent.com/ESGuardian/LittleBeat/v-6.1.001"
@@ -303,8 +304,8 @@ if [ ! -e "$install_dir/logstash_configured" ]; then
 	wget $github_url/etc/logstash/templates/nmap-6.x-template.json >/dev/nul 2>&1
 	wget $github_url/etc/logstash/templates/win-proc-list-template.json >/dev/nul 2>&1
 	curl -XPUT 'http://localhost:9200/_template/win-proc-list' -H 'Content-Type: application/json' -d@/etc/logstash/templates/win-proc-list-template.json 1>>$log 2>>$errlog
-	curl -XPUT 'http://localhost:9200/_template/nmap-6.x' -H 'Content-Type: application/json' -d@/etc/logstash/templates/nmap-6.x-template.json 1>>$log 2>>$errlog
-	curl -XPUT 'http://localhost:9200/_template/winlogbeat-6.1.3' -H 'Content-Type: application/json' -d@/etc/logstash/templates/winlogbeat-6.1.3-template.json 1>>$log 2>>$errlog
+	# curl -XPUT 'http://localhost:9200/_template/nmap-6.x' -H 'Content-Type: application/json' -d@/etc/logstash/templates/nmap-6.x-template.json 1>>$log 2>>$errlog
+	# curl -XPUT 'http://localhost:9200/_template/winlogbeat-6.1.3' -H 'Content-Type: application/json' -d@/etc/logstash/templates/winlogbeat-6.1.3-template.json 1>>$log 2>>$errlog
 	$homedir/py/set_proc_list.py 1>>$log 2>>$errlog
 	
     mem=`cat "$install_dir/elastic_configured"`
