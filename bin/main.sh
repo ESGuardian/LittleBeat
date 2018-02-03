@@ -5,26 +5,25 @@ if [[ $(id -u) -ne 0 ]] ; then
 fi
 homedir="/opt/littlebeat"
 install_dir="$homedir/install"
+mkdir $install_dir
 log="$install_dir/install.log" 
 errlog="$install_dir/install.err"
+github_url="https://raw.githubusercontent.com/ESGuardian/LittleBeat/master/"
 if [ ! -e $install_dir/install_completed ]; then
     rm $log >/dev/nul 2>&1
     rm $errlog >/dev/nul 2>&1
     touch $log
     touch $errlog
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Обновление списка пакетов ....\nУстановка обновлений системы ..." 6 70
-    echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee /etc/apt/sources.list.d/webupd8team-java.list 1>>$log 2>>$errlog
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 1>>$log 2>>$errlog
     apt-get -y update 1>>$log 2>>$errlog
     apt-get -y upgrade 1>>$log 2>>$errlog
-    echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections 
     # список пакетов
-    packs=(python-software-properties software-properties-common unzip curl oracle-java8-installer openssl nginx apache2-utils nmap samba samba-common-bin libpam-smbpass python-pip)
+    packs=(python-software-properties software-properties-common unzip curl openjdk-8-jre openssl nginx apache2-utils nmap samba samba-common-bin libpam-smbpass python-pip)
 
     err=0
 
 
-    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --gauge "Установка пакетов ..." 6 70 0 < <(
+    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --gauge "Установка общих пакетов системы ..." 6 70 0 < <(
 
        n=${#packs[*]}; 
 
@@ -48,20 +47,44 @@ EOF
     )
     
     
-    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Установка Elasticsearch ..." 6 70
-    dpkg --install $homedir/pkgs/elasticsearch-5.5.0.deb 1>>$log 2>>$errlog
+	cd $homedir/bin
+	wget $github_url/bin/addons.sh 1>>$log 2>>$errlog
+	wget $github_url/bin/elastic_console.sh 1>>$log 2>>$errlog
+	wget $github_url/bin/main_menu.sh 1>>$log 2>>$errlog
+	wget $github_url/bin/nmap_config.sh 1>>$log 2>>$errlog
+	wget $github_url/bin/nmap-rep.sh 1>>$log 2>>$errlog
+	wget $github_url/bin/win_proc.sh 1>>$log 2>>$errlog
+	chmod +x *.sh 1>>$log 2>>$errlog
+	
+	
+	cd /tmp
+	URL="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.1.2.deb"
+	wget "$URL" 2>&1 | \
+	stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { print substr($0,63,3) }' | \
+	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --gauge "Загружаем Elasticsearch" 6 70
+	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "устанавливаем Elasticsearch ..." 6 70
+	dpkg -i elasticsearch-6.1.2.deb 1>>$log 2>>$errlog
+	if [ $? -ne 0 ]; then
+            err=1
+    fi
+	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch    
+    
+    URL="https://artifacts.elastic.co/downloads/logstash/logstash-6.1.2.deb"
+	wget "$URL" 2>&1 | \
+	stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { print substr($0,63,3) }' | \
+	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --gauge "Загружаем Logstash" 6 70
+	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "устанавливаем Logstash ..." 6 70
+    dpkg -i logstash-6.1.2.deb 1>>$log 2>>$errlog
     if [ $? -ne 0 ]; then
             err=1
     fi
     
-    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Установка Logstash ..." 6 70
-    dpkg --install $homedir/pkgs/logstash-5.5.0.deb 1>>$log 2>>$errlog
-    if [ $? -ne 0 ]; then
-            err=1
-    fi
-    
-    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Установка Kibana ..." 6 70
-    dpkg --install $homedir/pkgs/kibana-5.5.0-amd64.deb 1>>$log 2>>$errlog
+    URL="https://artifacts.elastic.co/downloads/kibana/kibana-6.1.2-amd64.deb"
+	wget "$URL" 2>&1 | \
+	stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { print substr($0,63,3) }' | \
+	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --gauge "Загружаем Kibana" 6 70
+	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "устанавливаем Kibana ..." 6 70
+    dpkg -i kibana-6.1.2-amd64.deb 1>>$log 2>>$errlog
     if [ $? -ne 0 ]; then
             err=1
     fi
@@ -87,9 +110,7 @@ if [ ! -e "$install_dir/elastic_configured" ]; then
     es_data_dir="/var/lib/elasticsearch"
     
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурируем и запускаем Elastic. Это займет примерно 30 секунд ..." 10 70 
-#    cp $homedir/etc/default/elasticsearch /etc/default/elasticsearch
-    cp $homedir/usr/lib/systemd/system/elasticsearch.service /usr/lib/systemd/system/elasticsearch.service
-#    sed  -i -e "s/^ES_HEAP_SIZE=.*/ES_HEAP_SIZE=$mem/" /etc/default/elasticsearch
+    sed  -i -e "s/^LimitNOFILE=*/LimitNOFILE=500000/" /usr/lib/systemd/system/elasticsearch.service
     
     if [ ! -e "$install_dir/elastic_system_configured" ]; then
         echo "elasticsearch soft memlock unlimited" >>/etc/security/limits.conf
@@ -103,7 +124,6 @@ if [ ! -e "$install_dir/elastic_configured" ]; then
     echo "cluster.name: $claster_name" >>/etc/elasticsearch/elasticsearch.yml
     echo "cluster.routing.allocation.node_initial_primaries_recoveries: 10" >>/etc/elasticsearch/elasticsearch.yml
     echo "node.name: node-1" >>/etc/elasticsearch/elasticsearch.yml
-#    echo "bootstrap.memory_lock: true" >>/etc/elasticsearch/elasticsearch.yml
     echo "path.data: $es_data_dir/1" >>/etc/elasticsearch/elasticsearch.yml
     echo "path.repo: [\"$homedir/backups\"]" >>/etc/elasticsearch/elasticsearch.yml
     sed  -i -e "s/^-Xms.*/-Xms$mem/" /etc/elasticsearch/jvm.options
@@ -111,6 +131,7 @@ if [ ! -e "$install_dir/elastic_configured" ]; then
 
     mkdir $es_data_dir >/dev/nul 2>&1
     mkdir $es_data_dir/1 >/dev/nul 2>&1
+	mkdir $homedir/backups >/dev/nul 2>&1
     chown -R elasticsearch:elasticsearch $es_data_dir >/dev/nul 2>&1
     chown -R elasticsearch:elasticsearch $homedir/backups >/dev/nul 2>&1
     /bin/systemctl daemon-reload >/dev/nul 2>&1
@@ -143,26 +164,40 @@ if [ ! -e "$install_dir/elastic_started" ]; then
         rm /tmp/break.$$
         touch "$install_dir/elastic_started" >/dev/nul 2>&1
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --msgbox "Elasticsearch запустился" 6 70 
-        dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурация индексов LittleBeat ..." 6 70 
+        # dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурация индексов LittleBeat ..." 6 70 
         
-        chown -R elasticsearch:elasticsearch /opt/littlebeat/backups
-        curl -XPUT 'http://localhost:9200/_snapshot/littlebeat' -d '{
-            "type": "fs",
-            "settings": {
-                "location": "/opt/littlebeat/backups",
-                "compress": true
-            }
-        }' >/dev/nul 2>&1
-        curl -XPOST 'localhost:9200/_snapshot/littlebeat/snapshot_kibana/_restore?pretty' >/dev/nul 2>&1
-        curl -XPUT 'http://localhost:9200/_template/win-proc-list' -d@$homedir/etc/logstash/templates/win-proc-list-template.json 1>>$log 2>>$errlog
-        curl -XPUT 'http://localhost:9200/_template/winlogbeat' -d@$homedir/etc/logstash/templates/winlogbeat.template.json 1>>$log 2>>$errlog
-
+        # chown -R elasticsearch:elasticsearch /opt/littlebeat/backups
+        # curl -XPUT 'http://localhost:9200/_snapshot/littlebeat' -d '{
+            # "type": "fs",
+            # "settings": {
+                # "location": "/opt/littlebeat/backups",
+                # "compress": true
+            # }
+        # }' >/dev/nul 2>&1
+        # curl -XPOST 'localhost:9200/_snapshot/littlebeat/snapshot_kibana/_restore?pretty' >/dev/nul 2>&1
+        # curl -XPUT 'http://localhost:9200/_template/win-proc-list' -d@$homedir/etc/logstash/templates/win-proc-list-template.json 1>>$log 2>>$errlog
+        # curl -XPUT 'http://localhost:9200/_template/winlogbeat' -d@$homedir/etc/logstash/templates/winlogbeat.template.json 1>>$log 2>>$errlog
+		cd /tmp
         pip install pytz 1>>$log 2>>$errlog
         pip install openpyxl 1>>$log 2>>$errlog
         pip install elasticsearch 1>>$log 2>>$errlog
-        chmod +x $homedir/py/set_proc_list.py >/dev/nul 2>&1
+		mkdir $homedir/py
+		cd $homedir/py
+		wget $github_url/py/set_proc_list.py >/dev/nul 2>&1
+		wget $github_url/py/get_proc_list.py >/dev/nul 2>&1
+		wget $github_url/py/get_proc_list_full.py >/dev/nul 2>&1
+		chmod +x $homedir/py/set_proc_list.py >/dev/nul 2>&1
+		chmod +x $homedir/py/get_proc_list.py >/dev/nul 2>&1
+		chmod +x $homedir/py/get_proc_list_full.py >/dev/nul 2>&1
+		mkdir $homedir/data
+		mkdir $homedir/data/dashboards
+		# cd $homedir/data
+		# wget $github_url/data/proc_list.txt >/dev/nul 2>&1		
+		# cd $homedir/data/dashboards
+		# wget $github_url/data/dashboards/win-log.json >/dev/nul 2>&1
+
         $homedir/py/set_proc_list.py 1>>$log 2>>$errlog
-        curl -XPUT "http://localhost:9200/winlogbeat-"`date +%Y.%m.%d`"/winlogbeat/sample" -H 'Content-Type: application/json' -d @$install_dir/winlogbeat_sample_event.json 1>>$log 2>>$errlog
+		
     else
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --ok-button "Печалька" --msgbox "Что-то пошло не так. Проконсультируйтесь со специалистом. esguardian@outlook.com" 6 70 
         exit 1
@@ -177,10 +212,9 @@ if [ ! -e "$install_dir/net_configured" ]; then
     check_ip=$(nslookup $site_name | grep $site_name -A 1 | grep Address | grep -oP "(\d+\.\d+\.\d+\.\d+)")
     match_ip=$(ip a | grep "$check_ip")
     if [ "$check_ip" == "" ]; then
-        dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --menu "Мы можем использовать в настройках имя хоста (предпочтительно) или его IP адрес. Для использования имени хоста, необходимо убедиться, что в сети работает служба DNS и она знает Ваш хост.\nОднако, при проверке настроек сети выяснилось, что адрес вашего хоста $site_name не известен серверу DNS $dns_ip.\nНеобходимо выбрать один из вариантов:" 20 70 3 \
-        0 "Не использовать имя хоста, настроимся на IP адрес"\
-        1 "Все нормально, запись в DNS будет внесена позже"\
-        2 "Что-то не так, давайте отменим установку, пока не разберемся"\
+        dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --menu "Агенты LittleBeat обращаются к серверу по его имени. Для использования имени хоста, необходимо убедиться, что в сети работает служба DNS и она знает Ваш хост.\nОднако, при проверке настроек сети выяснилось, что адрес вашего хоста $site_name не известен серверу DNS $dns_ip.\nНеобходимо выбрать один из вариантов:" 20 70 3 \
+        0 "Все нормально, запись в DNS будет внесена позже"\
+        1 "Что-то не так, давайте отменим установку, пока не разберемся"\
         2>/tmp/choise.$$
         response=$?
         
@@ -201,12 +235,8 @@ if [ ! -e "$install_dir/net_configured" ]; then
             ;;
         esac
       
-        case $choise in
-            0)
-                touch "$install_dir/net_use_ip" >/dev/nul 2>&1
-                ;;            
+        case $choise in          
             1)
-                touch "$install_dir/net_use_dns" >/dev/nul 2>&1
                 touch "$install_dir/net_configured" >/dev/nul 2>&1
                 ;;
             2)
@@ -218,8 +248,7 @@ if [ ! -e "$install_dir/net_configured" ]; then
        
     else 
         if [ "$match_ip" == "" ]; then
-            dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --menu "Мы можем использовать в настройках имя хоста (предпочтительно) или его IP адрес. Для использования имени хоста, необходимо убедиться, что в сети работает служба DNS и она знает Ваш хост.\nОднако, при проверке настроек сети выяснилось, что для адреса вашего хоста $site_name сервер DNS $dns_ip возвращает IP адрес $check_ip, которого нет ни на одном из сетевых интерфейсов.\nНеобходимо выбрать один из вариантов:" 20 70 3 \
-            0 "Не использовать имя хоста, настроимся на IP адрес"\
+            dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --menu "Агенты LittleBeat обращаются к серверу по его имени. Для использования имени хоста, необходимо убедиться, что в сети работает служба DNS и она знает Ваш хост.\nОднако, при проверке настроек сети выяснилось, что для адреса вашего хоста $site_name сервер DNS $dns_ip возвращает IP адрес $check_ip, которого нет ни на одном из сетевых интерфейсов.\nНеобходимо выбрать один из вариантов:" 20 70 3 \
             1 "Все нормально, запись в DNS будет иправлена позже"\
             2 "Что-то не так, давайте отменим установку, пока не разберемся"\
             2>/tmp/choise.$$
@@ -240,12 +269,8 @@ if [ ! -e "$install_dir/net_configured" ]; then
                 exec shutdown -h now
                 ;;
             esac 
-            case $choise in
-                0)
-                    touch "$install_dir/net_use_ip" >/dev/nul 2>&1
-                    ;;            
+            case $choise in        
                 1)
-                    touch "$install_dir/net_use_dns" >/dev/nul 2>&1
                     touch "$install_dir/net_configured" >/dev/nul 2>&1
                     ;;
                 2)
@@ -253,119 +278,16 @@ if [ ! -e "$install_dir/net_configured" ]; then
                     echo "Настройка отменена. Завершаем работу компьютера"
                     exec shutdown -h now
                     ;;
-            esac
-            
-        else
-            dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --menu "Мы можем использовать в настройках имя хоста (предпочтительно) или его IP адрес. Мы убедились, что в сети работает служба DNS и она знает Ваш хост.\nDNS Server: $dns_ip\nHost name: $site_name\nHost IP: $check_ip\nТем не менее Вы можете выбрать настройку адресации по IP." 20 70 2 \
-            0 "Использовать DNS"\
-            1 "Использовать адрес IP"\
-            2>/tmp/choise.$$
-            response=$?
-            case $response in
-              0) 
-                choise=`cat /tmp/choise.$$`
-                rm /tmp/choise.$$ 
-                ;;
-              1) 
-                clear
-                echo "Настройка отменена. Завершаем работу компьютера"
-                exec shutdown -h now
-                ;;
-              255) 
-                clear
-                echo "Настройка отменена. Завершаем работу компьютера"
-                exec shutdown -h now
-                ;;
-            esac 
-            case $choise in
-                0)
-                    touch "$install_dir/net_use_dns" >/dev/nul 2>&1
-                    touch "$install_dir/net_configured" >/dev/nul 2>&1
-                    
-                    ;;            
-                1)
-                    touch "$install_dir/net_use_ip" >/dev/nul 2>&1
-                    ;;                
-            esac
+            esac           
+        
         fi
         
-    fi
-
-
-    if [ -e "$install_dir/net_use_ip" ]; then    
-        c=1
-        i=1
-        menu=0
-        isup=0
-        ar=()
-        while [ $c -eq 1 ]; do
-            ifname=$(ip l | grep -oP "^$i:\s(\w+)")
-            if [ "$ifname" == "" ]; then
-                break
-            fi
-            ifname=${ifname#*: }
-            ifstate=$( ip l | grep "^$i:" | grep -oP "state\s(\w+)")
-            ifstate=${ifstate#state }
-            
-            if [[ "$ifname" != "lo" ]]; then
-                ifadr=$(ip a | grep "scope global $ifname" | grep -oP "(\d+\.\d+\.\d+\.\d+/)")
-                ifadr=${ifadr%\/}
-                
-                hwadr=$(ifconfig $ifname | grep "HWaddr" | grep -oP "(\S+:\S+:\S+:\S+:\S+:\S+)")
-                if [ "$ifstate" == "UP" ]; then
-                    iftype=$(cat /etc/network/interfaces | grep "iface $ifname" | grep -oP "inet\s(\w+)")
-                    iftype=${iftype#inet }
-                    ar+=($isup "$ifname $ifstate $ifadr $iftype $hwadr")
-                    ((isup+=1))
-                fi      
-            fi
-            ((i+=1))
-        done 
-        if [ $isup -gt 1 ]; then
-            dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --menu "Давайте выберем основной сетевой интерфейс. К этому интерфейсу мы будем подключать \"приемник\" журналов событий. А также \"обнаружитель\" компьютеров.\nСледует выбрать тот интерфейс, с которого будут доступны все компьютеры Вашей сети." 20 70 $isup "${ar[@]}" 2>/tmp/choise.$$
-            response=$?
-            case $response in
-              0) 
-                choise=`cat /tmp/choise.$$`
-                choise="${ar[2*$choise+1]}"
-                rm /tmp/choise.$$ 
-                ;;
-              1) 
-                clear
-                echo "Настройка отменена. Завершаем работу компьютера"
-                rm "$install_dir/net_use_ip" >/dev/nul 2>&1
-                exec shutdown -h now
-                ;;
-              255) 
-                clear
-                echo "Настройка отменена. Завершаем работу компьютера"
-                rm "$install_dir/net_use_ip" >/dev/nul 2>&1
-                exec shutdown -h now
-                ;;
-            esac
-            
-        else
-            choise="${ar[1]}"
-        fi
-        iface_ar=($choise)
-        if [ "${iface_ar[3]}" == "dhcp" ]; then
-
-            dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --msgbox "Адрес выделен с использованием сервиса DHCP. Попросите администратора сервиса зафиксировать этот адрес ${iface_ar[2]} для интерфейса с MAC-адресом ${iface_ar[4]}. Лучше сделать это прямо сейчас. " 10 70 
-
-        fi
-        echo "${iface_ar[2]}" > "$install_dir/net_use_ip"
-        touch "$install_dir/net_configured" >/dev/nul 2>&1
-    fi
+    fi    
 fi
 
 if [ ! -e "$install_dir/ssl_configured" ]; then
-    if [ -e "$install_dir/net_use_dns" ]; then
-        site_name=$(hostname -f)
-        san="DNS.1: $site_name"
-    else
-        site_name=`cat "$install_dir/net_use_ip"`
-        san="IP: $site_name"
-    fi
+    site_name=$(hostname -f)
+    san="DNS.1: $site_name"
     sed  -i -e "s/^\[ v3_ca \]/\[ v3_ca \]\nsubjectAltName = $san\n/" /etc/ssl/openssl.cnf
     openssl req -new -newkey rsa:2048  -SHA256 -days 3650 -nodes -x509 -subj "/C=RU/ST=Moscow/L=Moscow/O=ESGurdian/OU=ESGuardian/CN=$site_name/emailAddress=esguardian@outlook.com" -out logstash.crt >/dev/nul 2>&1
     cp privkey.pem /etc/logstash/logstash.pem
@@ -376,14 +298,19 @@ fi
 if [ ! -e "$install_dir/logstash_configured" ]; then
     dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурируем и запускаем Logstash. Это займет примерно 4 минуты ..." 10 70 
     mkdir /etc/logstash/templates >/dev/nul 2>&1
-    cp $homedir/etc/logstash/templates/*  /etc/logstash/templates/
+	cd /etc/logstash/templates
+	wget $github_url/etc/logstash/templates/winlogbeat.template.json >/dev/nul 2>&1
+	wget $github_url/etc/logstash/templates/metricbeat.template.json >/dev/nul 2>&1
     mem=`cat "$install_dir/elastic_configured"`
     if [ $mem -lt 3000 ]; then
         sed  -i -e 's/"number_of_shards" : 1/"number_of_shards" : 2/' /etc/logstash/templates/winlogbeat.template.json
         sed  -i -e 's/"number_of_shards" : 1/"number_of_shards" : 2/' /etc/logstash/templates/metricbeat.template.json
     fi
-    cp $homedir/etc/logstash/conf.d/*  /etc/logstash/conf.d/
-    sed -i -e "s/https:\/\/elastic\//https:\/\/$site_name\//" /etc/logstash/conf.d/08-nmap.conf
+	cd /etc/logstash/conf.d/
+	wget $github_url/etc/logstash/conf.d/01-beats.conf >/dev/nul 2>&1
+	wget $github_url/etc/logstash/conf.d/08-nmap.conf >/dev/nul 2>&1
+    cd /tmp
+    
     /bin/systemctl daemon-reload >/dev/nul 2>&1
     /bin/systemctl enable logstash.service >/dev/nul 2>&1
     /usr/share/logstash/bin/logstash-plugin install logstash-filter-elasticsearch 1>>$log 2>>$errlog
@@ -429,7 +356,9 @@ if [ ! -e "$install_dir/logstash_started" ]; then
 fi
 if [ ! -e "$install_dir/kibana_started" ]; then
     rm  /etc/nginx/sites-available/default >/dev/nul 2>&1
-    cp $homedir/etc/nginx/sites-available/default /etc/nginx/sites-available/default >/dev/nul 2>&1
+	cd /etc/nginx/sites-available/
+	wget $github_url/etc/nginx/sites-available/default >/dev/nul 2>&1
+	cd /tmp
     c=1
     while [ $c -eq 1 ]
     do
@@ -441,8 +370,15 @@ if [ ! -e "$install_dir/kibana_started" ]; then
         fi
     done
     echo 'kibana.defaultAppId: "dashboard/Main-dash"' >>/etc/kibana/kibana.yml
-    cp $homedir/install/kibana.svg /usr/share/kibana/src/ui/public/images/kibana.svg
-    cp $homedir/install/kibana.svg /usr/share/kibana/optimize/bundles/0cebf3d61338c454670b1c5bdf5d6d8d.svg
+	cd /usr/share/kibana/src/ui/public/images/
+	rm /usr/share/kibana/src/ui/public/images/kibana.svg
+	wget $github_url/data/kibana.svg >/dev/nul 2>&1
+	cd /usr/share/kibana/optimize/bundles/
+	rm /usr/share/kibana/optimize/bundles/0cebf3d61338c454670b1c5bdf5d6d8d.svg
+	wget $github_url/data/kibana.svg >/dev/nul 2>&1
+    cp kibana.svg /usr/share/kibana/optimize/bundles/0cebf3d61338c454670b1c5bdf5d6d8d.svg
+	rm kibana.svg
+	cd /tmp
     /bin/systemctl daemon-reload >/dev/nul 2>&1
     /bin/systemctl enable nginx.service >/dev/nul 2>&1
     /bin/systemctl start nginx.service >/dev/nul 2>&1 
@@ -486,38 +422,38 @@ service nginx restart >/dev/nul 2>&1
 #    touch "$install_dir/kibana_configured" >/dev/nul 2>&1
 #fi
 
-if [ ! -e "$install_dir/samba_configured" ]; then
-    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурируем общедоступную папку agents ..." 8 70 
+# if [ ! -e "$install_dir/samba_configured" ]; then
+    # dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурируем общедоступную папку agents ..." 8 70 
 
-    cp -R $homedir/agents /var/lib/
-    echo "[agents]" >>/etc/samba/smb.conf
-    echo "  comment = clients share" >>/etc/samba/smb.conf
-    echo "  path = /var/lib/agents" >>/etc/samba/smb.conf
-    echo "  guest ok = yes" >>/etc/samba/smb.conf
-    echo "  browseable = yes" >>/etc/samba/smb.conf
-    echo "  read only = yes" >>/etc/samba/smb.conf
-    service smbd restart
-    touch "$install_dir/samba_configured" >/dev/nul 2>&1
-fi
+    # cp -R $homedir/agents /var/lib/
+    # echo "[agents]" >>/etc/samba/smb.conf
+    # echo "  comment = clients share" >>/etc/samba/smb.conf
+    # echo "  path = /var/lib/agents" >>/etc/samba/smb.conf
+    # echo "  guest ok = yes" >>/etc/samba/smb.conf
+    # echo "  browseable = yes" >>/etc/samba/smb.conf
+    # echo "  read only = yes" >>/etc/samba/smb.conf
+    # service smbd restart
+    # touch "$install_dir/samba_configured" >/dev/nul 2>&1
+# fi
 
 
-if [ ! -e "$install_dir/agents_configured" ]; then    
-    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурируем агентов и помещаем их в общедоступную папку agents ..." 8 70 
-    if [ -e "$install_dir/net_use_dns" ]; then
-        site_name=$(hostname -f)
-    else
-        site_name=`cat "$install_dir/net_use_ip"`
-    fi
-    sed  -i -e "s/hosts: \[\]/hosts: \[\"$site_name:5044\"\]/" /var/lib/agents/x64/winlogbeat/winlogbeat.yml
-    cp /etc/logstash/logstash.crt /var/lib/agents/x64/winlogbeat/logstash.crt
-    sed  -i -e "s/hosts: \[\]/hosts: \[\"$site_name:5044\"\]/" /var/lib/agents/x32/winlogbeat/winlogbeat.yml
-    cp /etc/logstash/logstash.crt /var/lib/agents/x32/winlogbeat/logstash.crt
-    sed  -i -e "s/hosts: \[\]/hosts: \[\"$site_name:5044\"\]/" /var/lib/agents/x64/metricbeat/metricbeat.yml
-    cp /etc/logstash/logstash.crt /var/lib/agents/x64/metricbeat/logstash.crt
-    sed  -i -e "s/hosts: \[\]/hosts: \[\"$site_name:5044\"\]/" /var/lib/agents/x32/metricbeat/metricbeat.yml
-    cp /etc/logstash/logstash.crt /var/lib/agents/x32/metricbeat/logstash.crt
-    touch "$install_dir/agents_configured" >/dev/nul 2>&1
-fi
+# if [ ! -e "$install_dir/agents_configured" ]; then    
+    # dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурируем агентов и помещаем их в общедоступную папку agents ..." 8 70 
+    # if [ -e "$install_dir/net_use_dns" ]; then
+        # site_name=$(hostname -f)
+    # else
+        # site_name=`cat "$install_dir/net_use_ip"`
+    # fi
+    # sed  -i -e "s/hosts: \[\]/hosts: \[\"$site_name:5044\"\]/" /var/lib/agents/x64/winlogbeat/winlogbeat.yml
+    # cp /etc/logstash/logstash.crt /var/lib/agents/x64/winlogbeat/logstash.crt
+    # sed  -i -e "s/hosts: \[\]/hosts: \[\"$site_name:5044\"\]/" /var/lib/agents/x32/winlogbeat/winlogbeat.yml
+    # cp /etc/logstash/logstash.crt /var/lib/agents/x32/winlogbeat/logstash.crt
+    # sed  -i -e "s/hosts: \[\]/hosts: \[\"$site_name:5044\"\]/" /var/lib/agents/x64/metricbeat/metricbeat.yml
+    # cp /etc/logstash/logstash.crt /var/lib/agents/x64/metricbeat/logstash.crt
+    # sed  -i -e "s/hosts: \[\]/hosts: \[\"$site_name:5044\"\]/" /var/lib/agents/x32/metricbeat/metricbeat.yml
+    # cp /etc/logstash/logstash.crt /var/lib/agents/x32/metricbeat/logstash.crt
+    # touch "$install_dir/agents_configured" >/dev/nul 2>&1
+# fi
 
 $homedir/bin/main_menu.sh
    
