@@ -1,13 +1,21 @@
 {
-  "order": 0,
-  "template": "nmap*",
+  "order": 1,
   "settings": {
-    "index.refresh_interval": "5s",
-    "number_of_shards" : 1,
-    "number_of_replicas" : 0
-  },
+    "index": {
+      "mapping": {
+        "total_fields": {
+          "limit": 10000
+        }
+      },
+      "number_of_shards": 1,
+      "refresh_interval": "5s"
+    }
+  }
+  "index_patterns": [
+    "nmap-6.x-*"
+  ],
   "mappings": {
-    "nmap": {
+    "doc": {
       "dynamic_templates": [
         {
           "strings_as_keyword": {
@@ -21,13 +29,19 @@
       ],
       "properties": {        
         "tags": {
-          "type": "string"
+          "type": "text"
         },
         "@timestamp": {
           "type": "date"
         },
+		"ipv4": {
+          "type": "ip"
+        },
+		"ipv6": {
+          "type": "ip"
+        },
         "@version": {
-          "type": "string"
+          "type": "keyword"
         }
       }
     }

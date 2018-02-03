@@ -58,7 +58,7 @@ EOF
 	
 	
 	cd /tmp
-	URL="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.1.2.deb"
+	URL="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.1.3.deb"
 	wget "$URL" 2>&1 | \
 	stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { print substr($0,63,3) }' | \
 	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --gauge "Загружаем Elasticsearch" 6 70
@@ -69,7 +69,7 @@ EOF
     fi
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch    
     
-    URL="https://artifacts.elastic.co/downloads/logstash/logstash-6.1.2.deb"
+    URL="https://artifacts.elastic.co/downloads/logstash/logstash-6.1.3.deb"
 	wget "$URL" 2>&1 | \
 	stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { print substr($0,63,3) }' | \
 	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --gauge "Загружаем Logstash" 6 70
@@ -79,7 +79,7 @@ EOF
             err=1
     fi
     
-    URL="https://artifacts.elastic.co/downloads/kibana/kibana-6.1.2-amd64.deb"
+    URL="https://artifacts.elastic.co/downloads/kibana/kibana-6.1.3-amd64.deb"
 	wget "$URL" 2>&1 | \
 	stdbuf -o0 awk '/[.] +[0-9][0-9]?[0-9]?%/ { print substr($0,63,3) }' | \
 	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --gauge "Загружаем Kibana" 6 70
@@ -331,7 +331,7 @@ if [ ! -e "$install_dir/logstash_started" ]; then
     while [ $c -ne 202 ]
         do
             if [ -e /var/log/logstash/logstash-plain.log ]; then
-                str=$(grep -i "Pipeline main started" /var/log/logstash/logstash-plain.log)
+                str=$(grep -i "Pipeline started" /var/log/logstash/logstash-plain.log)
             else
                 str=""
             fi
