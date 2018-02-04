@@ -12,3 +12,7 @@ $workdir = "C:\Program Files\LittleBeat Agent"
 New-Service -name LittleBeat `
   -displayName LittleBeat `
   -binaryPathName "`"$workdir\winlogbeat.exe`" -c `"$workdir\winlogbeat.yml`" -path.home `"$workdir`" -path.data `"C:\ProgramData\LittleBeat`" -path.logs `"C:\ProgramData\LittleBeat\logs`""
+# start service
+Start-Sleep -s 5
+Start-Service -Name LittleBeat
+
