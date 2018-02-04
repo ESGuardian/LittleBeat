@@ -1,0 +1,11 @@
+winlogbeat.event_logs:
+  - name: Application
+    ignore_older: 72h
+  - name: Security
+  - name: System
+
+
+output.logstash:
+  hosts: ["littlebeat:5044"]
+  ssl.enabled: true
+  ssl.verification_mode: none

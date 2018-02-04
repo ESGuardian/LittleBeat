@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='windows-1251'?>
+<Wix xmlns='http://wixtoolset.org/schemas/v4/wxs'>
+  <Product Name='LittleBeat Agent' Manufacturer='EGuardian'
+      Id='9310C755-C33D-4759-93FA-080F62E31C55'
+      UpgradeCode='40EECBEF-EF2F-4b4d-B600-856A37054B85'
+      Language='1049' Codepage='1251' Version='6.1.3'>
+    <Package Id='*' Keywords='Installer' Description="LittleBeat Agent for Windows Installer"
+			Comments='' Manufacturer='EGuardian'
+			InstallerVersion='200' Languages='1049' Compressed='yes' SummaryCodepage='1251' InstallScope="perMachine"  />
+    <Media Id='1' Cabinet='littlebeat_agent.cab' EmbedCab='yes' />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="ACRC Agent" />
+      </Directory>
+    </Directory>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="ProductComponent" Guid="DBFCAA64-F60B-4d0c-AD60-158279AD59E6">
+        <File Id='winlogbeat.yml' DiskId='1' Source='C:\Users\e.sokolov\Documents\github\LittleBeat\agents\winlogbeat.yml' />
+        <File Id='winlogbeat.exe' DiskId='1' Source='C:\Users\e.sokolov\Documents\github\LittleBeat\agents\x32\winlogbeat.exe' />
+        <File Id='install.bat' DiskId='1' Source='C:\Users\e.sokolov\Documents\github\LittleBeat\agents\install.bat' />
+        <File Id='install-agents.ps1' DiskId='1' Source='C:\Users\e.sokolov\Documents\github\LittleBeat\agents\install-agents.ps1' />
+        <File Id='uninstall.bat' DiskId='1' Source='C:\Users\e.sokolov\Documents\github\LittleBeat\agents\uninstall.bat' />
+        <File Id='uninstall-agents.ps1' DiskId='1' Source='C:\Users\e.sokolov\Documents\github\LittleBeat\agents\uninstall-agents.ps1' />
+		<File Id='win-audit-set.bat' DiskId='1' Source='C:\Users\e.sokolov\Documents\github\LittleBeat\agents\win-audit-set.bat' />
+		<File Id='LICENSE.txt' DiskId='1' Source='C:\Users\e.sokolov\Documents\github\LittleBeat\agents\LICENSE.txt' />
+		<File Id='NOTICE.txt' DiskId='1' Source='C:\Users\e.sokolov\Documents\github\LittleBeat\agents\NOTICE.txt' />
+		<File Id='README.md' DiskId='1' Source='C:\Users\e.sokolov\Documents\github\LittleBeat\agents\README.md' />
+		<File Id='fields.yml' DiskId='1' Source='C:\Users\e.sokolov\Documents\github\LittleBeat\agents\fields.yml' />
+      </Component>
+    </ComponentGroup>
+	<CustomAction Id="Install_LittleBeat_Service" Directory='INSTALLFOLDER' Execute="deferred" Impersonate="no" ExeCommand="[SystemFolder]\cmd /c &quot;&quot;install.bat&quot;&quot;" Return='check' />
+	<CustomAction Id="Stop_Delete_LittleBeat_Service" Directory='INSTALLFOLDER' Execute="deferred" Impersonate="no" ExeCommand="[SystemFolder]\cmd /c &quot;&quot;uninstall.bat&quot;&quot;" Return='check' />
+	<CustomAction Id="Set_Audit_Policy" Directory='INSTALLFOLDER' Execute="deferred" Impersonate="no" ExeCommand="[SystemFolder]\cmd /c &quot;&quot;win-audit-set.bat&quot;&quot;" Return='check' />
+    <Feature Id="ProductFeature" Title="LittleBeat_Agent" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+	<InstallExecuteSequence>
+      <Custom Action='Install_LittleBeat_Service' After='InstallFiles'>NOT Installed</Custom>
+	  <Custom Action='Set_Audit_Policy' After='InstallFiles'>NOT Installed</Custom>
+      <Custom Action="Stop_Delete_LittleBeat_Service" Before="RemoveFiles">Installed</Custom>
+    </InstallExecuteSequence>   
+  </Product>
+</Wix>
