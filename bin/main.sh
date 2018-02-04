@@ -424,9 +424,10 @@ service nginx restart >/dev/nul 2>&1
 
 if [ ! -e "$install_dir/kibana_configured" ]; then
 	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Первоначальная конфигурация Kibana ..." 8 70
-	cd $homedir/data
+	cd $homedir/data/dasboards
 	wget $github_url/data/dashboards/NMAP-dash.json >/dev/nul 2>&1
 	wget $github_url/data/dashboards/Winlogbeat-overview.json >/dev/nul 2>&1
+	cd $homedir/data/
 	for file in `find dashboards -type f -name "*.json"`
 	do
 	   curl -XPOST 127.0.0.1:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @dashboards/$file 1>>$log 2>>$errlog
