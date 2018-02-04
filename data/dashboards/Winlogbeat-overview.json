@@ -1,0 +1,109 @@
+{
+  "objects": [
+	{
+      "attributes": {
+        "fieldFormatMap": "{\"@timestamp\":{\"id\":\"date\"}}",
+        "fields": "[{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"beat.name\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"beat.hostname\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"beat.timezone\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"beat.version\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"@timestamp\",\"scripted\":false,\"searchable\":true,\"type\":\"date\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"tags\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"fields\",\"scripted\":false,\"searchable\":true},{\"aggregatable\":false,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"error.message\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"error.code\",\"scripted\":false,\"searchable\":true,\"type\":\"number\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"error.type\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"meta.cloud.provider\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"meta.cloud.instance_id\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"meta.cloud.instance_name\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"meta.cloud.machine_type\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"meta.cloud.availability_zone\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"meta.cloud.project_id\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"meta.cloud.region\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"docker.container.id\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"docker.container.image\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"docker.container.name\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"docker.container.labels\",\"scripted\":false,\"searchable\":true},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"kubernetes.pod.name\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"kubernetes.namespace\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"kubernetes.labels\",\"scripted\":false,\"searchable\":true},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"kubernetes.annotations\",\"scripted\":false,\"searchable\":true},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"kubernetes.container.name\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"kubernetes.container.image\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"type\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"activity_id\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"computer_name\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"event_data\",\"scripted\":false,\"searchable\":true},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"event_id\",\"scripted\":false,\"searchable\":true,\"type\":\"number\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"keywords\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"log_name\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"level\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":false,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"message\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"message_error\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"record_number\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"related_activity_id\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"opcode\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"provider_guid\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"process_id\",\"scripted\":false,\"searchable\":true,\"type\":\"number\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"source_name\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"task\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"thread_id\",\"scripted\":false,\"searchable\":true,\"type\":\"number\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"user_data\",\"scripted\":false,\"searchable\":true},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"user.identifier\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"user.name\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"user.domain\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"user.type\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"version\",\"scripted\":false,\"searchable\":true,\"type\":\"number\"},{\"aggregatable\":false,\"analyzed\":false,\"count\":0,\"doc_values\":true,\"indexed\":true,\"name\":\"xml\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":false,\"analyzed\":false,\"count\":0,\"doc_values\":false,\"indexed\":false,\"name\":\"_id\",\"scripted\":false,\"searchable\":false,\"type\":\"string\"},{\"aggregatable\":true,\"analyzed\":false,\"count\":0,\"doc_values\":false,\"indexed\":false,\"name\":\"_type\",\"scripted\":false,\"searchable\":true,\"type\":\"string\"},{\"aggregatable\":false,\"analyzed\":false,\"count\":0,\"doc_values\":false,\"indexed\":false,\"name\":\"_index\",\"scripted\":false,\"searchable\":false,\"type\":\"string\"},{\"aggregatable\":false,\"analyzed\":false,\"count\":0,\"doc_values\":false,\"indexed\":false,\"name\":\"_score\",\"scripted\":false,\"searchable\":false,\"type\":\"number\"}]",
+        "timeFieldName": "@timestamp",
+        "title": "winlogbeat-*"
+      },
+      "id": "winlogbeat-*",
+      "type": "index-pattern",
+      "version": 1
+    },
+    {
+      "attributes": {
+        "description": "",
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\n  \"index\": \"winlogbeat-*\",\n  \"query\": {\n    \"query_string\": {\n      \"query\": \"*\",\n      \"analyze_wildcard\": true\n    }\n  },\n  \"filter\": []\n}"
+        },
+        "title": "Number of Events Over Time By Event Log",
+        "uiStateJSON": "{}",
+        "version": 1,
+        "visState": "{\n  \"type\": \"histogram\",\n  \"params\": {\n    \"shareYAxis\": true,\n    \"addTooltip\": true,\n    \"addLegend\": true,\n    \"scale\": \"linear\",\n    \"mode\": \"stacked\",\n    \"times\": [],\n    \"addTimeMarker\": false,\n    \"defaultYExtents\": false,\n    \"setYExtents\": false,\n    \"yAxis\": {}\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"type\": \"count\",\n      \"schema\": \"metric\",\n      \"params\": {}\n    },\n    {\n      \"id\": \"2\",\n      \"type\": \"date_histogram\",\n      \"schema\": \"segment\",\n      \"params\": {\n        \"field\": \"@timestamp\",\n        \"interval\": \"auto\",\n        \"customInterval\": \"2h\",\n        \"min_doc_count\": 1,\n        \"extended_bounds\": {}\n      }\n    },\n    {\n      \"id\": \"3\",\n      \"type\": \"terms\",\n      \"schema\": \"group\",\n      \"params\": {\n        \"field\": \"log_name\",\n        \"size\": 6,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\"\n      }\n    }\n  ],\n  \"listeners\": {}\n}"
+      },
+      "id": "Number-of-Events-Over-Time-By-Event-Log",
+      "type": "visualization",
+      "version": 1
+    },
+    {
+      "attributes": {
+        "description": "",
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+        },
+        "title": "Number of Events",
+        "uiStateJSON": "{}",
+        "version": 1,
+        "visState": "{\"type\":\"metric\",\"params\":{\"fontSize\":60},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}}],\"listeners\":{}}"
+      },
+      "id": "Number-of-Events",
+      "type": "visualization",
+      "version": 1
+    },
+    {
+      "attributes": {
+        "description": "",
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\n  \"index\": \"winlogbeat-*\",\n  \"query\": {\n    \"query_string\": {\n      \"query\": \"*\",\n      \"analyze_wildcard\": true\n    }\n  },\n  \"filter\": []\n}"
+        },
+        "title": "Top Event IDs",
+        "uiStateJSON": "{}",
+        "version": 1,
+        "visState": "{\n  \"type\": \"table\",\n  \"params\": {\n    \"perPage\": 10,\n    \"showPartialRows\": false,\n    \"showMeticsAtAllLevels\": false\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"type\": \"count\",\n      \"schema\": \"metric\",\n      \"params\": {}\n    },\n    {\n      \"id\": \"2\",\n      \"type\": \"terms\",\n      \"schema\": \"bucket\",\n      \"params\": {\n        \"field\": \"event_id\",\n        \"size\": 5,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\"\n      }\n    }\n  ],\n  \"listeners\": {}\n}"
+      },
+      "id": "Top-Event-IDs",
+      "type": "visualization",
+      "version": 1
+    },
+    {
+      "attributes": {
+        "description": "",
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+        },
+        "title": "Event Levels",
+        "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+        "version": 1,
+        "visState": "{\"title\":\"Event Levels\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"level\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}"
+      },
+      "id": "Event-Levels",
+      "type": "visualization",
+      "version": 1
+    },
+    {
+      "attributes": {
+        "description": "",
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+        },
+        "title": "Sources",
+        "uiStateJSON": "{}",
+        "version": 1,
+        "visState": "{\"title\":\"Sources\",\"type\":\"pie\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"source_name\",\"size\":7,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}"
+      },
+      "id": "Sources",
+      "type": "visualization",
+      "version": 1
+    },
+    {
+      "attributes": {
+        "description": "",
+        "hits": 0,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+        },
+        "optionsJSON": "{\"darkTheme\":false}",
+        "panelsJSON": "[{\"col\":4,\"id\":\"Number-of-Events-Over-Time-By-Event-Log\",\"panelIndex\":1,\"row\":1,\"size_x\":9,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Number-of-Events\",\"panelIndex\":3,\"row\":1,\"size_x\":3,\"size_y\":4,\"type\":\"visualization\"},{\"col\":5,\"id\":\"Top-Event-IDs\",\"panelIndex\":4,\"row\":5,\"size_x\":4,\"size_y\":4,\"type\":\"visualization\"},{\"col\":9,\"id\":\"Event-Levels\",\"panelIndex\":5,\"row\":5,\"size_x\":4,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"id\":\"Sources\",\"panelIndex\":6,\"row\":5,\"size_x\":4,\"size_y\":4,\"type\":\"visualization\"}]",
+        "timeRestore": false,
+        "title": "Winlogbeat Dashboard",
+        "uiStateJSON": "{}",
+        "version": 1
+      },
+      "id": "Winlogbeat-Dashboard",
+      "type": "dashboard",
+      "version": 1
+    }
+  ],
+  "version": "6.1.3"
+}

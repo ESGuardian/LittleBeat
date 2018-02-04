@@ -381,10 +381,11 @@ if [ ! -e "$install_dir/kibana_started" ]; then
 	rm /usr/share/kibana/src/ui/public/images/kibana.svg
 	wget $github_url/data/kibana.svg >/dev/nul 2>&1
 	cd /usr/share/kibana/optimize/bundles/
-	rm /usr/share/kibana/optimize/bundles/0cebf3d61338c454670b1c5bdf5d6d8d.svg
+	rm /usr/share/kibana/optimize/bundles/ae11252ad19209059498cac1cd1addd7.svg
 	wget $github_url/data/kibana.svg >/dev/nul 2>&1
-    cp kibana.svg /usr/share/kibana/optimize/bundles/0cebf3d61338c454670b1c5bdf5d6d8d.svg
+    cp kibana.svg /usr/share/kibana/optimize/bundles/ae11252ad19209059498cac1cd1addd7.svg
 	rm kibana.svg
+	sed  -i -e "s:/app/kibana#/home:/app/kibana:" /usr/share/kibana/optimize/bundles/commons.bundle.js
 	cd /tmp
     /bin/systemctl daemon-reload >/dev/nul 2>&1
     /bin/systemctl enable nginx.service >/dev/nul 2>&1
@@ -421,13 +422,21 @@ fi
 
 service nginx restart >/dev/nul 2>&1
 
-#if [ ! -e "$install_dir/kibana_configured" ]; then
-#    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Первоначальная конфигурация Kibana ..." 8 70
-#    ($homedir/bin/kibana_init_config.sh)
-#    echo "0  */2	* * * root $homedir/bin/nmap-rep.sh" >>/etc/crontab  
-#       
-#    touch "$install_dir/kibana_configured" >/dev/nul 2>&1
-#fi
+if [ ! -e "$install_dir/kibana_configured" ]; then
+	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Первоначальная конфигурация Kibana ..." 8 70
+	cd $homedir/data
+	wget $github_url/data/dashboards/NMAP-dash.json >/dev/nul 2>&1
+	wget $github_url/data/dashboards/Winlogbeat-overview.json >/dev/nul 2>&1
+	for file in `find dashboards -type f -name "*.json"`
+	do
+	   curl -XPOST 127.0.0.1:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @dashboards/$file 1>>$log 2>>$errlog
+	done
+	curl -X POST 127.0.0.1:5601/api/kibana/settings/defaultIndex -H "Content-Type: application/json" -H "kbn-xsrf: true" -d '{"value":"nmap-*"}' 
+
+	echo "0  */2	* * * root $homedir/bin/nmap-rep.sh" >>/etc/crontab  
+	  
+	touch "$install_dir/kibana_configured" >/dev/nul 2>&1
+fi
 
 # if [ ! -e "$install_dir/samba_configured" ]; then
     # dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурируем общедоступную папку agents ..." 8 70 
