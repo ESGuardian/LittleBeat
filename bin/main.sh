@@ -431,7 +431,7 @@ if [ ! -e "$install_dir/kibana_configured" ]; then
 	cd $homedir/data/
 	for file in `find dashboards -type f -name "*.json"`
 	do
-	   curl -XPOST 127.0.0.1:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @dashboards/$file 1>>$log 2>>$errlog
+	   curl -XPOST 127.0.0.1:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @$file 1>>$log 2>>$errlog
 	done
 	curl -X POST 127.0.0.1:5601/api/kibana/settings/defaultIndex -H "Content-Type: application/json" -H "kbn-xsrf: true" -d '{"value":"nmap-*"}' 
 

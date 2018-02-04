@@ -10,7 +10,7 @@
       "number_of_shards": 1,
       "refresh_interval": "5s"
     }
-  }
+  },
   "index_patterns": [
     "nmap-6.x-*"
   ],
