@@ -18,14 +18,13 @@
           "type": "keyword"
         },
         "comment": {
-          "ignore_above": 1024,
-          "type": "keyword"
+          "type": "text"
         },
         "@timestamp": {
           "type": "date"
         },
         "@version": {
-          "type": "string"
+          "type": "keyword"
         }
       }
     }
