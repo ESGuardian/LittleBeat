@@ -424,6 +424,7 @@ service nginx restart >/dev/nul 2>&1
 
 if [ ! -e "$install_dir/kibana_configured" ]; then
 	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Первоначальная конфигурация Kibana ..." 8 70
+	mkdir $homedir/data/dasboards
 	cd $homedir/data/dasboards
 	wget $github_url/data/dashboards/NMAP-dash.json >/dev/nul 2>&1
 	wget $github_url/data/dashboards/Winlogbeat-overview.json >/dev/nul 2>&1
