@@ -426,7 +426,7 @@ if [ ! -e "$install_dir/kibana_configured" ]; then
 	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Первоначальная конфигурация Kibana ..." 8 70
 	cd $homedir/data/dashboards
 	wget $github_url/data/dashboards/Main.json >/dev/nul 2>&1
-	wget $github_url/data/dashboards/Nmap-dash.json >/dev/nul 2>&1
+	wget $github_url/data/dashboards/NMAP-dash.json >/dev/nul 2>&1
 	wget $github_url/data/dashboards/windows-logons.json >/dev/nul 2>&1
 	wget $github_url/data/dashboards/windows-proc.json >/dev/nul 2>&1
 	wget $github_url/data/dashboards/win-hi-level.json >/dev/nul 2>&1
