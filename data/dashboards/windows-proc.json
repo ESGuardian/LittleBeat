@@ -1,0 +1,160 @@
+{
+  "version": "6.1.3",
+  "objects": [
+    {
+      "id": "WinLog-new-process",
+      "type": "visualization",
+      "updated_at": "2018-02-05T08:59:59.700Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-новый-процесс",
+        "visState": "{\"title\":\"WinLog-новый-процесс\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"cardinality\",\"schema\":\"metric\",\"params\":{\"field\":\"beat.hostname\",\"customLabel\":\"На хостах\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"event_data.NewProcessBareName\",\"size\":1000,\"order\":\"asc\",\"orderBy\":\"1\",\"customLabel\":\"Зарегистрированные процессы\"}}],\"listeners\":{}}",
+        "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"filter\":[],\"index\":\"winlogbeat-*\",\"query\":{\"query\":{\"match_all\":{}},\"language\":\"lucene\"},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647}}"
+        }
+      }
+    },
+    {
+      "id": "6934e6e0-b272-11e7-9231-a343530c9064",
+      "type": "visualization",
+      "updated_at": "2018-02-05T08:59:59.882Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-установка-службы",
+        "visState": "{\"title\":\"WinLog-установка-службы\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"event_data.ServiceFileName\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Файл службы\"}}],\"listeners\":{}}",
+        "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+        "description": "",
+        "savedSearchId": "WinLog-service-install",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"filter\":[]}"
+        }
+      }
+    },
+    {
+      "id": "WinLog-process-created-search",
+      "type": "search",
+      "updated_at": "2018-02-05T11:16:11.153Z",
+      "version": 5,
+      "attributes": {
+        "title": "WinLog-process-created-search",
+        "description": "",
+        "hits": 0,
+        "columns": [
+          "computer_name",
+          "event_data.NewProcessSeverity",
+          "event_data.NewProcessName"
+        ],
+        "sort": [
+          "@timestamp",
+          "desc"
+        ],
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query\":{\"query_string\":{\"query\":\"event_id:4688\",\"analyze_wildcard\":true,\"default_field\":\"*\"}},\"language\":\"lucene\"},\"filter\":[{\"meta\":{\"index\":\"winlogbeat-*\",\"negate\":false,\"disabled\":false,\"alias\":null,\"type\":\"phrase\",\"key\":\"event_id\",\"value\":\"4,688\",\"params\":{\"query\":4688,\"type\":\"phrase\"}},\"query\":{\"match\":{\"event_id\":{\"query\":4688,\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}}],\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647},\"highlightAll\":true,\"version\":true}"
+        }
+      }
+    },
+    {
+      "id": "WinLog-service-install",
+      "type": "search",
+      "updated_at": "2018-02-05T10:21:55.729Z",
+      "version": 2,
+      "attributes": {
+        "title": "WinLog-service-install",
+        "description": "",
+        "hits": 0,
+        "columns": [
+          "computer_name",
+          "event_data.ServiceFileName"
+        ],
+        "sort": [
+          "@timestamp",
+          "desc"
+        ],
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\",\"default_field\":\"*\"}},\"language\":\"lucene\"},\"filter\":[{\"meta\":{\"negate\":false,\"index\":\"winlogbeat-*\",\"key\":\"log_name\",\"value\":\"Security\",\"disabled\":false,\"alias\":null,\"type\":\"phrase\",\"params\":{\"query\":\"Security\",\"type\":\"phrase\"}},\"query\":{\"match\":{\"log_name\":{\"query\":\"Security\",\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}},{\"meta\":{\"negate\":false,\"index\":\"winlogbeat-*\",\"key\":\"event_id\",\"value\":\"4,697\",\"disabled\":false,\"alias\":null,\"type\":\"phrase\",\"params\":{\"query\":4697,\"type\":\"phrase\"}},\"query\":{\"match\":{\"event_id\":{\"query\":4697,\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}}],\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647},\"highlightAll\":true,\"version\":true}"
+        }
+      }
+    },
+    {
+      "id": "5bf1bc20-0a5f-11e8-a2ce-b9829bf5932d",
+      "type": "visualization",
+      "updated_at": "2018-02-05T10:30:19.262Z",
+      "version": 2,
+      "attributes": {
+        "title": "WinLog-process-and-service-by-host",
+        "visState": "{\"title\":\"WinLog-process-and-service-by-host\",\"type\":\"table\",\"params\":{\"perPage\":5,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Событий\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"computer_name\",\"size\":1000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Хост\"}}]}",
+        "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"filter\":[{\"meta\":{\"index\":\"winlogbeat-*\",\"negate\":false,\"disabled\":false,\"alias\":null,\"type\":\"phrase\",\"key\":\"log_name\",\"value\":\"Security\",\"params\":{\"query\":\"Security\",\"type\":\"phrase\"}},\"query\":{\"match\":{\"log_name\":{\"query\":\"Security\",\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}},{\"meta\":{\"index\":\"winlogbeat-*\",\"type\":\"phrases\",\"key\":\"event_id\",\"value\":\"4,688, 4,697\",\"params\":[\"4688\",\"4697\"],\"negate\":false,\"disabled\":false,\"alias\":null},\"query\":{\"bool\":{\"should\":[{\"match_phrase\":{\"event_id\":\"4688\"}},{\"match_phrase\":{\"event_id\":\"4697\"}}],\"minimum_should_match\":1}},\"$state\":{\"store\":\"appState\"}}],\"query\":{\"query\":\"\",\"language\":\"lucene\"}}"
+        }
+      }
+    },
+    {
+      "id": "e4cef760-0a5f-11e8-a2ce-b9829bf5932d",
+      "type": "visualization",
+      "updated_at": "2018-02-05T10:32:41.173Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-process-and-service-by-time",
+        "visState": "{\"title\":\"WinLog-process-and-service-by-time\",\"type\":\"histogram\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"scale\":\"linear\",\"mode\":\"stacked\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{},\"type\":\"histogram\",\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\",\"setYExtents\":false,\"defaultYExtents\":false},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Count\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"stacked\",\"data\":{\"label\":\"Count\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\"}],\"legendPosition\":\"right\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}},{\"id\":\"3\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"log_name\",\"size\":6,\"order\":\"desc\",\"orderBy\":\"1\"}}]}",
+        "uiStateJSON": "{}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true,\"default_field\":\"*\"}},\"language\":\"lucene\"},\"filter\":[{\"meta\":{\"index\":\"winlogbeat-*\",\"negate\":false,\"disabled\":false,\"alias\":null,\"type\":\"phrase\",\"key\":\"log_name\",\"value\":\"Security\",\"params\":{\"query\":\"Security\",\"type\":\"phrase\"}},\"query\":{\"match\":{\"log_name\":{\"query\":\"Security\",\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}},{\"meta\":{\"index\":\"winlogbeat-*\",\"type\":\"phrases\",\"key\":\"event_id\",\"value\":\"4,688, 4,697\",\"params\":[\"4688\",\"4697\"],\"negate\":false,\"disabled\":false,\"alias\":null},\"query\":{\"bool\":{\"should\":[{\"match_phrase\":{\"event_id\":\"4688\"}},{\"match_phrase\":{\"event_id\":\"4697\"}}],\"minimum_should_match\":1}},\"$state\":{\"store\":\"appState\"}}]}"
+        }
+      }
+    },
+    {
+      "id": "a695feb0-0a66-11e8-a2ce-b9829bf5932d",
+      "type": "visualization",
+      "updated_at": "2018-02-05T11:21:03.259Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-process-by-severity",
+        "visState": "{\"title\":\"WinLog-process-by-severity\",\"type\":\"pie\",\"params\":{\"type\":\"pie\",\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":true,\"labels\":{\"show\":false,\"values\":true,\"last_level\":true,\"truncate\":100}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"event_data.NewProcessSeverity\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1\"}}]}",
+        "uiStateJSON": "{}",
+        "description": "",
+        "savedSearchId": "WinLog-process-created-search",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"filter\":[],\"query\":{\"query\":\"\",\"language\":\"lucene\"}}"
+        }
+      }
+    },
+    {
+      "id": "ceb2fb80-0a5e-11e8-a2ce-b9829bf5932d",
+      "type": "dashboard",
+      "updated_at": "2018-02-05T11:22:24.477Z",
+      "version": 5,
+      "attributes": {
+        "title": "WinLog-process-and-service",
+        "hits": 0,
+        "description": "",
+        "panelsJSON": "[{\"panelIndex\":\"1\",\"gridData\":{\"x\":0,\"y\":3,\"w\":6,\"h\":6,\"i\":\"1\"},\"id\":\"WinLog-new-process\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"panelIndex\":\"2\",\"gridData\":{\"x\":6,\"y\":3,\"w\":6,\"h\":6,\"i\":\"2\"},\"id\":\"6934e6e0-b272-11e7-9231-a343530c9064\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"panelIndex\":\"3\",\"gridData\":{\"x\":0,\"y\":9,\"w\":6,\"h\":6,\"i\":\"3\"},\"id\":\"WinLog-process-created-search\",\"type\":\"search\",\"version\":\"6.1.3\"},{\"panelIndex\":\"4\",\"gridData\":{\"x\":6,\"y\":9,\"w\":6,\"h\":6,\"i\":\"4\"},\"id\":\"WinLog-service-install\",\"type\":\"search\",\"version\":\"6.1.3\"},{\"panelIndex\":\"5\",\"gridData\":{\"x\":0,\"y\":0,\"w\":4,\"h\":3,\"i\":\"5\"},\"id\":\"5bf1bc20-0a5f-11e8-a2ce-b9829bf5932d\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"panelIndex\":\"6\",\"gridData\":{\"x\":4,\"y\":0,\"w\":4,\"h\":3,\"i\":\"6\"},\"id\":\"e4cef760-0a5f-11e8-a2ce-b9829bf5932d\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"panelIndex\":\"7\",\"gridData\":{\"x\":8,\"y\":0,\"w\":4,\"h\":3,\"i\":\"7\"},\"version\":\"6.1.3\",\"type\":\"visualization\",\"id\":\"a695feb0-0a66-11e8-a2ce-b9829bf5932d\"}]",
+        "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":true,\"useMargins\":true}",
+        "uiStateJSON": "{\"P-1\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-2\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-5\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-6\":{\"vis\":{\"legendOpen\":false}}}",
+        "version": 1,
+        "timeRestore": true,
+        "timeTo": "now",
+        "timeFrom": "now-24h",
+        "refreshInterval": {
+          "display": "Off",
+          "pause": false,
+          "value": 0
+        },
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"language\":\"lucene\",\"query\":\"\"},\"filter\":[],\"highlightAll\":true,\"version\":true}"
+        }
+      }
+    }
+  ]
+}

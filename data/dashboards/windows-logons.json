@@ -1,0 +1,214 @@
+{
+  "version": "6.1.3",
+  "objects": [
+    {
+      "id": "898dc840-09d3-11e8-a2ce-b9829bf5932d",
+      "type": "visualization",
+      "updated_at": "2018-02-04T17:47:58.532Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-by-host",
+        "visState": "{\"title\":\"WinLog-by-host\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Событий\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"computer_name\",\"size\":1000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Хост\"}}]}",
+        "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"filter\":[],\"query\":{\"query\":\"\",\"language\":\"lucene\"}}"
+        }
+      }
+    },
+    {
+      "id": "caf922e0-09d1-11e8-a2ce-b9829bf5932d",
+      "type": "visualization",
+      "updated_at": "2018-02-04T17:35:29.294Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-by-user",
+        "visState": "{\"title\":\"WinLog-by-user\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"event_data.SubjectUserName\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"User\"}}]}",
+        "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":0,\"direction\":\"desc\"}}}}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"filter\":[],\"query\":{\"language\":\"lucene\",\"query\":\"\"}}"
+        }
+      }
+    },
+    {
+      "id": "WinLog-logons",
+      "type": "visualization",
+      "updated_at": "2018-02-05T08:59:59.844Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-входы",
+        "visState": "{\"title\":\"WinLog-входы\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Кол-во входов\"}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"event_data.TargetUserName\",\"size\":500,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Успешные входы\"}},{\"id\":\"3\",\"type\":\"cardinality\",\"schema\":\"metric\",\"params\":{\"field\":\"beat.hostname\",\"customLabel\":\"Кол-во хостов\"}}],\"listeners\":{}}",
+        "uiStateJSON": "{}",
+        "description": "",
+        "savedSearchId": "WinLog-logon-filtered",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"filter\":[]}"
+        }
+      }
+    },
+    {
+      "id": "WinLog-logon-fail",
+      "type": "visualization",
+      "updated_at": "2018-02-05T08:59:59.847Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-неудачные-входы",
+        "visState": "{\"title\":\"WinLog-неудачные-входы\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Кол-во попыток\"}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"event_data.TargetUserName\",\"size\":500,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Неудачные входы\"}},{\"id\":\"3\",\"type\":\"cardinality\",\"schema\":\"metric\",\"params\":{\"field\":\"beat.hostname\",\"customLabel\":\"Кол-во хостов\"}}],\"listeners\":{}}",
+        "uiStateJSON": "{}",
+        "description": "",
+        "savedSearchId": "WinLog-logon-failure",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"filter\":[]}"
+        }
+      }
+    },
+    {
+      "id": "ebd75040-0a53-11e8-a2ce-b9829bf5932d",
+      "type": "visualization",
+      "updated_at": "2018-02-05T09:06:59.011Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-logontype",
+        "visState": "{\"title\":\"WinLog-logontype\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"event_data.LogonType\",\"size\":15,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Тип входа\"}}]}",
+        "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"filter\":[],\"query\":{\"query\":\"\",\"language\":\"lucene\"}}"
+        }
+      }
+    },
+    {
+      "id": "a3f48130-0a58-11e8-a2ce-b9829bf5932d",
+      "type": "visualization",
+      "updated_at": "2018-02-05T09:40:45.891Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-logon-events",
+        "visState": "{\"title\":\"WinLog-logon-events\",\"type\":\"metric\",\"params\":{\"fontSize\":60,\"addTooltip\":true,\"addLegend\":false,\"type\":\"metric\",\"metric\":{\"percentageMode\":false,\"useRanges\":false,\"colorSchema\":\"Green to Red\",\"metricColorMode\":\"None\",\"colorsRange\":[{\"from\":0,\"to\":10000}],\"labels\":{\"show\":false},\"invertColors\":false,\"style\":{\"bgFill\":\"#000\",\"bgColor\":false,\"labelColor\":false,\"subText\":\"\",\"fontSize\":20}}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}}]}",
+        "uiStateJSON": "{}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true,\"default_field\":\"*\"}},\"language\":\"lucene\"},\"filter\":[{\"meta\":{\"index\":\"winlogbeat-*\",\"type\":\"phrases\",\"key\":\"event_id\",\"value\":\"4,624, 4,625\",\"params\":[\"4624\",\"4625\"],\"negate\":false,\"disabled\":false,\"alias\":null},\"query\":{\"bool\":{\"should\":[{\"match_phrase\":{\"event_id\":\"4624\"}},{\"match_phrase\":{\"event_id\":\"4625\"}}],\"minimum_should_match\":1}},\"$state\":{\"store\":\"appState\"}}]}"
+        }
+      }
+    },
+    {
+      "id": "0dd01d30-0a59-11e8-a2ce-b9829bf5932d",
+      "type": "visualization",
+      "updated_at": "2018-02-05T09:43:43.491Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-logon-by-time",
+        "visState": "{\"title\":\"WinLog-logon-by-time\",\"type\":\"histogram\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"scale\":\"linear\",\"mode\":\"stacked\",\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{},\"type\":\"histogram\",\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\",\"setYExtents\":false,\"defaultYExtents\":false},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Count\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"stacked\",\"data\":{\"label\":\"Count\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\"}],\"legendPosition\":\"right\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}},{\"id\":\"3\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"log_name\",\"size\":6,\"order\":\"desc\",\"orderBy\":\"1\"}}]}",
+        "uiStateJSON": "{\"vis\":{\"legendOpen\":false}}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true,\"default_field\":\"*\"}},\"language\":\"lucene\"},\"filter\":[{\"meta\":{\"index\":\"winlogbeat-*\",\"type\":\"phrases\",\"key\":\"event_id\",\"value\":\"4,624, 4,625\",\"params\":[\"4624\",\"4625\"],\"negate\":false,\"disabled\":false,\"alias\":null},\"query\":{\"bool\":{\"should\":[{\"match_phrase\":{\"event_id\":\"4624\"}},{\"match_phrase\":{\"event_id\":\"4625\"}}],\"minimum_should_match\":1}},\"$state\":{\"store\":\"appState\"}}]}"
+        }
+      }
+    },
+    {
+      "id": "89e651a0-0a59-11e8-a2ce-b9829bf5932d",
+      "type": "search",
+      "updated_at": "2018-02-05T09:47:11.674Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-logon",
+        "description": "",
+        "hits": 0,
+        "columns": [
+          "computer_name",
+          "event_id",
+          "task",
+          "message"
+        ],
+        "sort": [
+          "@timestamp",
+          "desc"
+        ],
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"highlightAll\":true,\"version\":true,\"query\":{\"language\":\"lucene\",\"query\":\"\"},\"filter\":[{\"meta\":{\"index\":\"winlogbeat-*\",\"type\":\"phrases\",\"key\":\"event_id\",\"value\":\"4,624, 4,625\",\"params\":[\"4624\",\"4625\"],\"negate\":false,\"disabled\":false,\"alias\":null},\"query\":{\"bool\":{\"should\":[{\"match_phrase\":{\"event_id\":\"4624\"}},{\"match_phrase\":{\"event_id\":\"4625\"}}],\"minimum_should_match\":1}},\"$state\":{\"store\":\"appState\"}}]}"
+        }
+      }
+    },
+    {
+      "id": "WinLog-logon-filtered",
+      "type": "search",
+      "updated_at": "2018-02-05T08:45:37.931Z",
+      "version": 2,
+      "attributes": {
+        "title": "WinLog-logon-success",
+        "description": "",
+        "hits": 0,
+        "columns": [
+          "_source"
+        ],
+        "sort": [
+          "@timestamp",
+          "desc"
+        ],
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query\":\"\",\"language\":\"lucene\"},\"filter\":[{\"meta\":{\"negate\":false,\"index\":\"winlogbeat-*\",\"key\":\"event_id\",\"value\":\"4,624\",\"disabled\":false,\"alias\":null,\"type\":\"phrase\",\"params\":{\"query\":4624,\"type\":\"phrase\"}},\"query\":{\"match\":{\"event_id\":{\"query\":4624,\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}}],\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647},\"highlightAll\":true,\"version\":true}"
+        }
+      }
+    },
+    {
+      "id": "WinLog-logon-failure",
+      "type": "search",
+      "updated_at": "2018-02-05T08:47:54.944Z",
+      "version": 2,
+      "attributes": {
+        "title": "WinLog-logon-failure",
+        "description": "",
+        "hits": 0,
+        "columns": [
+          "_source"
+        ],
+        "sort": [
+          "@timestamp",
+          "desc"
+        ],
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query\":\"\",\"language\":\"lucene\"},\"filter\":[{\"meta\":{\"index\":\"winlogbeat-*\",\"negate\":false,\"disabled\":false,\"alias\":null,\"type\":\"phrase\",\"key\":\"event_id\",\"value\":\"4,625\",\"params\":{\"query\":4625,\"type\":\"phrase\"}},\"query\":{\"match\":{\"event_id\":{\"query\":4625,\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}}],\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647},\"highlightAll\":true,\"version\":true}"
+        }
+      }
+    },
+    {
+      "id": "2a808400-0a5a-11e8-a2ce-b9829bf5932d",
+      "type": "dashboard",
+      "updated_at": "2018-02-05T09:51:41.120Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-logons",
+        "hits": 0,
+        "description": "",
+        "panelsJSON": "[{\"panelIndex\":\"3\",\"gridData\":{\"x\":8,\"y\":0,\"w\":4,\"h\":6,\"i\":\"3\"},\"id\":\"898dc840-09d3-11e8-a2ce-b9829bf5932d\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"panelIndex\":\"4\",\"gridData\":{\"x\":5,\"y\":0,\"w\":3,\"h\":6,\"i\":\"4\"},\"id\":\"caf922e0-09d1-11e8-a2ce-b9829bf5932d\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"panelIndex\":\"5\",\"gridData\":{\"x\":0,\"y\":6,\"w\":6,\"h\":3,\"i\":\"5\"},\"id\":\"WinLog-logons\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"panelIndex\":\"6\",\"gridData\":{\"x\":6,\"y\":6,\"w\":6,\"h\":3,\"i\":\"6\"},\"id\":\"WinLog-logon-fail\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"panelIndex\":\"7\",\"gridData\":{\"x\":0,\"y\":2,\"w\":5,\"h\":4,\"i\":\"7\"},\"id\":\"ebd75040-0a53-11e8-a2ce-b9829bf5932d\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"panelIndex\":\"9\",\"gridData\":{\"x\":0,\"y\":0,\"w\":2,\"h\":2,\"i\":\"9\"},\"id\":\"a3f48130-0a58-11e8-a2ce-b9829bf5932d\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"panelIndex\":\"10\",\"gridData\":{\"x\":2,\"y\":0,\"w\":3,\"h\":2,\"i\":\"10\"},\"id\":\"0dd01d30-0a59-11e8-a2ce-b9829bf5932d\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"panelIndex\":\"11\",\"gridData\":{\"x\":0,\"y\":9,\"w\":12,\"h\":6,\"i\":\"11\"},\"version\":\"6.1.3\",\"type\":\"search\",\"id\":\"89e651a0-0a59-11e8-a2ce-b9829bf5932d\"}]",
+        "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":true,\"useMargins\":true}",
+        "uiStateJSON": "{\"P-2\":{\"vis\":{\"legendOpen\":false}},\"P-3\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-4\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":0,\"direction\":\"desc\"}}}},\"P-5\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-6\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-7\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}}",
+        "version": 1,
+        "timeRestore": true,
+        "timeTo": "now",
+        "timeFrom": "now-24h",
+        "refreshInterval": {
+          "display": "Off",
+          "pause": false,
+          "value": 0
+        },
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"language\":\"lucene\",\"query\":\"\"},\"filter\":[],\"highlightAll\":true,\"version\":true}"
+        }
+      }
+    }
+  ]
+}

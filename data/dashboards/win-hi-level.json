@@ -1,0 +1,168 @@
+{
+  "version": "6.1.3",
+  "objects": [
+    {
+      "id": "Number-of-Events-Over-Time-By-Event-Log",
+      "type": "visualization",
+      "updated_at": "2018-02-04T14:12:01.009Z",
+      "version": 1,
+      "attributes": {
+        "description": "",
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\n  \"index\": \"winlogbeat-*\",\n  \"query\": {\n    \"query_string\": {\n      \"query\": \"*\",\n      \"analyze_wildcard\": true\n    }\n  },\n  \"filter\": []\n}"
+        },
+        "title": "Number of Events Over Time By Event Log",
+        "uiStateJSON": "{}",
+        "version": 1,
+        "visState": "{\n  \"type\": \"histogram\",\n  \"params\": {\n    \"shareYAxis\": true,\n    \"addTooltip\": true,\n    \"addLegend\": true,\n    \"scale\": \"linear\",\n    \"mode\": \"stacked\",\n    \"times\": [],\n    \"addTimeMarker\": false,\n    \"defaultYExtents\": false,\n    \"setYExtents\": false,\n    \"yAxis\": {}\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"type\": \"count\",\n      \"schema\": \"metric\",\n      \"params\": {}\n    },\n    {\n      \"id\": \"2\",\n      \"type\": \"date_histogram\",\n      \"schema\": \"segment\",\n      \"params\": {\n        \"field\": \"@timestamp\",\n        \"interval\": \"auto\",\n        \"customInterval\": \"2h\",\n        \"min_doc_count\": 1,\n        \"extended_bounds\": {}\n      }\n    },\n    {\n      \"id\": \"3\",\n      \"type\": \"terms\",\n      \"schema\": \"group\",\n      \"params\": {\n        \"field\": \"log_name\",\n        \"size\": 6,\n        \"order\": \"desc\",\n        \"orderBy\": \"1\"\n      }\n    }\n  ],\n  \"listeners\": {}\n}"
+      }
+    },
+    {
+      "id": "Number-of-Events",
+      "type": "visualization",
+      "updated_at": "2018-02-04T17:12:44.563Z",
+      "version": 2,
+      "attributes": {
+        "title": "Number of Events",
+        "visState": "{\"title\":\"Number of Events\",\"type\":\"metric\",\"params\":{\"fontSize\":60,\"addTooltip\":true,\"addLegend\":false,\"type\":\"metric\",\"metric\":{\"percentageMode\":false,\"useRanges\":false,\"colorSchema\":\"Green to Red\",\"metricColorMode\":\"None\",\"colorsRange\":[{\"from\":0,\"to\":10000}],\"labels\":{\"show\":false},\"invertColors\":false,\"style\":{\"bgFill\":\"#000\",\"bgColor\":false,\"labelColor\":false,\"subText\":\"\",\"fontSize\":20}}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}}]}",
+        "uiStateJSON": "{}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true,\"default_field\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+        }
+      }
+    },
+    {
+      "id": "Top-Event-IDs",
+      "type": "visualization",
+      "updated_at": "2018-02-04T17:13:45.095Z",
+      "version": 2,
+      "attributes": {
+        "title": "Top Event IDs",
+        "visState": "{\"title\":\"Top Event IDs\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"event_id\",\"size\":500,\"order\":\"desc\",\"orderBy\":\"1\"}}]}",
+        "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true,\"default_field\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+        }
+      }
+    },
+    {
+      "id": "Event-Levels",
+      "type": "visualization",
+      "updated_at": "2018-02-04T14:12:01.009Z",
+      "version": 1,
+      "attributes": {
+        "description": "",
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+        },
+        "title": "Event Levels",
+        "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+        "version": 1,
+        "visState": "{\"title\":\"Event Levels\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"level\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}"
+      }
+    },
+    {
+      "id": "caf922e0-09d1-11e8-a2ce-b9829bf5932d",
+      "type": "visualization",
+      "updated_at": "2018-02-04T17:35:29.294Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-by-user",
+        "visState": "{\"title\":\"WinLog-by-user\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"event_data.SubjectUserName\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"User\"}}]}",
+        "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":0,\"direction\":\"desc\"}}}}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"filter\":[],\"query\":{\"language\":\"lucene\",\"query\":\"\"}}"
+        }
+      }
+    },
+    {
+      "id": "b127d540-09d2-11e8-a2ce-b9829bf5932d",
+      "type": "search",
+      "updated_at": "2018-02-04T17:41:55.476Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-common",
+        "description": "",
+        "hits": 0,
+        "columns": [
+          "computer_name",
+          "event_id",
+          "task",
+          "message"
+        ],
+        "sort": [
+          "@timestamp",
+          "desc"
+        ],
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"highlightAll\":true,\"version\":true,\"query\":{\"language\":\"lucene\",\"query\":\"\"},\"filter\":[]}"
+        }
+      }
+    },
+    {
+      "id": "898dc840-09d3-11e8-a2ce-b9829bf5932d",
+      "type": "visualization",
+      "updated_at": "2018-02-04T17:47:58.532Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-by-host",
+        "visState": "{\"title\":\"WinLog-by-host\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Событий\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"computer_name\",\"size\":1000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Хост\"}}]}",
+        "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"filter\":[],\"query\":{\"query\":\"\",\"language\":\"lucene\"}}"
+        }
+      }
+    },
+    {
+      "id": "eb894ac0-0a68-11e8-a2ce-b9829bf5932d",
+      "type": "visualization",
+      "updated_at": "2018-02-05T11:37:17.932Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-by-task",
+        "visState": "{\"title\":\"WinLog-by-task\",\"type\":\"pie\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":false,\"type\":\"pie\",\"labels\":{\"show\":false,\"values\":true,\"last_level\":true,\"truncate\":100}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"task\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"1\"}}]}",
+        "uiStateJSON": "{}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"winlogbeat-*\",\"query\":{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true,\"default_field\":\"*\"}},\"language\":\"lucene\"},\"filter\":[]}"
+        }
+      }
+    },
+    {
+      "id": "d5ebbbc0-0a69-11e8-a2ce-b9829bf5932d",
+      "type": "dashboard",
+      "updated_at": "2018-02-05T11:43:51.164Z",
+      "version": 1,
+      "attributes": {
+        "title": "WinLog-High-Level",
+        "hits": 0,
+        "description": "",
+        "panelsJSON": "[{\"gridData\":{\"h\":2,\"i\":\"1\",\"w\":4,\"x\":0,\"y\":2},\"id\":\"Number-of-Events-Over-Time-By-Event-Log\",\"panelIndex\":\"1\",\"title\":\"События по времени\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"gridData\":{\"h\":2,\"i\":\"3\",\"w\":4,\"x\":0,\"y\":0},\"id\":\"Number-of-Events\",\"panelIndex\":\"3\",\"title\":\"Всего событий\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"gridData\":{\"h\":4,\"i\":\"4\",\"w\":4,\"x\":4,\"y\":4},\"id\":\"Top-Event-IDs\",\"panelIndex\":\"4\",\"title\":\"ID Событий\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"gridData\":{\"h\":4,\"i\":\"5\",\"w\":4,\"x\":8,\"y\":4},\"id\":\"Event-Levels\",\"panelIndex\":\"5\",\"title\":\"Уровень событий\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"gridData\":{\"h\":4,\"i\":\"7\",\"w\":4,\"x\":4,\"y\":0},\"id\":\"caf922e0-09d1-11e8-a2ce-b9829bf5932d\",\"panelIndex\":\"7\",\"title\":\"События по юзерам\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"gridData\":{\"h\":6,\"i\":\"8\",\"w\":12,\"x\":0,\"y\":8},\"id\":\"b127d540-09d2-11e8-a2ce-b9829bf5932d\",\"panelIndex\":\"8\",\"title\":\"Список последних событий\",\"type\":\"search\",\"version\":\"6.1.3\"},{\"gridData\":{\"h\":4,\"i\":\"9\",\"w\":4,\"x\":8,\"y\":0},\"id\":\"898dc840-09d3-11e8-a2ce-b9829bf5932d\",\"panelIndex\":\"9\",\"title\":\"События по хостам\",\"type\":\"visualization\",\"version\":\"6.1.3\"},{\"gridData\":{\"h\":4,\"i\":\"10\",\"w\":4,\"x\":0,\"y\":4},\"id\":\"eb894ac0-0a68-11e8-a2ce-b9829bf5932d\",\"panelIndex\":\"10\",\"type\":\"visualization\",\"version\":\"6.1.3\"}]",
+        "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":false,\"useMargins\":true}",
+        "uiStateJSON": "{\"P-1\":{\"vis\":{\"legendOpen\":false}},\"P-4\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-5\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-6\":{\"spy\":{\"mode\":{\"fill\":false,\"name\":\"table\"}}},\"P-7\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":0,\"direction\":\"desc\"}}}},\"P-9\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}}",
+        "version": 1,
+        "timeRestore": true,
+        "timeTo": "now",
+        "timeFrom": "now-24h",
+        "refreshInterval": {
+          "display": "Off",
+          "pause": false,
+          "value": 0
+        },
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"filter\":[{\"$state\":{\"store\":\"appState\"},\"meta\":{\"alias\":null,\"disabled\":false,\"index\":\"winlogbeat-*\",\"key\":\"log_name\",\"negate\":false,\"params\":{\"query\":\"Security\",\"type\":\"phrase\"},\"type\":\"phrase\",\"value\":\"Security\"},\"query\":{\"match\":{\"log_name\":{\"query\":\"Security\",\"type\":\"phrase\"}}}},{\"$state\":{\"store\":\"appState\"},\"meta\":{\"alias\":\"Windows High Level Events\",\"disabled\":false,\"index\":\"winlogbeat-*\",\"key\":\"query\",\"negate\":false,\"type\":\"custom\",\"value\":\"{\\\"bool\\\":{\\\"minimum_should_match\\\":1,\\\"should\\\":[{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4618\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4649\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4719\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4765\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4766\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4794\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4897\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4964\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"5124\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"1102\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4706\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4716\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4724\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4727\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4754\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4780\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4816\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4865\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4866\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4867\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4896\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4908\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"5030\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"5035\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"6273\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"6274\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"6278\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"6279\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"6280\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4660\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4697\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4699\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4698\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4707\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4704\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4705\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4720\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4722\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4723\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4725\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4726\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4728\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4729\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4730\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4731\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4732\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4733\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4734\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4740\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4743\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4746\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4747\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4748\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4749\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4751\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4752\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4753\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4756\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4757\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4758\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4759\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4761\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4762\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"4767\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"5050\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"5137\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"5138\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"5140\\\"}},{\\\"match_phrase\\\":{\\\"event_id\\\":\\\"5632\\\"}}]}}\"},\"query\":{\"bool\":{\"minimum_should_match\":1,\"should\":[{\"match_phrase\":{\"event_id\":\"4618\"}},{\"match_phrase\":{\"event_id\":\"4649\"}},{\"match_phrase\":{\"event_id\":\"4719\"}},{\"match_phrase\":{\"event_id\":\"4765\"}},{\"match_phrase\":{\"event_id\":\"4766\"}},{\"match_phrase\":{\"event_id\":\"4794\"}},{\"match_phrase\":{\"event_id\":\"4897\"}},{\"match_phrase\":{\"event_id\":\"4964\"}},{\"match_phrase\":{\"event_id\":\"5124\"}},{\"match_phrase\":{\"event_id\":\"1102\"}},{\"match_phrase\":{\"event_id\":\"4706\"}},{\"match_phrase\":{\"event_id\":\"4716\"}},{\"match_phrase\":{\"event_id\":\"4724\"}},{\"match_phrase\":{\"event_id\":\"4727\"}},{\"match_phrase\":{\"event_id\":\"4754\"}},{\"match_phrase\":{\"event_id\":\"4780\"}},{\"match_phrase\":{\"event_id\":\"4816\"}},{\"match_phrase\":{\"event_id\":\"4865\"}},{\"match_phrase\":{\"event_id\":\"4866\"}},{\"match_phrase\":{\"event_id\":\"4867\"}},{\"match_phrase\":{\"event_id\":\"4896\"}},{\"match_phrase\":{\"event_id\":\"4908\"}},{\"match_phrase\":{\"event_id\":\"5030\"}},{\"match_phrase\":{\"event_id\":\"5035\"}},{\"match_phrase\":{\"event_id\":\"6273\"}},{\"match_phrase\":{\"event_id\":\"6274\"}},{\"match_phrase\":{\"event_id\":\"6278\"}},{\"match_phrase\":{\"event_id\":\"6279\"}},{\"match_phrase\":{\"event_id\":\"6280\"}},{\"match_phrase\":{\"event_id\":\"4660\"}},{\"match_phrase\":{\"event_id\":\"4697\"}},{\"match_phrase\":{\"event_id\":\"4699\"}},{\"match_phrase\":{\"event_id\":\"4698\"}},{\"match_phrase\":{\"event_id\":\"4707\"}},{\"match_phrase\":{\"event_id\":\"4704\"}},{\"match_phrase\":{\"event_id\":\"4705\"}},{\"match_phrase\":{\"event_id\":\"4720\"}},{\"match_phrase\":{\"event_id\":\"4722\"}},{\"match_phrase\":{\"event_id\":\"4723\"}},{\"match_phrase\":{\"event_id\":\"4725\"}},{\"match_phrase\":{\"event_id\":\"4726\"}},{\"match_phrase\":{\"event_id\":\"4728\"}},{\"match_phrase\":{\"event_id\":\"4729\"}},{\"match_phrase\":{\"event_id\":\"4730\"}},{\"match_phrase\":{\"event_id\":\"4731\"}},{\"match_phrase\":{\"event_id\":\"4732\"}},{\"match_phrase\":{\"event_id\":\"4733\"}},{\"match_phrase\":{\"event_id\":\"4734\"}},{\"match_phrase\":{\"event_id\":\"4740\"}},{\"match_phrase\":{\"event_id\":\"4743\"}},{\"match_phrase\":{\"event_id\":\"4746\"}},{\"match_phrase\":{\"event_id\":\"4747\"}},{\"match_phrase\":{\"event_id\":\"4748\"}},{\"match_phrase\":{\"event_id\":\"4749\"}},{\"match_phrase\":{\"event_id\":\"4751\"}},{\"match_phrase\":{\"event_id\":\"4752\"}},{\"match_phrase\":{\"event_id\":\"4753\"}},{\"match_phrase\":{\"event_id\":\"4756\"}},{\"match_phrase\":{\"event_id\":\"4757\"}},{\"match_phrase\":{\"event_id\":\"4758\"}},{\"match_phrase\":{\"event_id\":\"4759\"}},{\"match_phrase\":{\"event_id\":\"4761\"}},{\"match_phrase\":{\"event_id\":\"4762\"}},{\"match_phrase\":{\"event_id\":\"4767\"}},{\"match_phrase\":{\"event_id\":\"5050\"}},{\"match_phrase\":{\"event_id\":\"5137\"}},{\"match_phrase\":{\"event_id\":\"5138\"}},{\"match_phrase\":{\"event_id\":\"5140\"}},{\"match_phrase\":{\"event_id\":\"5632\"}}]}}}],\"query\":{\"language\":\"lucene\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"default_field\":\"*\",\"query\":\"*\"}}},\"highlightAll\":true,\"version\":true}"
+        }
+      }
+    }
+  ]
+}

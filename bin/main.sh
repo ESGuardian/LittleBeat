@@ -165,7 +165,7 @@ if [ ! -e "$install_dir/elastic_started" ]; then
         rm /tmp/break.$$
         touch "$install_dir/elastic_started" >/dev/nul 2>&1
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --msgbox "Elasticsearch запустился" 6 70 
-        # dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурация индексов LittleBeat ..." 6 70 
+        dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Конфигурация Python для работы с Elasticsearch ..." 6 70 
         
         # chown -R elasticsearch:elasticsearch /opt/littlebeat/backups
         # curl -XPUT 'http://localhost:9200/_snapshot/littlebeat' -d '{
@@ -207,7 +207,7 @@ fi
 
 if [ ! -e "$install_dir/net_configured" ]; then
 
-    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Поиск и выбор сетевых интерфейсов ..." 6 70 
+    dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Проверка конфигурации сети ..." 6 70 
     site_name="littlebeat"
     dns_ip=$(nslookup $site_name | grep Server | grep -oP "(\d+\.\d+\.\d+\.\d+)" | head -1)
     check_ip=$(nslookup $site_name | grep $site_name -A 1 | grep Address | grep -oP "(\d+\.\d+\.\d+\.\d+)")
@@ -237,10 +237,10 @@ if [ ! -e "$install_dir/net_configured" ]; then
         esac
       
         case $choise in          
-            1)
-                touch "$install_dir/net_configured" >/dev/nul 2>&1
+            0)
+                touch $install_dir/net_configured >/dev/nul 2>&1
                 ;;
-            2)
+            1)
                 clear
                 echo "Настройка отменена. Завершаем работу компьютера"
                 exec shutdown -h now
@@ -250,8 +250,8 @@ if [ ! -e "$install_dir/net_configured" ]; then
     else 
         if [ "$match_ip" == "" ]; then
             dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --menu "Агенты LittleBeat обращаются к серверу по имени littlebeat. Однако, при проверке настроек сети выяснилось, что для адреса $site_name сервер DNS $dns_ip возвращает IP адрес $check_ip, которого нет ни на одном из сетевых интерфейсов.\nНеобходимо выбрать один из вариантов:" 20 70 3 \
-            1 "Все нормально, запись в DNS будет иправлена позже"\
-            2 "Что-то не так, давайте отменим установку, пока не разберемся"\
+            0 "Все нормально, запись в DNS будет иправлена позже"\
+            1 "Что-то не так, давайте отменим установку, пока не разберемся"\
             2>/tmp/choise.$$
             response=$?
             case $response in
@@ -271,10 +271,10 @@ if [ ! -e "$install_dir/net_configured" ]; then
                 ;;
             esac 
             case $choise in        
-                1)
-                    touch "$install_dir/net_configured" >/dev/nul 2>&1
+                0)
+                    touch $install_dir/net_configured >/dev/nul 2>&1
                     ;;
-                2)
+                1)
                     clear
                     echo "Настройка отменена. Завершаем работу компьютера"
                     exec shutdown -h now
@@ -376,7 +376,7 @@ if [ ! -e "$install_dir/kibana_started" ]; then
             htpasswd -b -c /etc/nginx/conf.d/kibana.htpasswd kibana $password1 >/dev/nul 2>&1
         fi
     done
-    echo 'kibana.defaultAppId: "dashboard/Main-dash"' >>/etc/kibana/kibana.yml
+    echo 'kibana.defaultAppId: "dashboard/0064c570-0a6c-11e8-a2ce-b9829bf5932d"' >>/etc/kibana/kibana.yml
 	cd /usr/share/kibana/src/ui/public/images/
 	rm /usr/share/kibana/src/ui/public/images/kibana.svg
 	wget $github_url/data/kibana.svg >/dev/nul 2>&1
@@ -424,9 +424,12 @@ service nginx restart >/dev/nul 2>&1
 
 if [ ! -e "$install_dir/kibana_configured" ]; then
 	dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --infobox "Первоначальная конфигурация Kibana ..." 8 70
-	mkdir $homedir/data/dashboards
 	cd $homedir/data/dashboards
-	wget $github_url/data/dashboards/NMAP-dash.json >/dev/nul 2>&1
+	wget $github_url/data/dashboards/Main.json >/dev/nul 2>&1
+	wget $github_url/data/dashboards/Nmap-dash.json >/dev/nul 2>&1
+	wget $github_url/data/dashboards/windows-logons.json >/dev/nul 2>&1
+	wget $github_url/data/dashboards/windows-proc.json >/dev/nul 2>&1
+	wget $github_url/data/dashboards/win-hi-level.json >/dev/nul 2>&1
 	wget $github_url/data/dashboards/Winlogbeat-overview.json >/dev/nul 2>&1
 	cd $homedir/data/
 	for file in `find dashboards -type f -name "*.json"`
