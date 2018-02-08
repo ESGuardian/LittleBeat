@@ -20,7 +20,7 @@ ntpdate pool.ntp.org || true
 ###
 
 apt-get install postgresql postgresql-contrib -y
-wget $github_url/addons/doornam/create_db.sql
+wget $github_url/addons/doorman/create_db.sql
 su postgres -c "psql -f mySqlScript.sql"
 useradd doorman
 apt-get install redis-server -y
@@ -46,7 +46,7 @@ echo "export DOORMAN_ENV=prod" >> /etc/profile
 
 cd /opt/doorman/doorman
 rm settings.py
-wget $github_url/addons/doornam/doorman/settings.py
+wget $github_url/addons/doorman/doorman/settings.py
 
 cd ..
 
@@ -61,19 +61,19 @@ npm install -g less
 ln -s /usr/local/bin/lessc /usr/bin/lessc
 cd /etc/nginx/sites-available
 rm default
-wget wget $github_url/addons/doornam/etc/nginx/sites-available/default
+wget wget $github_url/addons/doorman/etc/nginx/sites-available/default
 cd /tmp
 pip install uwsgi flask
 
 cd /opt/doorman
 rm doorman.ini
-wget $github_url/addons/doornam/doorman.ini
+wget $github_url/addons/doorman/doorman.ini
 cd /etc/systemd/system
-wget $github_url/addons/doornam/etc/systemd/system/doorman.service
+wget $github_url/addons/doorman/etc/systemd/system/doorman.service
 mkdir /var/www/html/doorman
 cd /var/www/html/doormam
-wget $github_url/addons/doornam/var/www/html/doormam/osquery.flags
-wget $github_url/addons/doornam/var/www/html/doormam/osquery.key
+wget $github_url/addons/doorman/var/www/html/doormam/osquery.flags
+wget $github_url/addons/doorman/var/www/html/doormam/osquery.key
 cp /etc/logstash/logstash.crt /var/www/html/doormam/logstash.crt
 cd /tmp
 
