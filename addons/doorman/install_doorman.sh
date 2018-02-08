@@ -20,14 +20,8 @@ ntpdate pool.ntp.org || true
 ###
 
 apt-get install postgresql postgresql-contrib -y
-su postgres
-psql
-CREATE ROLE doorman WITH LOGIN PASSWORD '7aWNLur6dyy97LYylawz';
-CREATE DATABASE doorman;
-ALTER DATABASE doorman OWNER TO doorman;
-GRANT ALL PRIVILEGES ON DATABASE doorman TO doorman;
-\q
-exit
+wget $github_url/addons/doornam/create_db.sql
+su postgres -c "psql -f mySqlScript.sql"
 useradd doorman
 apt-get install redis-server -y
 systemctl enable redis-server
