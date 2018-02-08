@@ -21,7 +21,7 @@ ntpdate pool.ntp.org || true
 
 apt-get install postgresql postgresql-contrib -y
 wget $github_url/addons/doorman/create_db.sql
-su postgres -c "psql -f mySqlScript.sql"
+su postgres -c "psql -f create_db.sql"
 useradd doorman
 apt-get install redis-server -y
 systemctl enable redis-server
