@@ -17,7 +17,6 @@
 --logger_tls_endpoint=/log
 --tls_hostname=littlebeat:84
 --tls_server_certs=C:\ProgramData\osquery\logstash.crt
---log_result_events=true
 --pack_delimiter=/
 --utc
 --verbose
