@@ -72,8 +72,8 @@ cd /etc/systemd/system
 wget $github_url/addons/doorman/etc/systemd/system/doorman.service
 mkdir /var/www/html/doorman
 cd /var/www/html/doorman
-wget $github_url/addons/doorman/var/www/html/doorman/osquery.flags
-wget $github_url/addons/doorman/var/www/html/doorman/osquery.key
+# wget $github_url/addons/doorman/var/www/html/doorman/osquery.flags
+# wget $github_url/addons/doorman/var/www/html/doorman/osquery.key
 cp /etc/logstash/logstash.crt /var/www/html/doorman/logstash.crt
 cd /tmp
 
@@ -82,4 +82,4 @@ chown doorman:doorman -R /opt/doorman
 systemctl enable doorman
 systemctl start doorman
 service nginx restart
-setsebool httpd_can_network_connect 1 -P
+
