@@ -71,10 +71,10 @@ wget $github_url/addons/doorman/doorman.ini
 cd /etc/systemd/system
 wget $github_url/addons/doorman/etc/systemd/system/doorman.service
 mkdir /var/www/html/doorman
-cd /var/www/html/doormam
-wget $github_url/addons/doorman/var/www/html/doormam/osquery.flags
-wget $github_url/addons/doorman/var/www/html/doormam/osquery.key
-cp /etc/logstash/logstash.crt /var/www/html/doormam/logstash.crt
+cd /var/www/html/doorman
+wget $github_url/addons/doorman/var/www/html/doorman/osquery.flags
+wget $github_url/addons/doorman/var/www/html/doorman/osquery.key
+cp /etc/logstash/logstash.crt /var/www/html/doorman/logstash.crt
 cd /tmp
 
 usermod -G www-data -a doorman
