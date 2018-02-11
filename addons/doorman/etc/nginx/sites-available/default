@@ -32,6 +32,12 @@ server {
 		include uwsgi_params;
 		uwsgi_pass unix:/opt/doorman/doorman.sock;
 	}
+	location /manage {
+		auth_basic "Restricted";
+		auth_basic_user_file /etc/nginx/conf.d/kibana.htpasswd;	
+		include uwsgi_params;
+		uwsgi_pass unix:/opt/doorman/doorman.sock;
+	}
 }
 
 server {

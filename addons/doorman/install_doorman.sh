@@ -82,4 +82,12 @@ chown doorman:doorman -R /opt/doorman
 systemctl enable doorman
 systemctl start doorman
 service nginx restart
+wget $github_url/addons/doorman/osquery-dash.json
+curl -XPOST 127.0.0.1:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @osquery-dash.json
+cd /etc/logstash/templates
+wget $github_url/addons/doorman/etc/logstash/templates/osquery-6.1.3-template.json
+cd /etc/logstash/conf.d
+wget $github_url/addons/doorman/etc/logstash/conf.d/03-osquery.conf
+service logstash restart
+exit
 
