@@ -90,5 +90,5 @@ wget $github_url/addons/doorman/etc/logstash/templates/osquery-6.1.3-template.js
 cd /etc/logstash/conf.d
 wget $github_url/addons/doorman/etc/logstash/conf.d/03-osquery.conf
 service logstash restart
-exit
+
 
