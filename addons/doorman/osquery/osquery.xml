@@ -77,6 +77,9 @@
 
           </Component>
           <Directory Id="FileSystemLogging" Name="log"/>
+		  <Directory Id="PacksFolder" Name="Packs">
+		  </Directory>
+		  
         </Directory>
       </Directory>
     </Directory>
