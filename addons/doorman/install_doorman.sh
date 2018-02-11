@@ -36,9 +36,9 @@ pip install --upgrade pip
 cd /opt
 git clone https://github.com/mwielgoszewski/doorman.git
 cd doorman 
-pip install virtualenv
-virtualenv env
-source env/bin/activate
+# pip install virtualenv
+# virtualenv env
+# source env/bin/activate
 pip install -r requirements.txt
 
 export DOORMAN_ENV=prod
@@ -53,7 +53,8 @@ cd ..
 mkdir /var/log/doorman
 chown doorman:doorman -R /var/log/doorman
 chown doorman:doorman -R /opt/doorman
-su doorman -c 'cd /opt/doorman; source env/bin/activate; python manage.py db upgrade'
+su doorman -c 'cd /opt/doorman; python manage.py db upgrade'
+# su doorman -c 'cd /opt/doorman; source env/bin/activate; python manage.py db upgrade'
 
 npm install bower -g
 bower --allow-root install
