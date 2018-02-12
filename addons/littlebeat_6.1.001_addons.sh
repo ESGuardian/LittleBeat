@@ -29,11 +29,13 @@ if [ "$choise" == "Facebook osquery LittleBeat Addon" ]; then
 			rm osquery-dash.json
 		fi
         wget $github_url/addons/osquery/kibana/osquery-dash.json
+		curl -s -H "kbn-version: $(dpkg -l | grep kibana | awk '{print $3}')" -H 'Content-Type: application/json' -XDELETE 127.0.0.1:5601/api/saved_objects/index-pattern/winlogbeat-*
 		curl -XPOST 127.0.0.1:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @osquery-dash.json
 		if [ -e "main-dash.json" ]; then
 			rm main-dash.json
 		fi
         wget $github_url/addons/osquery/kibana/main-dash.json
+		curl -s -H "kbn-version: $(dpkg -l | grep kibana | awk '{print $3}')" -H 'Content-Type: application/json' -XDELETE 127.0.0.1:5601/api/saved_objects/visualization/f24a7060-0a7b-11e8-a2ce-b9829bf5932d
 		curl -XPOST 127.0.0.1:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @main-dash.json
 		cd /etc/logstash/conf.d
 		if [ -e "03-osquery.conf" ]; then
