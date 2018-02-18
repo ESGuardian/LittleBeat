@@ -87,6 +87,9 @@ if [ "$choise" == "Wazuh (OSSEC) LittleBeat Addon" ]; then
 			wget $github_url/addons/ossec/logstash/conf.d/02-wazuh.conf
 		fi
 		service logstash restart
+		if ! grep -q "update_ruleset" /etc/crontab; then
+			echo '0  3   * * 2 root docker exec -it ossec-server  bash -c "cd /var/ossec/bin; ./update_ruleset -r"' >> /etc/crontab
+		fi
         touch $install_dir/wazuh_addon_installed
     fi
     dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "Wazuh (OSSEC) LittleBeat Addon установлен\nПочитайте LittleBeat.wiki прежде чем начинать с ним работать" 6 70

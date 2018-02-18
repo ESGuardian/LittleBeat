@@ -353,7 +353,6 @@ if [ ! -e "$install_dir/logstash_started" ]; then
     if [ -e /tmp/break.$$ ]; then
         rm /tmp/break.$$
         touch "$install_dir/logstash_started" >/dev/nul 2>&1
-        echo "0  */2 * * * root $homedir/bin/nmap-rep.sh" >>/etc/crontab
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --msgbox "Logstash запустился" 6 70 
     else
         dialog --title "LITTLEBEAT" --backtitle "Установка и первоначальная конфигурация" --ok-button "Печалька" --msgbox "Что-то пошло не так. Проконсультируйтесь со специалистом. esguardian@outlook.com" 6 70 
