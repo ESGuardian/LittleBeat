@@ -23,7 +23,7 @@ esac
 if [ "$choise" == "Facebook osquery LittleBeat Addon" ]; then
     clear
 
-    if [ ! -e "$instal_dir/osquery_addon_installed" ]; then
+    if [ ! -e "$install_dir/osquery_addon_installed" ]; then
 		cd /tmp
 		if [ -e "osquery-dash.json" ]; then
 			rm osquery-dash.json
@@ -44,7 +44,7 @@ if [ "$choise" == "Facebook osquery LittleBeat Addon" ]; then
 		wget $github_url/addons/osquery/etc/logstash/conf.d/03-osquery.conf
 		cd /tmp
 		service logstash restart
-        touch $instal_dir/osquery_addon_installed
+        touch $install_dir/osquery_addon_installed
     fi
     dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "Facebook osquery LittleBeat Addon установлен\nПочитайте LittleBeat.wiki прежде чем начинать с ним работать" 6 70
     clear
@@ -52,7 +52,7 @@ fi
 if [ "$choise" == "Wazuh (OSSEC) LittleBeat Addon" ]; then
     clear
 
-    if [ ! -e "$instal_dir/wzuh_addon_installed" ]; then
+    if [ ! -e "$install_dir/wzuh_addon_installed" ]; then
 		apt update
 		apt install docker.io -y
 		docker volume create ossec-data
@@ -87,7 +87,7 @@ if [ "$choise" == "Wazuh (OSSEC) LittleBeat Addon" ]; then
 			wget $github_url/addons/ossec/logstash/conf.d/02-wazuh.conf
 		fi
 		service logstash restart
-        touch $instal_dir/wazuh_addon_installed
+        touch $install_dir/wazuh_addon_installed
     fi
     dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "Wazuh (OSSEC) LittleBeat Addon установлен\nПочитайте LittleBeat.wiki прежде чем начинать с ним работать" 6 70
     clear
