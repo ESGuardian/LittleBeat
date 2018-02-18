@@ -52,7 +52,7 @@ fi
 if [ "$choise" == "Wazuh (OSSEC) LittleBeat Addon" ]; then
     clear
 
-    if [ ! -e "$install_dir/wzuh_addon_installed" ]; then
+    if [ ! -e "$install_dir/wazuh_addon_installed" ]; then
 		apt update
 		apt install docker.io -y
 		docker volume create ossec-data
