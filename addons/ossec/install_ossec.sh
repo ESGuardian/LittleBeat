@@ -11,6 +11,13 @@ fi
 wget $github_url/addons/ossec/kibana/wazuh_dash.json
 curl -s -H "kbn-version: $(dpkg -l | grep kibana | awk '{print $3}')" -H 'Content-Type: application/json' -XDELETE 127.0.0.1:5601/api/saved_objects/index-pattern/wazuh-alerts-*
 curl -XPOST 127.0.0.1:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @wazuh_dash.json
+
+if [ -e "main-dash.json" ]; then
+	rm main-dash.json
+fi
+wget $github_url/addons/main-dash.json
+curl -s -H "kbn-version: $(dpkg -l | grep kibana | awk '{print $3}')" -H 'Content-Type: application/json' -XDELETE 127.0.0.1:5601/api/saved_objects/visualization/f24a7060-0a7b-11e8-a2ce-b9829bf5932d
+curl -XPOST 127.0.0.1:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @main-dash.json
 cd /etc/logstash/templates
 if [ ! -e "/etc/logstash/templates/wazuh-elastic6-template-alerts.json" ]; then
 	wget $github_url/addons/ossec/logstash/templates/wazuh-elastic6-template-alerts.json
