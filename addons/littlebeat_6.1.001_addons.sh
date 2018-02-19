@@ -4,7 +4,7 @@ install_dir="$homedir/install"
 log="$install_dir/install.log" 
 errlog="$install_dir/install.err"
 github_url="https://raw.githubusercontent.com/ESGuardian/LittleBeat/v-6.1.001"
-addons_menu=("Facebook osquery LittleBeat Addon" "" "Wazuh (OSSEC) LittleBeat Addon" "" )
+addons_menu=("Facebook osquery LittleBeat Addon" "" "Wazuh (OSSEC) LittleBeat Addon" "" "iTop CMDB LittleBeat Addon" "")
 
 dialog --title "LITTLEBEAT" --backtitle "Выбор дополнений для установки" --menu " " 15 50 ${#addons_menu[@]} "${addons_menu[@]}" 2>/tmp/choise.$$
 response=$?
@@ -46,7 +46,7 @@ if [ "$choise" == "Facebook osquery LittleBeat Addon" ]; then
 		service logstash restart
         touch $install_dir/osquery_addon_installed
     fi
-    dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "Facebook osquery LittleBeat Addon установлен\nПочитайте LittleBeat.wiki прежде чем начинать с ним работать" 6 70
+    dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "Facebook osquery LittleBeat Addon установлен\nПочитайте LittleBeat.wiki прежде чем начинать с ним работать" 10 70
     clear
 fi
 if [ "$choise" == "Wazuh (OSSEC) LittleBeat Addon" ]; then
@@ -92,7 +92,22 @@ if [ "$choise" == "Wazuh (OSSEC) LittleBeat Addon" ]; then
 		fi
         touch $install_dir/wazuh_addon_installed
     fi
-    dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "Wazuh (OSSEC) LittleBeat Addon установлен\nПочитайте LittleBeat.wiki прежде чем начинать с ним работать" 6 70
+    dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "Wazuh (OSSEC) LittleBeat Addon установлен\nПочитайте LittleBeat.wiki прежде чем начинать с ним работать" 10 70
+    clear
+fi
+
+if [ "$choise" == "iTop CMDB LittleBeat Addon" ]; then
+    clear
+
+    if [ ! -e "$install_dir/itop_addon_installed" ]; then
+		apt update
+		apt install docker.io -y
+		docker run --restart=always -d -p 127.0.0.1:3306:3306 --name=my-itop-db -e MYSQL_DATABASE=itop -e MYSQL_USER=itop -e MYSQL_PASSWORD=itop -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql:latest
+		docker run --restart=always -d -p 81:80 --link=my-itop-db:db --name=my-itop supervisions/itop:latest
+
+        touch $install_dir/itop_addon_installed
+    fi
+    dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "iTop CMDB LittleBeat Addon установлен\nТребуется конфигурация через веб-интерфейс\nЗайдите на http://littlebeat:81/setup\nДля справки смотрите  LittleBeat.wiki" 12 70
     clear
 fi
 
