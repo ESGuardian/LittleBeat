@@ -4,8 +4,8 @@
     {
       "id": "wazuh-total",
       "type": "visualization",
-      "updated_at": "2018-02-18T17:19:18.874Z",
-      "version": 2,
+      "updated_at": "2018-02-18T18:32:15.527Z",
+      "version": 1,
       "attributes": {
         "title": "Wazuh Всего событий",
         "visState": "{\"title\":\"Wazuh Всего событий\",\"type\":\"metric\",\"params\":{\"addTooltip\":true,\"addLegend\":false,\"type\":\"metric\",\"metric\":{\"percentageMode\":false,\"colorSchema\":\"Green to Red\",\"useRange\":false,\"colorsRange\":[{\"from\":0,\"to\":100}],\"invertColors\":false,\"labels\":{\"show\":false,\"color\":\"black\"},\"style\":{\"fontSize\":24,\"bgFill\":\"#000\",\"bgColor\":false,\"labelColor\":false,\"subText\":\"\"},\"metricColorMode\":\"None\"}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Всего\"}}]}",
@@ -21,7 +21,7 @@
     {
       "id": "wazuh-timeline",
       "type": "visualization",
-      "updated_at": "2018-02-17T20:21:16.560Z",
+      "updated_at": "2018-02-18T18:32:15.527Z",
       "version": 1,
       "attributes": {
         "savedSearchId": "wazuh-alerts",
@@ -38,7 +38,7 @@
     {
       "id": "wazuh-events-by-host",
       "type": "visualization",
-      "updated_at": "2018-02-17T20:21:16.560Z",
+      "updated_at": "2018-02-18T18:32:15.527Z",
       "version": 1,
       "attributes": {
         "savedSearchId": "wazuh-alerts",
@@ -55,7 +55,7 @@
     {
       "id": "wazuh-events-by-level",
       "type": "visualization",
-      "updated_at": "2018-02-17T20:21:16.560Z",
+      "updated_at": "2018-02-18T18:32:15.527Z",
       "version": 1,
       "attributes": {
         "savedSearchId": "wazuh-alerts",
@@ -72,8 +72,8 @@
     {
       "id": "wazuh-alerts",
       "type": "search",
-      "updated_at": "2018-02-18T17:09:44.880Z",
-      "version": 2,
+      "updated_at": "2018-02-18T18:32:15.527Z",
+      "version": 1,
       "attributes": {
         "title": "wazuh-alerts",
         "description": "",
@@ -97,8 +97,8 @@
     {
       "id": "wazuh-alerts-*",
       "type": "index-pattern",
-      "updated_at": "2018-02-17T20:23:02.089Z",
-      "version": 11,
+      "updated_at": "2018-02-18T18:32:15.527Z",
+      "version": 2,
       "attributes": {
         "timeFieldName": "@timestamp",
         "title": "wazuh-alerts-*",
@@ -108,8 +108,8 @@
     {
       "id": "wazuh-main",
       "type": "dashboard",
-      "updated_at": "2018-02-18T17:19:33.540Z",
-      "version": 3,
+      "updated_at": "2018-02-19T06:45:36.933Z",
+      "version": 2,
       "attributes": {
         "title": "Wazuh Главная",
         "hits": 0,
@@ -127,7 +127,7 @@
           "value": 0
         },
         "kibanaSavedObjectMeta": {
-          "searchSourceJSON": "{\"filter\":[{\"$state\":{\"store\":\"appState\"},\"meta\":{\"alias\":null,\"apply\":true,\"disabled\":false,\"index\":\"wazuh-alerts-*\",\"key\":\"rule.level\",\"negate\":false,\"params\":{\"query\":3,\"type\":\"phrase\"},\"type\":\"phrase\",\"value\":\"3\"},\"query\":{\"match\":{\"rule.level\":{\"query\":3,\"type\":\"phrase\"}}}}],\"highlightAll\":true,\"version\":true,\"query\":{\"language\":\"lucene\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"default_field\":\"*\",\"query\":\"*\"}}}}"
+          "searchSourceJSON": "{\"filter\":[],\"highlightAll\":true,\"version\":true,\"query\":{\"language\":\"lucene\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"default_field\":\"*\",\"query\":\"*\"}}}}"
         }
       }
     }
