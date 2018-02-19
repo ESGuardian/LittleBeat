@@ -80,10 +80,10 @@ if [ "$choise" == "Wazuh (OSSEC) LittleBeat Addon" ]; then
 			wget $github_url/addons/ossec/logstash/templates/wazuh-elastic6-template-alerts.json
 		fi
 		cd /etc/logstash/conf.d
-		if [ ! -e "/logstash/conf.d/02-wazuh.conf" ]; then
+		if [ ! -e "/etc/logstash/conf.d/02-wazuh.conf" ]; then
 			wget $github_url/addons/ossec/logstash/conf.d/02-wazuh.conf
 		else
-			rm /logstash/conf.d/02-wazuh.conf
+			rm /etc/logstash/conf.d/02-wazuh.conf
 			wget $github_url/addons/ossec/logstash/conf.d/02-wazuh.conf
 		fi
 		service logstash restart
@@ -103,8 +103,32 @@ if [ "$choise" == "iTop CMDB LittleBeat Addon" ]; then
 		apt update
 		apt install docker.io -y
 		docker run --restart=always -d -p 127.0.0.1:3306:3306 --name=my-itop-db -e MYSQL_DATABASE=itop -e MYSQL_USER=itop -e MYSQL_PASSWORD=itop -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql:latest
-		docker run --restart=always -d -p 81:80 --link=my-itop-db:db --name=my-itop supervisions/itop:latest
-
+		docker run --restart=always -d -p 127.0.0.1:8081:80 --link=my-itop-db:db --name=my-itop supervisions/itop:latest
+		echo 'server {' >> /etc/nginx/sites-available/default
+        echo '  listen            *:81;' >> /etc/nginx/sites-available/default
+        echo '  server_name       littlebeat-cmdb;' >> /etc/nginx/sites-available/default
+        echo '  access_log       /var/log/nginx/cmdb-access.log;' >> /etc/nginx/sites-available/default
+        echo '  # ssl                     on;' >> /etc/nginx/sites-available/default
+        echo '  # ssl_certificate         /etc/logstash/logstash.crt;' >> /etc/nginx/sites-available/default
+        echo '  # ssl_certificate_key     /etc/logstash/logstash.pem;' >> /etc/nginx/sites-available/default
+        echo '  location / {' >> /etc/nginx/sites-available/default
+        echo '        proxy_pass            http://127.0.0.1:8081/;' >> /etc/nginx/sites-available/default
+        echo '        proxy_redirect        off;' >> /etc/nginx/sites-available/default
+        echo '        proxy_set_header X-Real-IP $remote_addr;' >> /etc/nginx/sites-available/default
+        echo '        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;' >> /etc/nginx/sites-available/default
+        echo '        proxy_set_header Host $http_host;' >> /etc/nginx/sites-available/default
+        echo '        proxy_pass_header Set-Cookie;' >> /etc/nginx/sites-available/default
+        echo '  }' >> /etc/nginx/sites-available/default
+        echo '}' >> /etc/nginx/sites-available/default
+		cd /opt/littlebeat/bin
+		if [ ! -e "/opt/littlebeat/bin/itop_post_conf.sh" ]; then
+			wget $github_url/addons/itop/itop_post_conf.sh
+		else
+			rm /opt/littlebeat/bin/itop_post_conf.sh
+			wget $github_url/addons/itop/itop_post_conf.sh
+		fi
+		chmod +x /opt/littlebeat/bin/itop_post_conf.sh
+		service nginx restart
         touch $install_dir/itop_addon_installed
     fi
     dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "iTop CMDB LittleBeat Addon установлен\nТребуется конфигурация через веб-интерфейс\nЗайдите на http://littlebeat:81/setup\nДля справки смотрите  LittleBeat.wiki" 12 70
