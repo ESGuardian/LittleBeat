@@ -170,6 +170,7 @@ if [ "$choise" == "UEBA LittleBeat Addon (ALFA)" ]; then
 		cd /tmp
 		pip install IPy
 		pip install iso8601utils
+		pip install redis
 		systemctl daemon-reload
 		systemctl enable littlebeat-ueba.service
 		service littlebeat-ueba start
