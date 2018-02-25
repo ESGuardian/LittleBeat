@@ -4,7 +4,7 @@ install_dir="$homedir/install"
 log="$install_dir/install.log" 
 errlog="$install_dir/install.err"
 github_url="https://raw.githubusercontent.com/ESGuardian/LittleBeat/v-6.1.001"
-addons_menu=("Facebook osquery LittleBeat Addon" "" "Wazuh (OSSEC) LittleBeat Addon" "" "iTop CMDB LittleBeat Addon" "")
+addons_menu=("Facebook osquery LittleBeat Addon" "" "Wazuh (OSSEC) LittleBeat Addon" "" "iTop CMDB LittleBeat Addon" "" "UEBA LittleBeat Addon (ALFA)" "")
 
 dialog --title "LITTLEBEAT" --backtitle "Выбор дополнений для установки" --menu " " 15 50 ${#addons_menu[@]} "${addons_menu[@]}" 2>/tmp/choise.$$
 response=$?
@@ -134,4 +134,60 @@ if [ "$choise" == "iTop CMDB LittleBeat Addon" ]; then
     dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "iTop CMDB LittleBeat Addon установлен\nТребуется конфигурация через веб-интерфейс\nЗайдите на http://littlebeat:81/setup\nДля справки смотрите  LittleBeat.wiki" 12 70
     clear
 fi
+if [ "$choise" == "UEBA LittleBeat Addon (ALFA)" ]; then
+    clear
 
+    if [ ! -e "$install_dir/ueba_alfa_addon_installed" ]; then
+		apt update
+		apt install redis-server -y
+		cd $homedir/bin
+		if [ ! -e "ueba" ]; then
+			mkdir ueba			
+		fi
+		cd ueba
+		if [ -e "ueba.py" ]; then
+			rm ueba.py
+		fi 
+		wget $github_url/addons/ueba/ueba.py
+		if [ ! -e "ueba_lib" ]; then
+			mkdir ueba_lib			
+		fi
+		cd ueba_lib
+		if [ -e "__init__.py" ]; then
+			rm __init__.py
+		fi
+		wget $github_url/addons/ueba/ueba_lib/__init__.py
+		if [ -e "wlogon.py" ]; then
+			rm wlogon.py
+		fi
+		wget $github_url/addons/ueba/ueba_lib/wlogon.py
+		chmod -R +x $homedir/bin/ueba
+		cd /lib/systemd/system
+		if [ -e "littlebeat-ueba.service" ]; then
+			rm littlebeat-ueba.service
+		fi
+		wget $github_url/addons/ueba/lib/systemd/system/littlebeat-ueba.service
+		systemctl daemon-reload
+		systemctl enable littlebeat-ueba.service
+		service littlebeat-ueba start
+		
+		cd /tmp
+		if [ -e "ueba-dash.json" ]; then
+			rm ueba-dash.json
+		fi
+		wget $github_url/addons/ossec/kibana/ueba-dash.json
+		curl -s -H "kbn-version: $(dpkg -l | grep kibana | awk '{print $3}')" -H 'Content-Type: application/json' -XDELETE 127.0.0.1:5601/api/saved_objects/index-pattern/ueba-*
+		curl -XPOST 127.0.0.1:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @ueba-dash.json
+
+		if [ -e "main-dash.json" ]; then
+			rm main-dash.json
+		fi
+		wget $github_url/addons/main-dash.json
+		curl -s -H "kbn-version: $(dpkg -l | grep kibana | awk '{print $3}')" -H 'Content-Type: application/json' -XDELETE 127.0.0.1:5601/api/saved_objects/visualization/f24a7060-0a7b-11e8-a2ce-b9829bf5932d
+		curl -XPOST 127.0.0.1:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @main-dash.json
+		
+        touch $install_dir/ueba_alfa_addon_installed
+    fi
+    dialog --title "LITTLEBEAT" --backtitle "Установка дополнений" --msgbox "UEBA LittleBeat Addon (ALFA) установлен\nПочитайте LittleBeat.wiki прежде чем начинать с ним работать" 10 70
+    clear
+fi

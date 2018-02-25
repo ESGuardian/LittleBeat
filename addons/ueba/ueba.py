@@ -78,7 +78,19 @@ WATCHER_INDEX_TEMPLATE = {
 	}
   }
 }
-es = Elasticsearch()
+elastic_not_connected = True
+while elastic_not_connected :
+	try:
+		es = Elasticsearch()
+		if es.ping() :
+			elastic_not_connected = False
+		else:
+			time.sleep(60)
+	except: 
+		pass
+		time.sleep(60)
+		
+
 if not es.indices.exists_template(name=WATCHER_INDEX_TEMPLATE_NAME):
 	# записываем шаблон индекса
 	res=es.indices.put_template(name=WATCHER_INDEX_TEMPLATE_NAME, body=WATCHER_INDEX_TEMPLATE)

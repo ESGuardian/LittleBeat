@@ -1,0 +1,20 @@
+[Unit]
+Description=LittleBeat UEBA
+After=network.target
+ 
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=10
+startLimitIntervalSec=60
+
+WorkingDirectory=/opt/littlebeat/bin/ueba
+ExecStart=/opt/littlebeat/bin/ueba/ueba.py
+
+PermissionsStartOnly=true
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=fw1-loggrabber
+ 
+[Install]
+WantedBy=multi-user.target
