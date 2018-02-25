@@ -4,9 +4,9 @@ After=network.target
  
 [Service]
 Type=simple
-Restart=on-failure
+Restart=always
 RestartSec=10
-startLimitIntervalSec=60
+
 
 WorkingDirectory=/opt/littlebeat/bin/ueba
 ExecStart=/opt/littlebeat/bin/ueba/ueba.py

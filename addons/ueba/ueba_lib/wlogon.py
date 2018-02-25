@@ -124,7 +124,7 @@ class wlogon(object):
 				username = username + '@' + hit['_source']['event_data']['TargetDomainName'].lower()
 
 			current_logon_time = hit['_source']['@timestamp']
-			logon_type = hit['_source']['event_data']['LogonType']
+			logon_type = int(hit['_source']['event_data']['LogonType'])
 			logon_event_id = hit['_id']
 			logon_index = hit['_index']
 			
@@ -285,7 +285,7 @@ class wlogon(object):
 			if 'TargetDomainName' in hit['_source']['event_data'] :
 				username = username + '@' + hit['_source']['event_data']['TargetDomainName'].lower()
 			current_logon_time = hit['_source']['@timestamp']
-			logon_type = hit['_source']['event_data']['LogonType']
+			logon_type = int(hit['_source']['event_data']['LogonType'])
 			logon_event_id = hit['_id']
 			logon_index = hit['_index']
 			
