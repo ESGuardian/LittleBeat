@@ -4,6 +4,7 @@ from datetime import date, timedelta, datetime
 from iso8601utils import parsers
 import codecs
 import time
+from IPy import IP
 
 class wlogon(object):
 	def __init__(self, conn_elasticsearch,conn_redis, index):
@@ -143,6 +144,10 @@ class wlogon(object):
 			if logon_type in self.network_logon_types:
 				source_ip = hit['_source']['event_data']['IpAddress']
 				if source_ip is None:
+					source_ip = '127.0.0.1'
+				try:
+					source_ip = str(IP(source_ip))
+				except:
 					source_ip = '127.0.0.1'
 				target_host = hit['_source']['computer_name'].lower()
 				if target_host in self.network_logon_excepted_target_hosts :
@@ -289,6 +294,10 @@ class wlogon(object):
 					source_ip = hit['_source']['event_data']['IpAddress']
 					if source_ip is None:
 						source_ip = '127.0.0.1'
+					try:
+						source_ip = str(IP(source_ip))
+					except:
+						source_ip = '127.0.0.1'
 					target_host = hit['_source']['computer_name'].lower()
 					item = username + "|" + source_ip + "|" + target_host + "|" + logon_index + "|" + logon_event_id
 					score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
@@ -384,6 +393,10 @@ class wlogon(object):
 				if logon_type in self.network_logon_types :
 					source_ip = hit['_source']['event_data']['IpAddress']
 					if source_ip is None:
+						source_ip = '127.0.0.1'
+					try:
+						source_ip = str(IP(source_ip))
+					except:
 						source_ip = '127.0.0.1'
 					target_host = hit['_source']['computer_name']
 					item = username + "|" + source_ip + "|" + target_host + "|" + logon_index + "|" + logon_event_id

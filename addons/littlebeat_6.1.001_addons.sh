@@ -167,6 +167,9 @@ if [ "$choise" == "UEBA LittleBeat Addon (ALFA)" ]; then
 			rm littlebeat-ueba.service
 		fi
 		wget $github_url/addons/ueba/lib/systemd/system/littlebeat-ueba.service
+		cd /tmp
+		pip install IPy
+		pip install iso8601utils
 		systemctl daemon-reload
 		systemctl enable littlebeat-ueba.service
 		service littlebeat-ueba start
