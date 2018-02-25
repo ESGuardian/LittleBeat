@@ -14,7 +14,7 @@ ExecStart=/opt/littlebeat/bin/ueba/ueba.py
 PermissionsStartOnly=true
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=fw1-loggrabber
+SyslogIdentifier=LittleBeat-UEBA
  
 [Install]
 WantedBy=multi-user.target
