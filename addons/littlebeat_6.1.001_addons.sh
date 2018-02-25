@@ -178,7 +178,7 @@ if [ "$choise" == "UEBA LittleBeat Addon (ALFA)" ]; then
 		if [ -e "ueba-dash.json" ]; then
 			rm ueba-dash.json
 		fi
-		wget $github_url/addons/ossec/kibana/ueba-dash.json
+		wget $github_url/addons/ueba/kibana/ueba-dash.json
 		curl -s -H "kbn-version: $(dpkg -l | grep kibana | awk '{print $3}')" -H 'Content-Type: application/json' -XDELETE 127.0.0.1:5601/api/saved_objects/index-pattern/ueba-*
 		curl -XPOST 127.0.0.1:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @ueba-dash.json
 
