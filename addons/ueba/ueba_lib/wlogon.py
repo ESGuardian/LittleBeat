@@ -9,8 +9,8 @@ class wlogon(object):
 	def __init__(self, conn_elasticsearch,conn_redis, index):
 		self.kibana_base_url = 'https://littlebeat'
 		self.watcher_index = index
-		self.interactive_logon_types = [u'Интерактивный', u'Снятие блокировки (локально)', u'Новая учетная запись', u'Интерактивный (удаленно)', u'Интерактивный (из кэша)', u'Интерактивный (удаленно, из кэша)', u'Снятие блокировки (из кэша)']
-		self.network_logon_types = [u'Сетевой',u'Сетевой (открытый текст)']
+		self.interactive_logon_types = [2,7,9,10,11,12,13]
+		self.network_logon_types = [3,8]
 		# не считаем валидные сетевые логоны на эти хосты
 		# это касается, контроллеров домена, файловых серверов, серверов Exchange
 		self.network_logon_excepted_target_hosts = [] 
@@ -115,7 +115,10 @@ class wlogon(object):
 		res = self.es.search(index='winlogbeat-*',body=myquery)
 
 		for hit in res['hits']['hits']:
-			username = hit['_source']['event_data']['TargetUserName'].lower()
+			if 'TargetUserName' in hit['_source']['event_data'] :
+				username = hit['_source']['event_data']['TargetUserName'].lower()
+			else:
+				break
 			if 'TargetDomainName' in hit['_source']['event_data'] :
 				username = username + '@' + hit['_source']['event_data']['TargetDomainName'].lower()
 
@@ -270,7 +273,10 @@ class wlogon(object):
 		res = self.es.search(index='winlogbeat-*',body=myquery)
 
 		for hit in res['hits']['hits']:
-			username = hit['_source']['event_data']['TargetUserName'].lower()
+			if 'TargetUserName' in hit['_source']['event_data'] :
+				username = hit['_source']['event_data']['TargetUserName'].lower()
+			else:
+				break
 			if 'TargetDomainName' in hit['_source']['event_data'] :
 				username = username + '@' + hit['_source']['event_data']['TargetDomainName'].lower()
 			current_logon_time = hit['_source']['@timestamp']

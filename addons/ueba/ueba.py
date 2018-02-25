@@ -69,7 +69,7 @@ WATCHER_INDEX_TEMPLATE = {
 		  "type": "keyword"
 		},
 		"event_desc": {
-		  "type": "text"
+		  "type": "keyword"
 		},
 		"@version": {
 		  "type": "keyword"
