@@ -1,10 +1,10 @@
 {
-  "version": "6.1.2",
+  "version": "6.1.3",
   "objects": [
     {
       "id": "feb62e90-1a23-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-25T12:04:13.433Z",
+      "updated_at": "2018-02-25T18:45:45.949Z",
       "version": 1,
       "attributes": {
         "title": "ueba-count",
@@ -21,11 +21,11 @@
     {
       "id": "ac64d990-1a26-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-25T12:23:23.817Z",
-      "version": 1,
+      "updated_at": "2018-02-26T08:33:52.931Z",
+      "version": 2,
       "attributes": {
         "title": "ueba-events",
-        "visState": "{\"title\":\"ueba-events\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"severity\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"severity\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"event_desc\",\"size\":1,\"order\":\"desc\",\"orderBy\":\"_term\"}}]}",
+        "visState": "{\"title\":\"ueba-events\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"severity\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"severity\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"event_desc\",\"size\":50,\"order\":\"desc\",\"orderBy\":\"_term\"}}]}",
         "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
         "description": "",
         "savedSearchId": "ad705d80-1a23-11e8-ab95-711bc24f9c90",
@@ -38,7 +38,7 @@
     {
       "id": "0e5653c0-1a29-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-25T12:40:27.132Z",
+      "updated_at": "2018-02-25T18:45:45.949Z",
       "version": 1,
       "attributes": {
         "title": "ueba-source-ip",
@@ -55,7 +55,7 @@
     {
       "id": "708744c0-1a27-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-25T12:28:52.876Z",
+      "updated_at": "2018-02-25T18:45:45.949Z",
       "version": 1,
       "attributes": {
         "title": "ueba-target",
@@ -72,7 +72,7 @@
     {
       "id": "4a245500-1a24-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-25T12:06:19.984Z",
+      "updated_at": "2018-02-25T18:45:45.949Z",
       "version": 1,
       "attributes": {
         "title": "ueba-timeline",
@@ -89,7 +89,7 @@
     {
       "id": "26cee4a0-1a27-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-25T12:26:49.194Z",
+      "updated_at": "2018-02-25T18:45:45.949Z",
       "version": 1,
       "attributes": {
         "title": "ueba-users",
@@ -106,7 +106,7 @@
     {
       "id": "ad705d80-1a23-11e8-ab95-711bc24f9c90",
       "type": "search",
-      "updated_at": "2018-02-25T12:01:57.080Z",
+      "updated_at": "2018-02-25T18:45:45.949Z",
       "version": 1,
       "attributes": {
         "title": "ueba-common",
@@ -134,26 +134,26 @@
     {
       "id": "ueba-*",
       "type": "index-pattern",
-      "updated_at": "2018-02-25T13:24:28.788Z",
-      "version": 11,
+      "updated_at": "2018-02-26T08:36:43.990Z",
+      "version": 3,
       "attributes": {
         "title": "ueba-*",
         "timeFieldName": "@timestamp",
-        "fields": "[{\"name\":\"@timestamp\",\"type\":\"date\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"@version\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"_source\",\"type\":\"_source\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"count\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"days\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"dest_ip\",\"type\":\"ip\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"event_desc\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"event_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"period\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"severity\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_ip\",\"type\":\"ip\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_url\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"tags\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"target_host\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"username\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true}]",
+        "fields": "[{\"name\":\"@timestamp\",\"type\":\"date\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"@version\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"_index\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"_score\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"_source\",\"type\":\"_source\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"_type\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"count\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"days\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"dest_ip\",\"type\":\"ip\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"event_desc\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"event_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"period\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"severity\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_ip\",\"type\":\"ip\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_url\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"tags\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"target_host\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"username\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true}]",
         "fieldFormatMap": "{\"source_url\":{\"id\":\"url\",\"params\":{\"labelTemplate\":\"source_doc\"}}}"
       }
     },
     {
       "id": "8eb75bd0-1a2a-11e8-ab95-711bc24f9c90",
       "type": "dashboard",
-      "updated_at": "2018-02-25T12:51:12.013Z",
-      "version": 1,
+      "updated_at": "2018-02-26T08:35:44.984Z",
+      "version": 2,
       "attributes": {
         "title": "ueba-dash",
         "hits": 0,
         "description": "",
-        "panelsJSON": "[{\"title\":\"всего событий\",\"panelIndex\":\"1\",\"gridData\":{\"x\":0,\"y\":0,\"w\":4,\"h\":2,\"i\":\"1\"},\"version\":\"6.1.2\",\"type\":\"visualization\",\"id\":\"feb62e90-1a23-11e8-ab95-711bc24f9c90\"},{\"title\":\"события\",\"panelIndex\":\"2\",\"gridData\":{\"x\":4,\"y\":0,\"w\":8,\"h\":6,\"i\":\"2\"},\"version\":\"6.1.2\",\"type\":\"visualization\",\"id\":\"ac64d990-1a26-11e8-ab95-711bc24f9c90\"},{\"title\":\"IP источников\",\"panelIndex\":\"3\",\"gridData\":{\"x\":8,\"y\":6,\"w\":4,\"h\":6,\"i\":\"3\"},\"version\":\"6.1.2\",\"type\":\"visualization\",\"id\":\"0e5653c0-1a29-11e8-ab95-711bc24f9c90\"},{\"title\":\"Целевые хосты\",\"panelIndex\":\"4\",\"gridData\":{\"x\":0,\"y\":4,\"w\":4,\"h\":8,\"i\":\"4\"},\"version\":\"6.1.2\",\"type\":\"visualization\",\"id\":\"708744c0-1a27-11e8-ab95-711bc24f9c90\"},{\"panelIndex\":\"5\",\"gridData\":{\"x\":0,\"y\":2,\"w\":4,\"h\":2,\"i\":\"5\"},\"version\":\"6.1.2\",\"type\":\"visualization\",\"id\":\"4a245500-1a24-11e8-ab95-711bc24f9c90\"},{\"title\":\"Юзеры\",\"panelIndex\":\"6\",\"gridData\":{\"x\":4,\"y\":6,\"w\":4,\"h\":6,\"i\":\"6\"},\"version\":\"6.1.2\",\"type\":\"visualization\",\"id\":\"26cee4a0-1a27-11e8-ab95-711bc24f9c90\"},{\"title\":\"Последние события\",\"panelIndex\":\"7\",\"gridData\":{\"x\":0,\"y\":12,\"w\":12,\"h\":10,\"i\":\"7\"},\"version\":\"6.1.2\",\"type\":\"search\",\"id\":\"ad705d80-1a23-11e8-ab95-711bc24f9c90\"}]",
-        "optionsJSON": "{\"darkTheme\":false,\"useMargins\":true,\"hidePanelTitles\":false}",
+        "panelsJSON": "[{\"gridData\":{\"h\":2,\"i\":\"1\",\"w\":4,\"x\":0,\"y\":0},\"id\":\"feb62e90-1a23-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"1\",\"title\":\"всего событий\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"gridData\":{\"h\":6,\"i\":\"2\",\"w\":8,\"x\":4,\"y\":0},\"id\":\"ac64d990-1a26-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"2\",\"title\":\"события\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"gridData\":{\"h\":6,\"i\":\"3\",\"w\":4,\"x\":8,\"y\":6},\"id\":\"0e5653c0-1a29-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"3\",\"title\":\"IP источников\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"gridData\":{\"h\":8,\"i\":\"4\",\"w\":4,\"x\":0,\"y\":4},\"id\":\"708744c0-1a27-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"4\",\"title\":\"Целевые хосты\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"gridData\":{\"h\":2,\"i\":\"5\",\"w\":4,\"x\":0,\"y\":2},\"id\":\"4a245500-1a24-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"5\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"gridData\":{\"h\":6,\"i\":\"6\",\"w\":4,\"x\":4,\"y\":6},\"id\":\"26cee4a0-1a27-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"6\",\"title\":\"Юзеры\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"gridData\":{\"h\":10,\"i\":\"7\",\"w\":12,\"x\":0,\"y\":12},\"id\":\"ad705d80-1a23-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"7\",\"title\":\"Последние события\",\"type\":\"search\",\"version\":\"6.1.2\"}]",
+        "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":false,\"useMargins\":true}",
         "uiStateJSON": "{\"P-2\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-3\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-4\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-6\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}}",
         "version": 1,
         "timeRestore": true,
@@ -165,7 +165,7 @@
           "value": 0
         },
         "kibanaSavedObjectMeta": {
-          "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"lucene\"},\"filter\":[],\"highlightAll\":true,\"version\":true}"
+          "searchSourceJSON": "{\"query\":{\"language\":\"lucene\",\"query\":\"\"},\"filter\":[],\"highlightAll\":true,\"version\":true}"
         }
       }
     }
