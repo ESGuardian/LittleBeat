@@ -57,6 +57,25 @@ class wlogon(object):
 			'wlogon_033': [1,u"ОЧЕНЬ ДАВНО НЕ ВСТРЕЧАЛСЯ ЮЗЕР при интерактивном логоне на целевой хост."],
 			'wlogon_034': [1,u"ДАВНО НЕ ВСТРЕЧАЛСЯ ЮЗЕР при интерактивном логоне на целевой хост."],
 		}
+		self.limits = {
+			'wlogon_005': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_006': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_007': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_009': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_010': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_012': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_013': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_014': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_015': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_017': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_018': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_019': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_020': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_021': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_031': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			
+		}
+		self.norepeat_time = 600
 		
 		
 
@@ -65,6 +84,13 @@ class wlogon(object):
 		doc = {}
 		for key,value in kwargs.iteritems():
 			doc[key] = value
+		if 'norepeat_key' in doc.keys() :
+			if self.r.exists(doc['norepeat_key']) :
+				return
+			else :
+				self.r.set(doc['norepeat_key'],'allredy_messaged')
+				self.r.expire(doc['norepeat_key'], self.norepeat_time)
+				doc.pop('norepeat_key')
 		
 		if ('source_index' in doc.keys()) and ('source_id' in doc.keys()) :
 			doc['source_url'] = self.kibana_base_url + '/app/kibana#/doc/winlogbeat-*/' + doc['source_index'] + '/winlogbeat?id=' + doc['source_id']
@@ -158,57 +184,21 @@ class wlogon(object):
 				if self.r.zadd("valid_logon|network", score, item) == 0 :
 					break
 				# Группировка по юзерам. user to target
-				
 				self.r.zadd("valid_logon|network|per_user|" + username, score, target_host)
-				last_hour = score - 3600
-				count = self.r.zcount("valid_logon|network|per_user|" + username, last_hour, score)
-				if count > 5 :
-					if not self.r.exists('wlogon_20|'+ username + '|last_hour') :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_020', username=username, period=u"Последний час", count=count)
-						self.r.set('wlogon_20|' + username + '|last_hour', 'allready_messaged')
-						self.r.expire('wlogon_20|' + username + '|last_hour', 600)					
-				last_day = score - 86400
-				count = self.r.zcount("valid_logon|network|per_user|" + username, last_day, score)
-				if count > 10 :
-					if not self.r.exists('wlogon_20|'+ username + '|last_day') :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_020', username=username, period=u"Последние сутки", count=count)
-						self.r.set('wlogon_20|' + username + '|last_day', 'allready_messaged')
-						self.r.expire('wlogon_20|' + username + '|last_day', 600)					
-				last_weak = score - 86400*7
-				count = self.r.zcount("valid_logon|network|per_user|" + username, last_weak, score)
-				if count > 100 :
-					if not self.r.exists('wlogon_20|'+ username + '|last_weak') :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_020', username=username, period=u"Последняя неделя", count=count)
-						self.r.set('wlogon_20|' + username + '|last_weak', 'allready_messaged')
-						self.r.expire('wlogon_20|' + username + '|last_weak', 600)
-					
-					
+				for key,value in self.limits['wlogon_020'].iteritems() :
+					count = self.r.zcount("valid_logon|network|per_user|" + username, score - value[1], score)
+					if count > value[0] :
+						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_020', username=username, period=key, count=count, norepeat_key='wlogon_020|'+ username + '|' + key)
+	
 				# Группировка по источникам. source_ip to target
 				# исключаем логон с адреса 127.0.0.1	
 				if not (source_ip in ['127.0.0.1','::1']) :
-					self.r.zadd("valid_logon|network|per_source_ip|" + source_ip, score, target_host)					
-					last_hour = score - 3600
-					count = self.r.zcount("valid_logon|network|per_source_ip|" + source_ip, last_hour, score)						
-					if count > 5 :
-						if not self.r.exists('wlogon_21|'+ source_ip + '|last_hour') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_021', source_ip=source_ip, period=u"Последний час", count=count)
-							self.r.set('wlogon_21|' + source_ip + '|last_hour', 'allready_messaged')
-							self.r.expire('wlogon_21|' + source_ip + '|last_hour', 600)
-					last_day = score - 86400
-					count = self.r.zcount("valid_logon|network|per_source_ip|" + source_ip, last_day, score)
-					if count > 10 :
-						if not self.r.exists('wlogon_21|'+ source_ip + '|last_day') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_021', source_ip=source_ip, period=u"Последние сутки", count=count)
-							self.r.set('wlogon_21|' + source_ip + '|last_day', 'allready_messaged')
-							self.r.expire('wlogon_21|' + source_ip + '|last_day', 600)
-					last_weak = score - 86400*7
-					count = self.r.zcount("valid_logon|network|per_source_ip|" + source_ip, last_weak, score)
-					if count > 100 :
-						if not self.r.exists('wlogon_21|'+ source_ip + '|last_weak') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_021', source_ip=source_ip, period=u"Последняя неделя", count=count)
-							self.r.set('wlogon_21|' + source_ip + '|last_weak', 'allready_messaged')
-							self.r.expire('wlogon_21|' + source_ip + '|last_weak', 600)
-						
+					self.r.zadd("valid_logon|network|per_source_ip|" + source_ip, score, target_host)
+					for key,value in self.limits['wlogon_021'].iteritems() :
+						count = self.r.zcount("valid_logon|network|per_source_ip|" + source_ip, score - value[1], score)
+						if count > value[0] :
+							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_021', source_ip=source_ip, period=key, count=count, norepeat_key= 'wlogon_021|'+ source_ip + '|' + key)
+
 				# target новые сетевые логоны, редкие логоны
 				oldscore = self.r.zscore ("valid_logon|network|per_target_host|by_source_ip|" + target_host, source_ip)
 				
@@ -254,31 +244,11 @@ class wlogon(object):
 				# Группировка по юзерам. user to target
 				
 				self.r.zadd("valid_logon|interactive|per_user|" + username, score, target_host)
-				last_hour = score - 3600
-				count = self.r.zcount("valid_logon|interactive|per_user|" + username, last_hour, score)
-				if count > 5 :
-					if not self.r.exists('wlogon_31|'+ username + '|last_hour') :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_031', username=username, period=u"Последний час", count=count)
-						self.r.set('wlogon_31|' + username + '|last_hour', 'allready_messaged')
-						self.r.expire('wlogon_31|' + username + '|last_hour', 600)
-					
-				last_day = score - 86400
-				count = self.r.zcount("valid_logon|interactive|per_user|" + username, last_day, score)
-				if count > 10 :
-					if not self.r.exists('wlogon_31|'+ username + '|last_day') :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_031', username=username, period=u"Последние сутки", count=count)
-						self.r.set('wlogon_31|' + username + '|last_day', 'allready_messaged')
-						self.r.expire('wlogon_31' + username + '|last_day', 600)
-					
-				last_weak = score - 86400*7
-				count = self.r.zcount("valid_logon|interactive|per_user|" + username, last_weak, score)
-				if count > 100 :
-					if not self.r.exists('wlogon_31|'+ username + '|last_weak') :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_031', username=username, period=u"Последняя неделя", count=count)
-						self.r.set('wlogon_31|' + username + '|last_weak', 'allready_messaged')
-						self.r.expire('wlogon_31|' + username + '|last_weak', 600)
-						
-					
+				for key,value in self.limits['wlogon_031'].iteritems() :
+					count = self.r.zcount("valid_logon|interactive|per_user|" + username, score - value[1], score)
+					if count > value[0] :
+						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_031', username=username, period=key, count=count, norepeat_key='wlogon_031|'+ username + '|' + key)
+
 				# target новые и редкие интерактивные логоны
 				oldscore = self.r.zscore ("valid_logon|interactive|per_target_host|by_user|" + target_host, username)
 				
@@ -341,84 +311,25 @@ class wlogon(object):
 					item = logon_index + "|" + logon_event_id
 					# считаем события по юзеру
 					self.r.zadd("valid_bad_logon|network|per_user|" + username, score, item)
-					last_hour = score - 3600
-					count = self.r.zcount("valid_bad_logon|network|per_user|" + username, last_hour, score)
-					if count > 5 :
-						if not self.r.exists('wlogon_005|'+ username + '|last_hour') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_005', username=username, period=u"Последний час", count=count)
-							self.r.set('wlogon_005|' + username + '|last_hour', 'allready_messaged')
-							self.r.expire('wlogon_005|' + username + '|last_hour', 600)
+					for key,value in self.limits['wlogon_005'].iteritems() :
+						count = self.r.zcount("valid_bad_logon|network|per_user|" + username, score - value[1], score)
+						if count > value[0] :
+							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_005', username=username, period=key, count=count, norepeat_key='wlogon_005|'+ username + '|' + key)
 
-					last_day = score - 86400
-					count = self.r.zcount("valid_bad_logon|network|per_user|" + username, last_day, score)
-					if count > 10 :
-						if not self.r.exists('wlogon_005|'+ username + '|last_day') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_005', username=username, period=u"Последние сутки", count=count)
-							self.r.set('wlogon_005|' + username + '|last_day', 'allready_messaged')
-							self.r.expire('wlogon_005|' + username + '|last_day', 600)
-						
-					last_weak = score - 86400*7
-					count = self.r.zcount("valid_bad_logon|network|per_user|" + username, last_weak, score)
-					if count > 100 :
-						if not self.r.exists('wlogon_005|'+ username + '|last_weak') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_005', username=username, period=u"Последняя неделя", count=count)
-							self.r.set('wlogon_005|' + username + '|last_weak', 'allready_messaged')
-							self.r.expire('wlogon_005|' + username + '|last_weak', 600)
-						
-					
 					# считаем события по IP источника
 					self.r.zadd("valid_bad_logon|network|per_source_ip|" + source_ip, score, item)
-					last_hour = score - 3600
-					count = self.r.zcount("valid_bad_logon|network|per_source_ip|" + source_ip, last_hour, score)
-					if count > 5 :
-						if not self.r.exists('wlogon_006|'+ source_ip + '|last_hour') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_006', source_ip=source_ip, period=u"Последний час", count=count)
-							self.r.set('wlogon_006|' + source_ip + '|last_hour', 'allready_messaged')
-							self.r.expire('wlogon_006|' + source_ip + '|last_hour', 600)
-						
-					last_day = score - 86400
-					count = self.r.zcount("valid_bad_logon|network|per_source_ip|" + source_ip, last_day, score)
-					if count > 10 :
-						if not self.r.exists('wlogon_006|'+ source_ip + '|last_day') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_006', source_ip=source_ip, period=u"Последние сутки", count=count)
-							self.r.set('wlogon_006|' + source_ip + '|last_day', 'allready_messaged')
-							self.r.expire('wlogon_006|' + source_ip + '|last_day', 600)
-						
-					last_weak = score - 86400*7
-					count = self.r.zcount("valid_bad_logon|network|per_source_ip|" + source_ip, last_weak, score)
-					if count > 100 :
-						if not self.r.exists('wlogon_006|'+ source_ip + '|last_weak') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_006', source_ip=source_ip, period=u"Последняя неделя", count=count)
-							self.r.set('wlogon_006|' + source_ip + '|last_weak', 'allready_messaged')
-							self.r.expire('wlogon_006|' + source_ip + '|last_weak', 600)
-						
-						
+					for key,value in self.limits['wlogon_006'].iteritems() :
+						count = self.r.zcount("valid_bad_logon|network|per_source_ip|" + source_ip, score - value[1], score)
+						if count > value[0] :
+							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_006', source_ip=source_ip, period=key, count=count, norepeat_key='wlogon_006|'+ source_ip + '|' + key)
+	
 					# считаем события по target_host
 					self.r.zadd("valid_bad_logon|network|per_target_host|" + target_host, score, item)
-					last_hour = score - 3600
-					count = self.r.zcount("valid_bad_logon|network|per_target_host|" + target_host, last_hour, score)
-					if count > 5 :
-						if not self.r.exists('wlogon_007|'+ target_host + '|last_hour') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_007', target_host=target_host, period=u"Последний час", count=count)
-							self.r.set('wlogon_007|' + target_host + '|last_hour', 'allready_messaged')
-							self.r.expire('wlogon_007|' + target_host + '|last_hour', 600)
-						
-					last_day = score - 86400
-					count = self.r.zcount("valid_bad_logon|network|per_target_host|" + target_host, last_day, score)
-					if count > 10 :
-						if not self.r.exists('wlogon_007|'+ target_host + '|last_day') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_007', target_host=target_host, period=u"Последние сутки", count=count)
-							self.r.set('wlogon_007|' + target_host + '|last_day', 'allready_messaged')
-							self.r.expire('wlogon_007|' + target_host + '|last_day', 600)
-						
-					last_weak = score - 86400*7
-					count = self.r.zcount("valid_bad_logon|network|per_target_host|" + target_host, last_weak, score)
-					if count > 100 :
-						if not self.r.exists('wlogon_007|'+ target_host + '|last_weak') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_007', target_host=target_host, period=u"Последняя неделя", count=count)
-							self.r.set('wlogon_007|' + target_host + '|last_weak', 'allready_messaged')
-							self.r.expire('wlogon_007|' + target_host + '|last_weak', 600)
-						
+					for key,value in self.limits['wlogon_007'].iteritems() :
+						count = self.r.zcount("valid_bad_logon|network|per_target_host|" + target_host, score - value[1], score)
+						if count > value[0] :
+							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_007', target_host=target_host, period=key, count=count, norepeat_key='wlogon_007|'+ target_host + '|' + key)
+	
 				elif logon_type in self.interactive_logon_types :
 					target_host = hit['_source']['computer_name'].lower()
 					item = username + "|" + target_host + "|" + logon_index + "|" + logon_event_id
@@ -431,56 +342,18 @@ class wlogon(object):
 					item = logon_index + "|" + logon_event_id
 					# считаем события по юзеру
 					self.r.zadd("valid_bad_logon|interactive|per_user|" + username, score, item)
-					last_hour = score - 3600
-					count = self.r.zcount("valid_bad_logon|interactive|per_user|" + username, last_hour, score)
-					if count > 5 :
-						if not self.r.exists('wlogon_009|'+ username + '|last_hour') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_009', username=username, period=u"Последний час", count=count)
-							self.r.set('wlogon_009|' + username + '|last_hour', 'allready_messaged')
-							self.r.expire('wlogon_009|' + username + '|last_hour', 600)
-						
-					last_day = score - 86400
-					count = self.r.zcount("valid_bad_logon|interactive|per_user|" + username, last_day, score)
-					if count > 10 :
-						if not self.r.exists('wlogon_009|'+ username + '|last_day') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_009', username=username, period=u"Последние сутки", count=count)
-							self.r.set('wlogon_009|' + username + '|last_day', 'allready_messaged')
-							self.r.expire('wlogon_009|' + username + '|last_day', 600)
-						
-					last_weak = score - 86400*7
-					count = self.r.zcount("valid_bad_logon|interactive|per_user|" + username, last_weak, score)
-					if count > 100 :
-						if not self.r.exists('wlogon_009|'+ username + '|last_weak') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_009', username=username, period=u"Последняя неделя", count=count)
-							self.r.set('wlogon_009|' + username + '|last_weak', 'allready_messaged')
-							self.r.expire('wlogon_009|' + username + '|last_weak', 600)
-						
-					
+					for key,value in self.limits['wlogon_009'].iteritems() :
+						count = self.r.zcount("valid_bad_logon|interactive|per_user|" + username, score - value[1], score)
+						if count > value[0] :
+							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_009', username=username, period=key, count=count, norepeat_key='wlogon_009|'+ username + '|' + key)
+
 					# считаем события по target_host
 					self.r.zadd("valid_bad_logon|interactive|per_target_host|" + target_host, score, item)
-					last_hour = score - 3600
-					count = self.r.zcount("valid_bad_logon|interactive|per_target_host|" + target_host, last_hour, score)
-					if count > 5 :
-						if not self.r.exists('wlogon_010|'+ target_host + '|last_hour') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_010', target_host=target_host, period=u"Последний час", count=count)
-							self.r.set('wlogon_010|' + target_host + '|last_hour', 'allready_messaged')
-							self.r.expire('wlogon_010|' + target_host + '|last_hour', 600)
-						
-					last_day = score - 86400
-					count = self.r.zcount("valid_bad_logon|interactive|per_target_host|" + target_host, last_day, score)
-					if count > 10 :
-						if not self.r.exists('wlogon_010|'+ target_host + '|last_day') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_010', target_host=target_host, period=u"Последние сутки", count=count)
-							self.r.set('wlogon_010|' + target_host + '|last_day', 'allready_messaged')
-							self.r.expire('wlogon_010|' + target_host + '|last_day', 600)
-						
-					last_weak = score - 86400*7
-					count = self.r.zcount("valid_bad_logon|interactive|per_target_host|" + target_host, last_weak, score)
-					if count > 100 :
-						if not self.r.exists('wlogon_010|'+ target_host + '|last_weak') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_010', target_host=target_host, period=u"Последняя неделя", count=count)
-							self.r.set('wlogon_010|' + target_host + '|last_weak', 'allready_messaged')
-							self.r.expire('wlogon_010|' + target_host + '|last_weak', 600)
+					for key,value in self.limits['wlogon_010'].iteritems() :
+						count = self.r.zcount("valid_bad_logon|interactive|per_target_host|" + target_host, score - value[1], score)
+						if count > value[0] :
+							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_010', target_host=target_host, period=key, count=count, norepeat_key='wlogon_010|'+ target_host + '|' + key)
+					
 						
 			else:
 				if logon_type in self.network_logon_types :
@@ -499,112 +372,33 @@ class wlogon(object):
 					self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_011', username=username, source_ip=source_ip, target_host=target_host)
 
 					#считаем общие события по инвалидным юзерам
-					last_hour = score - 3600
-					count = self.r.zcount("invalid_bad_logon|network", last_hour, score)
-					if count > 5 :
-						if not self.r.exists('wlogon_012|' + '|last_hour') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_012', period=u"Последний час", count=count)
-							self.r.set('wlogon_012|' + '|last_hour', 'allready_messaged')
-							self.r.expire('wlogon_012|' + '|last_hour', 600)
-						
-					last_day = score - 86400
-					count = self.r.zcount("invalid_bad_logon|network", last_day, score)
-					if count > 10 :
-						if not self.r.exists('wlogon_012|' + '|last_day') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_012', period=u"Последние сутки", count=count)
-							self.r.set('wlogon_012|' + '|last_day', 'allready_messaged')
-							self.r.expire('wlogon_012|' + '|last_day', 600)
-						
-					last_weak = score - 86400*7
-					count = self.r.zcount("invalid_bad_logon|network", last_weak, score)
-					if count > 100 :
-						if not self.r.exists('wlogon_012|' + '|last_weak') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_012', period=u"Последняя неделя", count=count)
-							self.r.set('wlogon_012|' + '|last_weak', 'allready_messaged')
-							self.r.expire('wlogon_012|' + '|last_weak', 600)
-						
-					
+					for key,value in self.limits['wlogon_012'].iteritems() :
+						count = self.r.zcount("invalid_bad_logon|network", score - value[1], score)
+						if count > value[0] :
+							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_012', period=key, count=count, norepeat_key='wlogon_012|' + key)	
+
 					item = logon_index + "|" + logon_event_id
 					# считаем события по юзеру
 					self.r.zadd("invalid_bad_logon|network|per_user|" + username, score, item)
-					last_hour = score - 3600
-					count = self.r.zcount("invalid_bad_logon|network|per_user|" + username, last_hour, score)
-					if count > 5 :
-						if not self.r.exists('wlogon_013|'+ username + '|last_hour') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_013', username=username, period=u"Последний час", count=count)
-							self.r.set('wlogon_013|' + username + '|last_hour', 'allready_messaged')
-							self.r.expire('wlogon_013|' + username + '|last_hour', 600)
-						
-					last_day = score - 86400
-					count = self.r.zcount("invalid_bad_logon|network|per_user|" + username, last_day, score)
-					if count > 10 :
-						if not self.r.exists('wlogon_013|'+ username + '|last_day') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_013', username=username, period=u"Последние сутки", count=count)
-							self.r.set('wlogon_013|' + username + '|last_day', 'allready_messaged')
-							self.r.expire('wlogon_013|' + username + '|last_day', 600)
-						
-					last_weak = score - 86400*7
-					count = self.r.zcount("invalid_bad_logon|network|per_user|" + username, last_weak, score)
-					if count > 100 :
-						if not self.r.exists('wlogon_013|'+ username + '|last_weak') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_013', username=username, period=u"Последняя неделя", count=count)
-							self.r.set('wlogon_013|' + username + '|last_weak', 'allready_messaged')
-							self.r.expire('wlogon_013|' + username + '|last_weak', 600)
-						
-					
+					for key,value in self.limits['wlogon_013'].iteritems() :
+						count = self.r.zcount("invalid_bad_logon|network|per_user|" + username, score - value[1], score)
+						if count > value[0] :
+							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_013', username=username, period=key, count=count, norepeat_key='wlogon_013|'+ username + '|' + key)
+
 					# считаем события по IP источника
 					self.r.zadd("invalid_bad_logon|network|per_source_ip|" + source_ip, score, item)
-					last_hour = score - 3600
-					count = self.r.zcount("invalid_bad_logon|network|per_source_ip|" + source_ip, last_hour, score)
-					if count > 5 :
-						if not self.r.exists('wlogon_014|'+ source_ip + '|last_hour') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_014', source_ip=source_ip, period=u"Последний час", count=count)
-							self.r.set('wlogon_014|' + source_ip + '|last_hour', 'allready_messaged')
-							self.r.expire('wlogon_014|' + source_ip + '|last_hour', 600)
-						
-					last_day = score - 86400
-					count = self.r.zcount("invalid_bad_logon|network|per_source_ip|" + source_ip, last_day, score)
-					if count > 10 :
-						if not self.r.exists('wlogon_014|'+ source_ip + '|last_day') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_014', source_ip=source_ip, period=u"Последние сутки", count=count)
-							self.r.set('wlogon_014|' + source_ip + '|last_day', 'allready_messaged')
-							self.r.expire('wlogon_014|' + source_ip + '|last_day', 600)
-						
-					last_weak = score - 86400*7
-					count = self.r.zcount("invalid_bad_logon|network|per_source_ip|" + source_ip, last_weak, score)
-					if count > 100 :
-						if not self.r.exists('wlogon_014|'+ source_ip + '|last_weak') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_014', source_ip=source_ip, period=u"Последняя неделя", count=count)
-							self.r.set('wlogon_014|' + source_ip + '|last_weak', 'allready_messaged')
-							self.r.expire('wlogon_014|' + source_ip + '|last_weak', 600)
-						
-						
+					for key,value in self.limits['wlogon_014'].iteritems() :
+						count = self.r.zcount("invalid_bad_logon|network|per_source_ip|" + source_ip, score - value[1], score)
+						if count > value[0] :
+							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_014', source_ip=source_ip, period=key, count=count, norepeat_key='wlogon_014|'+ source_ip + '|' + key)
+
 					# считаем события по target_host
 					self.r.zadd("invalid_bad_logon|network|per_target_host|" + target_host, score, item)
-					last_hour = score - 3600
-					count = self.r.zcount("invalid_bad_logon|network|per_target_host|" + target_host, last_hour, score)
-					if count > 5 :
-						if not self.r.exists('wlogon_015|'+ target_host + '|last_hour') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_015', target_host=target_host, period=u"Последний час", count=count)
-							self.r.set('wlogon_015|' + target_host + '|last_hour', 'allready_messaged')
-							self.r.expire('wlogon_015|' + target_host + '|last_hour', 600)
-						
-					last_day = score - 86400
-					count = self.r.zcount("invalid_bad_logon|network|per_target_host|" + target_host, last_day, score)
-					if count > 10 :
-						if not self.r.exists('wlogon_015|'+ target_host + '|last_day') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_015', target_host=target_host, period=u"Последние сутки", count=count)
-							self.r.set('wlogon_015|' + target_host + '|last_day', 'allready_messaged')
-							self.r.expire('wlogon_015|' + target_host + '|last_day', 600)
-						
-					last_weak = score - 86400*7
-					count = self.r.zcount("invalid_bad_logon|network|per_target_host|" + target_host, last_weak, score)
-					if count > 100 :
-						if not self.r.exists('wlogon_015|'+ target_host + '|last_weak') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_015', target_host=target_host, period=u"Последняя неделя", count=count)
-							self.r.set('wlogon_015|' + target_host + '|last_weak', 'allready_messaged')
-							self.r.expire('wlogon_015|' + target_host + '|last_weak', 600)
-						
+					for key,value in self.limits['wlogon_015'].iteritems() :
+						count = self.r.zcount("invalid_bad_logon|network|per_target_host|" + target_host, score - value[1], score)
+						if count > value[0] :
+							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_015', target_host=target_host, period=key, count=count, norepeat_key='wlogon_015|'+ target_host + '|' + key)
+
 				elif logon_type in self.interactive_logon_types :
 					target_host = hit['_source']['computer_name']
 					item = username + "|" + target_host + "|" + logon_index + "|" + logon_event_id
@@ -614,84 +408,28 @@ class wlogon(object):
 					self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_016', username=username,target_host=target_host)
 
 					#считаем общие события по инвалидным юзерам
-					last_hour = score - 3600
-					count = self.r.zcount("valid_bad_logon|interactive", last_hour, score)
-					if count > 5 :
-						if not self.r.exists('wlogon_017|' + '|last_hour') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_017', period=u"Последний час", count=count)
-							self.r.set('wlogon_017|' + '|last_hour', 'allready_messaged')
-							self.r.expire('wlogon_017|' + '|last_hour', 600)
-						
-					last_day = score - 86400
-					count = self.r.zcount("invalid_bad_logon|interactive", last_day, score)
-					if count > 10 :
-						if not self.r.exists('wlogon_017|' + '|last_day') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_017', period=u"Последние сутки", count=count)
-							self.r.set('wlogon_017|' + '|last_day', 'allready_messaged')
-							self.r.expire('wlogon_017|' + '|last_day', 600)
-						
-					last_weak = score - 86400*7
-					count = self.r.zcount("invalid_bad_logon|interactive", last_weak, score)
-					if count > 100 :
-						if not self.r.exists('wlogon_017|' + '|last_weak') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_017', period=u"Последняя неделя", count=count)
-							self.r.set('wlogon_017|' + '|last_weak', 'allready_messaged')
-							self.r.expire('wlogon_017|' + '|last_weak', 600)
-						
-						
+					for key,value in self.limits['wlogon_017'].iteritems() :
+						count = self.r.zcount("invalid_bad_logon|interactive", score - value[1], score)
+						if count > value[0] :
+							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_017', period=key, count=count, norepeat_key='wlogon_017|' + key)
+			
 					item = logon_index + "|" + logon_event_id
 					# считаем события по юзеру
 					self.r.zadd("invalid_bad_logon|interactive|per_user|" + username, score, item)
 					last_hour = score - 3600
 					count = self.r.zcount("invalid_bad_logon|interactive|per_user|" + username, last_hour, score)
-					if count > 5 :
-						if not self.r.exists('wlogon_018|'+ username + '|last_hour') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_018', username=username, period=u"Последний час", count=count)
-							self.r.set('wlogon_018|' + username + '|last_hour', 'allready_messaged')
-							self.r.expire('wlogon_018|' + username + '|last_hour', 600)
-						
-					last_day = score - 86400
-					count = self.r.zcount("invalid_bad_logon|interactive|per_user|" + username, last_day, score)
-					if count > 10 :
-						if not self.r.exists('wlogon_018|'+ username + '|last_day') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_018', username=username, period=u"Последние сутки", count=count)
-							self.r.set('wlogon_018|' + username + '|last_day', 'allready_messaged')
-							self.r.expire('wlogon_018|' + username + '|last_day', 600)
-						
-					last_weak = score - 86400*7
-					count = self.r.zcount("invalid_bad_logon|interactive|per_user|" + username, last_weak, score)
-					if count > 100 :
-						if not self.r.exists('wlogon_018|'+ username + '|last_weak') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_018', username=username, period=u"Последняя неделя", count=count)
-							self.r.set('wlogon_018|' + username + '|last_weak', 'allready_messaged')
-							self.r.expire('wlogon_018|' + username + '|last_weak', 600)
-					
+					for key,value in self.limits['wlogon_018'].iteritems() :
+						count = self.r.zcount("invalid_bad_logon|interactive|per_user|" + username, score - value[1], score)
+						if count > value[0] :
+							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_018', username=username, period=key, count=count, norepeat_key='wlogon_018|'+ username + '|' + key)
+
 					# считаем события по target_host
 					self.r.zadd("invalid_bad_logon|interactive|per_target_host|" + target_host, score, item)
-					last_hour = score - 3600
-					count = self.r.zcount("invalid_bad_logon|interactive|per_target_host|" + target_host, last_hour, score)
-					if count > 5 :
-						if not self.r.exists('wlogon_019|'+ target_host + '|last_hour') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_019', target_host=target_host, period=u"Последний час", count=count)
-							self.r.set('wlogon_019|' + target_host + '|last_hour', 'allready_messaged')
-							self.r.expire('wlogon_019|' + target_host + '|last_hour', 600)
-						
-					last_day = score - 86400
-					count = self.r.zcount("invalid_bad_logon|interactive|per_target_host|" + target_host, last_day, score)
-					if count > 10 :
-						if not self.r.exists('wlogon_019|'+ target_host + '|last_day') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_019', target_host=target_host, period=u"Последние сутки", count=count)
-							self.r.set('wlogon_019|' + target_host + '|last_day', 'allready_messaged')
-							self.r.expire('wlogon_019|' + target_host + '|last_day', 600)
-						
-					last_weak = score - 86400*7
-					count = self.r.zcount("invalid_bad_logon|interactive|per_target_host|" + target_host, last_weak, score)
-					if count > 100 :
-						if not self.r.exists('wlogon_019|'+ target_host + '|last_weak') :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_019', target_host=target_host, period=u"Последняя неделя", count=count)
-							self.r.set('wlogon_019|' + target_host + '|last_weak', 'allready_messaged')
-							self.r.expire('wlogon_019|' + target_host + '|last_weak', 600)
-						
+					for key,value in self.limits['wlogon_019'].iteritems() :
+						count = self.r.zcount("invalid_bad_logon|interactive|per_target_host|" + target_host, score - value[1], score)
+						if count > value[0] :
+							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_019', target_host=target_host, period=key, count=count, norepeat_key='wlogon_019|'+ target_host + '|' + key)
+					
 				
 		self.r.set('logon_watcher_lastcheck', (current_watcher_timestamp - timedelta(seconds=10)).isoformat())
 			
