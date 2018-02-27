@@ -4,11 +4,11 @@
     {
       "id": "feb62e90-1a23-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-25T18:45:45.949Z",
-      "version": 1,
+      "updated_at": "2018-02-27T09:53:03.857Z",
+      "version": 2,
       "attributes": {
-        "title": "ueba-count",
-        "visState": "{\"title\":\"ueba-count\",\"type\":\"metric\",\"params\":{\"addTooltip\":true,\"addLegend\":false,\"type\":\"metric\",\"metric\":{\"percentageMode\":false,\"useRanges\":false,\"colorSchema\":\"Green to Red\",\"metricColorMode\":\"None\",\"colorsRange\":[{\"from\":0,\"to\":10000}],\"labels\":{\"show\":true},\"invertColors\":false,\"style\":{\"bgFill\":\"#000\",\"bgColor\":false,\"labelColor\":false,\"subText\":\"\",\"fontSize\":24}}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}}]}",
+        "title": "ueba-wlogon-count",
+        "visState": "{\"title\":\"ueba-wlogon-count\",\"type\":\"metric\",\"params\":{\"addTooltip\":true,\"addLegend\":false,\"type\":\"metric\",\"metric\":{\"percentageMode\":false,\"useRanges\":false,\"colorSchema\":\"Green to Red\",\"metricColorMode\":\"None\",\"colorsRange\":[{\"from\":0,\"to\":10000}],\"labels\":{\"show\":false},\"invertColors\":false,\"style\":{\"bgFill\":\"#000\",\"bgColor\":false,\"labelColor\":false,\"subText\":\"\",\"fontSize\":24}}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}}]}",
         "uiStateJSON": "{}",
         "description": "",
         "savedSearchId": "ad705d80-1a23-11e8-ab95-711bc24f9c90",
@@ -21,11 +21,11 @@
     {
       "id": "ac64d990-1a26-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-26T08:33:52.931Z",
-      "version": 2,
+      "updated_at": "2018-02-27T09:54:12.333Z",
+      "version": 3,
       "attributes": {
-        "title": "ueba-events",
-        "visState": "{\"title\":\"ueba-events\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"severity\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"severity\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"event_desc\",\"size\":50,\"order\":\"desc\",\"orderBy\":\"_term\"}}]}",
+        "title": "ueba-wlogon-events",
+        "visState": "{\"title\":\"ueba-wlogon-events\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"severity\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"severity\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"event_desc\",\"size\":50,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"событие\"}}]}",
         "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
         "description": "",
         "savedSearchId": "ad705d80-1a23-11e8-ab95-711bc24f9c90",
@@ -38,11 +38,11 @@
     {
       "id": "0e5653c0-1a29-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-25T18:45:45.949Z",
-      "version": 1,
+      "updated_at": "2018-02-27T09:55:01.795Z",
+      "version": 2,
       "attributes": {
-        "title": "ueba-source-ip",
-        "visState": "{\"title\":\"ueba-source-ip\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"source_ip\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"IP-источника\"}}]}",
+        "title": "ueba-wlogon-source-ip",
+        "visState": "{\"title\":\"ueba-wlogon-source-ip\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"source_ip\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"IP-источника\"}}]}",
         "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
         "description": "",
         "savedSearchId": "ad705d80-1a23-11e8-ab95-711bc24f9c90",
@@ -55,11 +55,11 @@
     {
       "id": "708744c0-1a27-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-25T18:45:45.949Z",
-      "version": 1,
+      "updated_at": "2018-02-27T09:55:36.933Z",
+      "version": 2,
       "attributes": {
-        "title": "ueba-target",
-        "visState": "{\"title\":\"ueba-target\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"target_host\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Целевой хост\"}}]}",
+        "title": "ueba-wlogon-target",
+        "visState": "{\"title\":\"ueba-wlogon-target\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"target_host\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Целевой хост\"}}]}",
         "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
         "description": "",
         "savedSearchId": "ad705d80-1a23-11e8-ab95-711bc24f9c90",
@@ -72,11 +72,11 @@
     {
       "id": "4a245500-1a24-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-25T18:45:45.949Z",
-      "version": 1,
+      "updated_at": "2018-02-27T09:56:11.244Z",
+      "version": 2,
       "attributes": {
-        "title": "ueba-timeline",
-        "visState": "{\"title\":\"ueba-timeline\",\"type\":\"histogram\",\"params\":{\"type\":\"histogram\",\"grid\":{\"categoryLines\":true,\"style\":{\"color\":\"#eee\"},\"valueAxis\":\"ValueAxis-1\"},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Count\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"stacked\",\"data\":{\"label\":\"Count\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}}]}",
+        "title": "ueba-wlogon-timeline",
+        "visState": "{\"title\":\"ueba-wlogon-timeline\",\"type\":\"histogram\",\"params\":{\"type\":\"histogram\",\"grid\":{\"categoryLines\":true,\"style\":{\"color\":\"#eee\"},\"valueAxis\":\"ValueAxis-1\"},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Count\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"stacked\",\"data\":{\"label\":\"Count\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}}]}",
         "uiStateJSON": "{\"vis\":{\"legendOpen\":false}}",
         "description": "",
         "savedSearchId": "ad705d80-1a23-11e8-ab95-711bc24f9c90",
@@ -89,11 +89,11 @@
     {
       "id": "26cee4a0-1a27-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-25T18:45:45.949Z",
-      "version": 1,
+      "updated_at": "2018-02-27T09:56:54.879Z",
+      "version": 2,
       "attributes": {
-        "title": "ueba-users",
-        "visState": "{\"title\":\"ueba-users\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"username\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Юзер\"}}]}",
+        "title": "ueba-wlogon-users",
+        "visState": "{\"title\":\"ueba-wlogon-users\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"username\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Юзер\"}}]}",
         "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
         "description": "",
         "savedSearchId": "ad705d80-1a23-11e8-ab95-711bc24f9c90",
@@ -106,10 +106,10 @@
     {
       "id": "ad705d80-1a23-11e8-ab95-711bc24f9c90",
       "type": "search",
-      "updated_at": "2018-02-25T18:45:45.949Z",
-      "version": 1,
+      "updated_at": "2018-02-27T08:12:45.392Z",
+      "version": 2,
       "attributes": {
-        "title": "ueba-common",
+        "title": "ueba-wlogon",
         "description": "",
         "hits": 0,
         "columns": [
@@ -127,32 +127,32 @@
         ],
         "version": 1,
         "kibanaSavedObjectMeta": {
-          "searchSourceJSON": "{\"index\":\"ueba-*\",\"highlightAll\":true,\"version\":true,\"query\":{\"language\":\"lucene\",\"query\":\"\"},\"filter\":[]}"
+          "searchSourceJSON": "{\"index\":\"ueba-*\",\"highlightAll\":true,\"version\":true,\"query\":{\"language\":\"lucene\",\"query\":\"\"},\"filter\":[{\"meta\":{\"index\":\"ueba-*\",\"negate\":false,\"disabled\":false,\"alias\":null,\"type\":\"phrase\",\"key\":\"log_type\",\"value\":\"wlogon\",\"params\":{\"query\":\"wlogon\",\"type\":\"phrase\"}},\"query\":{\"match\":{\"log_type\":{\"query\":\"wlogon\",\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}}]}"
         }
       }
     },
     {
       "id": "ueba-*",
       "type": "index-pattern",
-      "updated_at": "2018-02-26T08:36:43.990Z",
-      "version": 3,
+      "updated_at": "2018-02-27T09:47:34.491Z",
+      "version": 19,
       "attributes": {
         "title": "ueba-*",
         "timeFieldName": "@timestamp",
-        "fields": "[{\"name\":\"@timestamp\",\"type\":\"date\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"@version\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"_index\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"_score\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"_source\",\"type\":\"_source\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"_type\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"count\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"days\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"dest_ip\",\"type\":\"ip\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"event_desc\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"event_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"period\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"severity\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_ip\",\"type\":\"ip\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_url\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"tags\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"target_host\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"username\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true}]",
+        "fields": "[{\"name\":\"@timestamp\",\"type\":\"date\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"@version\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"_source\",\"type\":\"_source\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"count\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"days\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"dest_hostname\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"dest_ip\",\"type\":\"ip\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"event_desc\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"event_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"image\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"log_type\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"period\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"severity\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_host\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_ip\",\"type\":\"ip\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_url\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"tags\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"target_host\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"username\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true}]",
         "fieldFormatMap": "{\"source_url\":{\"id\":\"url\",\"params\":{\"labelTemplate\":\"source_doc\"}}}"
       }
     },
     {
       "id": "8eb75bd0-1a2a-11e8-ab95-711bc24f9c90",
       "type": "dashboard",
-      "updated_at": "2018-02-26T08:35:44.984Z",
-      "version": 2,
+      "updated_at": "2018-02-27T10:05:27.957Z",
+      "version": 3,
       "attributes": {
-        "title": "ueba-dash",
+        "title": "ueba-wlogon",
         "hits": 0,
         "description": "",
-        "panelsJSON": "[{\"gridData\":{\"h\":2,\"i\":\"1\",\"w\":4,\"x\":0,\"y\":0},\"id\":\"feb62e90-1a23-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"1\",\"title\":\"всего событий\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"gridData\":{\"h\":6,\"i\":\"2\",\"w\":8,\"x\":4,\"y\":0},\"id\":\"ac64d990-1a26-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"2\",\"title\":\"события\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"gridData\":{\"h\":6,\"i\":\"3\",\"w\":4,\"x\":8,\"y\":6},\"id\":\"0e5653c0-1a29-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"3\",\"title\":\"IP источников\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"gridData\":{\"h\":8,\"i\":\"4\",\"w\":4,\"x\":0,\"y\":4},\"id\":\"708744c0-1a27-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"4\",\"title\":\"Целевые хосты\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"gridData\":{\"h\":2,\"i\":\"5\",\"w\":4,\"x\":0,\"y\":2},\"id\":\"4a245500-1a24-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"5\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"gridData\":{\"h\":6,\"i\":\"6\",\"w\":4,\"x\":4,\"y\":6},\"id\":\"26cee4a0-1a27-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"6\",\"title\":\"Юзеры\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"gridData\":{\"h\":10,\"i\":\"7\",\"w\":12,\"x\":0,\"y\":12},\"id\":\"ad705d80-1a23-11e8-ab95-711bc24f9c90\",\"panelIndex\":\"7\",\"title\":\"Последние события\",\"type\":\"search\",\"version\":\"6.1.2\"}]",
+        "panelsJSON": "[{\"panelIndex\":\"1\",\"gridData\":{\"x\":0,\"y\":0,\"w\":4,\"h\":2,\"i\":\"1\"},\"id\":\"feb62e90-1a23-11e8-ab95-711bc24f9c90\",\"title\":\"всего событий\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"panelIndex\":\"2\",\"gridData\":{\"x\":4,\"y\":0,\"w\":8,\"h\":6,\"i\":\"2\"},\"id\":\"ac64d990-1a26-11e8-ab95-711bc24f9c90\",\"title\":\"события\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"panelIndex\":\"3\",\"gridData\":{\"x\":8,\"y\":6,\"w\":4,\"h\":6,\"i\":\"3\"},\"id\":\"0e5653c0-1a29-11e8-ab95-711bc24f9c90\",\"title\":\"IP источников\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"panelIndex\":\"4\",\"gridData\":{\"x\":0,\"y\":4,\"w\":4,\"h\":8,\"i\":\"4\"},\"id\":\"708744c0-1a27-11e8-ab95-711bc24f9c90\",\"title\":\"Целевые хосты\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"panelIndex\":\"5\",\"gridData\":{\"x\":0,\"y\":2,\"w\":4,\"h\":2,\"i\":\"5\"},\"id\":\"4a245500-1a24-11e8-ab95-711bc24f9c90\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"panelIndex\":\"6\",\"gridData\":{\"x\":4,\"y\":6,\"w\":4,\"h\":6,\"i\":\"6\"},\"id\":\"26cee4a0-1a27-11e8-ab95-711bc24f9c90\",\"title\":\"Юзеры\",\"type\":\"visualization\",\"version\":\"6.1.2\"},{\"title\":\"Последние 500 событий\",\"panelIndex\":\"7\",\"gridData\":{\"x\":0,\"y\":12,\"w\":12,\"h\":10,\"i\":\"7\"},\"id\":\"ad705d80-1a23-11e8-ab95-711bc24f9c90\",\"type\":\"search\",\"version\":\"6.1.2\"}]",
         "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":false,\"useMargins\":true}",
         "uiStateJSON": "{\"P-2\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-3\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-4\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}},\"P-6\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}}",
         "version": 1,

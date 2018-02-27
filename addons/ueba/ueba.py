@@ -9,6 +9,7 @@ import codecs
 import redis
 import time
 
+KIBANA_BASE_URL = 'https://littlebeat'
 WATCHER_INDEX = "ueba-"
 WATCHER_INDEX_TEMPLATE_NAME = "ueba"
 WATCHER_INDEX_TEMPLATE = {
@@ -95,7 +96,7 @@ if not es.indices.exists_template(name=WATCHER_INDEX_TEMPLATE_NAME):
 	# записываем шаблон индекса
 	res=es.indices.put_template(name=WATCHER_INDEX_TEMPLATE_NAME, body=WATCHER_INDEX_TEMPLATE)
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
-wl=wlogon(es,r,WATCHER_INDEX)
+wl=wlogon(es,r,WATCHER_INDEX,KIBANA_BASE_URL)
 while True :
 	wl.search()
 	time.sleep(30)
