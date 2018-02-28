@@ -79,19 +79,8 @@ class wlogon(object):
 		
 		
 
-	def message (self, **kwargs) :
-	
-		doc = {}
-		for key,value in kwargs.iteritems():
-			doc[key] = value
-		if 'norepeat_key' in doc.keys() :
-			if self.r.exists(doc['norepeat_key']) :
-				return
-			else :
-				self.r.set(doc['norepeat_key'],'allredy_messaged')
-				self.r.expire(doc['norepeat_key'], self.norepeat_time)
-				doc.pop('norepeat_key')
-		
+	def message (self, source_doc) :
+		doc = source_doc.copy()
 		if ('source_index' in doc.keys()) and ('source_id' in doc.keys()) :
 			doc['source_url'] = self.kibana_base_url + '/app/kibana#/doc/winlogbeat-*/' + doc['source_index'] + '/winlogbeat?id=' + doc['source_id']
 			doc.pop('source_index')
@@ -99,20 +88,318 @@ class wlogon(object):
 		if 'event_id' in doc.keys() :
 			doc['event_desc'] = self.events[doc['event_id']][1]
 			doc['severity'] = self.events[doc['event_id']][0]
-		if 'timestamp' in doc.keys() :
-			doc['@timestamp'] = doc['timestamp']
-			doc.pop('timestamp')
-		else :
+		if not ('@timestamp' in doc.keys()) :
 			doc['@timestamp'] = datetime.utcnow()
 		dd = '%02d' % parsers.datetime(doc['@timestamp']).day
 		mm = '%02d' % parsers.datetime(doc['@timestamp']).month
 		yyyy = str(parsers.datetime(doc['@timestamp']).year)
-		index_suffix = yyyy + '.' + mm + '.' + dd
-		
+		index_suffix = yyyy + '.' + mm + '.' + dd		
 		res = self.es.index(index=self.watcher_index+index_suffix, doc_type='doc', body=doc)
+		del doc
+	
+	def check_limits (self, source_doc) :
+		doc = source_doc.copy()
+		doc.pop('norepeat_key')
+		doc.pop('counter_key')
+		doc.pop('score')
+		for key,value in self.limits[source_doc['event_id']].iteritems() :
+			count = self.r.zcount(source_doc['counter_key'], source_doc['score'] - value[1], source_doc['score'])
+			if (count > value[0]) and (not self.r.exists(source_doc['norepeat_key'] + key)) :
+				self.r.set(source_doc['norepeat_key'] + key,'allredy_messaged')
+				self.r.expire(source_doc['norepeat_key']+ key, self.norepeat_time)				
+				doc['period'] = key
+				doc['count'] = count
+				self.message(doc)
+		del doc
+					
+	def check_new_and_old (self, source_doc) :
+		doc = source_doc.copy()
+		doc.pop('check_set')
+		doc.pop('events_for_check')
+		doc.pop('entities_for_check')
+		myvalue = ''
+		for entity in source_doc['entities_for_check'] :
+			myvalue += source_doc[entity] + '|'
+		myvalue = myvalue.strip('|')
+		if self.r.zadd(source_doc['check_set'], source_doc['score'], myvalue):
+			doc['event_id'] = source_doc['events_for_check']['new'][0]
 
+			self.message(doc)
+		else:
+			oldscore = int( self.r.zscore(source_doc['check_set'], myvalue) )
+			doc['days'] = int((source_doc['score'] - oldscore) / 86400)
+			if doc['days'] > source_doc['events_for_check']['oldest'][1] :
+				doc['event_id'] = source_doc['events_for_check']['oldest'][0]
+				self.message(doc)
+			elif doc['days'] > source_doc['events_for_check']['old'][1] :
+				doc['event_id'] = source_doc['events_for_check']['old'][0]
+				self.message(doc)
+		del doc	
+
+	def play_valid_network_logon (self, source_index=None, source_id=None, timestamp=None, username=None, source_ip=None, target_host=None, score=None):
+		doc = {}
+		doc['source_index'] = source_index
+		doc['source_id'] = source_id
+		doc['@timestamp'] = timestamp
+		doc['score'] = score
+		doc['log_type'] = self.log_type
+		
+		# Группировка по юзерам. user to target
+		
+		doc['counter_key'] = "valid_logon|network|per_user|" + username
+		doc['norepeat_key'] = 'wlogon_020|'+ username + '|'
+		doc['event_id'] = 'wlogon_020'
+		doc['username'] = username		
+		
+		self.r.zadd(doc['counter_key'], score, target_host)
+		self.check_limits (doc) 
+		doc.pop('username')
 		
 
+		# Группировка по источникам. source_ip to target
+		# исключаем логон с адреса 127.0.0.1	
+		if not (source_ip in ['127.0.0.1','::1']) :
+			doc['counter_key'] = "valid_logon|network|per_source_ip|" + source_ip
+			doc['norepeat_key'] = 'wlogon_021|'+ source_ip + '|'
+			doc['event_id'] = 'wlogon_021'
+			doc['source_ip'] = source_ip		
+			
+			self.r.zadd(doc['counter_key'], score, target_host)
+			self.check_limits (doc)
+			doc.pop('source_ip')
+		# конец группировок
+		doc.pop('counter_key')
+		doc.pop('norepeat_key')
+		
+		# target новые сетевые логоны, редкие логоны
+		
+		doc['target_host'] = target_host
+		doc['check_set'] = "valid_logon|network|per_target_host|by_source_ip|" + target_host
+		doc['source_ip'] = source_ip
+		doc['events_for_check'] = {'new':['wlogon_022', 0],'old':['wlogon_024', 7], 'oldest':['wlogon_023', 30]}
+		doc['entities_for_check'] = ['source_ip']
+		
+		self.check_new_and_old (doc)
+		doc.pop('source_ip')
+
+		doc['check_set'] = "valid_logon|network|per_target_host|by_user|" + target_host		
+		doc['username'] = username
+		doc['events_for_check'] = {'new':['wlogon_025', 0],'old':['wlogon_027', 7], 'oldest':['wlogon_026', 30]}
+		doc['entities_for_check'] = ['username']
+		self.check_new_and_old (doc)
+		doc.pop('username')
+
+		doc['check_set'] = "valid_logon|network|per_target_host|by_user_ip_pair|" + target_host		
+		doc['username'] = username
+		doc['source_ip'] = source_ip
+		doc['events_for_check'] = {'new':['wlogon_028', 0],'old':['wlogon_030', 7], 'oldest':['wlogon_029', 30]}
+		doc['entities_for_check'] = ['username','source_ip']
+		self.check_new_and_old (doc)
+		doc.pop('username')
+
+		del doc
+		
+	def play_valid_interactive_logon(self, source_index=None, source_id=None, timestamp=None, username=None, target_host=None, score=None) :
+		doc = {}
+		doc['source_index'] = source_index
+		doc['source_id'] = source_id
+		doc['@timestamp'] = timestamp
+		doc['score'] = score
+		doc['log_type'] = self.log_type
+		
+		doc['counter_key'] = "valid_logon|interactive|per_user|" + username
+		doc['norepeat_key'] = 'wlogon_031|'+ username + '|'
+		doc['event_id'] = 'wlogon_031'
+		doc['username'] = username		
+		
+		self.r.zadd(doc['counter_key'], score, target_host)
+		self.check_limits (doc) 
+		doc.pop('username')
+		# конец группировок
+		doc.pop('counter_key')
+		doc.pop('norepeat_key')
+
+		# target новые и редкие интерактивные логоны
+		doc['target_host'] = target_host
+		doc['check_set'] = "valid_logon|interactive|per_target_host|by_user|" + target_host		
+		doc['username'] = username
+		doc['events_for_check'] = {'new':['wlogon_032', 0],'old':['wlogon_034', 7], 'oldest':['wlogon_033', 30]}
+		doc['entities_for_check'] = ['username']
+		self.check_new_and_old (doc)
+
+		del doc
+	
+	def play_valid_bad_logon_network (self, source_index=None, source_id=None, timestamp=None,  username=None, source_ip=None, target_host=None, score=None):
+		doc = {}
+		doc['source_index'] = source_index
+		doc['source_id'] = source_id
+		doc['@timestamp'] = timestamp
+		doc['log_type'] = self.log_type
+		doc['event_id'] = 'wlogon_004'	
+		doc['source_ip'] = source_ip
+		doc['target_host'] = target_host
+		doc['username'] = username
+		#выводим сообщение о плохом логоне валидного юзера
+		self.message(doc)
+		
+		doc['score'] = score
+		
+		item = doc['source_index'] + "|" + doc['source_id']
+		# считаем события по юзеру
+		
+		doc['counter_key'] = "valid_bad_logon|network|per_user|" + username
+		doc['norepeat_key'] = 'wlogon_005|'+ username + '|'
+		doc['event_id'] = 'wlogon_005'
+		doc['username'] = username
+		self.r.zadd(doc['counter_key'], score, item)
+		self.check_limits (doc)
+		doc.pop('username')
+		
+		doc['counter_key'] = "valid_bad_logon|network|per_source_ip|" + source_ip
+		doc['norepeat_key'] = 'wlogon_006|'+ source_ip + '|'
+		doc['event_id'] = 'wlogon_006'
+		doc['source_ip'] = source_ip
+		self.r.zadd(doc['counter_key'], score, item)
+		self.check_limits (doc)
+		doc.pop('source_ip')
+		
+		doc['counter_key'] = "valid_bad_logon|network|per_target_host|" + target_host
+		doc['norepeat_key'] = 'wlogon_007|'+ source_ip + '|'
+		doc['event_id'] = 'wlogon_007'
+		doc['target_host'] = target_host
+		self.r.zadd(doc['counter_key'], score, item)
+		self.check_limits (doc)
+		doc.pop('target_host')
+		
+		del doc
+		
+	def play_valid_bad_logon_interactive (self, source_index=None, source_id=None, timestamp=None, username=None, target_host=None, score=None):
+		doc = {}
+		doc['source_index'] = source_index
+		doc['source_id'] = source_id
+		doc['@timestamp'] = timestamp
+		doc['log_type'] = self.log_type
+		doc['event_id'] = 'wlogon_008'	
+		doc['target_host'] = target_host
+		doc['username'] = username
+		#выводим сообщение о плохом логоне валидного юзера
+		self.message(doc)
+		
+		doc['score'] = score
+		
+		item = doc['source_index'] + "|" + doc['source_id']
+		# считаем события по юзеру
+		doc['counter_key'] = "valid_bad_logon|interactive|per_user|" + username
+		doc['norepeat_key'] = 'wlogon_009|'+ username + '|'
+		doc['event_id'] = 'wlogon_009'
+		doc['username'] = username
+		self.r.zadd(doc['counter_key'], score, item)
+		self.check_limits (doc)
+		doc.pop('username')
+		
+		# считаем события по target_host
+		doc['counter_key'] = "valid_bad_logon|interactive|per_target_host|" + target_host
+		doc['norepeat_key'] = 'wlogon_010|'+ target_host + '|'
+		doc['event_id'] = 'wlogon_010'
+		doc['target_host'] = target_host
+		self.r.zadd(doc['counter_key'], score, item)
+		self.check_limits (doc)
+		doc.pop('target_host')
+
+		del doc
+		
+	def play_invalid_bad_logon_network(self, source_index=None, source_id=None, timestamp=None,  username=None, source_ip=None, target_host=None, score=None):
+		doc = {}
+		doc['source_index'] = source_index
+		doc['source_id'] = source_id
+		doc['@timestamp'] = timestamp
+		doc['log_type'] = self.log_type
+		doc['event_id'] = 'wlogon_011'	
+		doc['source_ip'] = source_ip
+		doc['target_host'] = target_host
+		doc['username'] = username
+		#выводим сообщение о плохом логоне неизвестного юзера
+		self.message(doc)
+		
+		doc['score'] = score
+		
+		item = doc['source_index'] + "|" + doc['source_id']
+		#считаем общие события по инвалидным юзерам
+		doc['counter_key'] = "invalid_bad_logon|network"
+		doc['norepeat_key'] = 'wlogon_012|'
+		doc['event_id'] = 'wlogon_012'
+		self.check_limits (doc)
+		
+		# считаем события по юзеру
+		doc['counter_key'] = "invalid_bad_logon|network|per_user|" + username
+		doc['norepeat_key'] = 'wlogon_013|'+ username + '|'
+		doc['event_id'] = 'wlogon_013'
+		doc['username'] = username
+		self.r.zadd(doc['counter_key'], score, item)
+		self.check_limits (doc)
+		doc.pop('username')
+		
+		# считаем события по IP источника
+		doc['counter_key'] = "invalid_bad_logon|network|per_source_ip|" + source_ip
+		doc['norepeat_key'] = 'wlogon_014|'+ source_ip + '|'
+		doc['event_id'] = 'wlogon_014'
+		doc['source_ip'] = source_ip
+		self.r.zadd(doc['counter_key'], score, item)
+		self.check_limits (doc)
+		doc.pop('source_ip')
+		
+		# считаем события по target_host
+		doc['counter_key'] = "invalid_bad_logon|network|per_target_host|" + target_host
+		doc['norepeat_key'] = 'wlogon_015|'+ target_host + '|'
+		doc['event_id'] = 'wlogon_015'
+		doc['target_host'] = target_host
+		self.r.zadd(doc['counter_key'], score, item)
+		self.check_limits (doc)
+		doc.pop('target_host')
+		
+		del doc
+		
+	def play_invalid_bad_logon_interactive (self, source_index=None, source_id=None, timestamp=None, username=None, target_host=None, score=None) :
+		doc = {}
+		doc['source_index'] = source_index
+		doc['source_id'] = source_id
+		doc['@timestamp'] = timestamp
+		doc['log_type'] = self.log_type
+		doc['event_id'] = 'wlogon_016'	
+		doc['target_host'] = target_host
+		doc['username'] = username
+		#выводим сообщение о плохом логоне неизвестного юзера
+		self.message(doc)
+		
+		doc['score'] = score
+		
+		item = doc['source_index'] + "|" + doc['source_id']
+		#считаем общие события по инвалидным юзерам
+		doc['counter_key'] = "invalid_bad_logon|interactive"
+		doc['norepeat_key'] = 'wlogon_017|'
+		doc['event_id'] = 'wlogon_017'
+		self.check_limits (doc)
+		
+		# считаем события по юзеру
+		doc['counter_key'] = "invalid_bad_logon|interactive|per_user|" + username
+		doc['norepeat_key'] = 'wlogon_018|'+ username + '|'
+		doc['event_id'] = 'wlogon_018'
+		doc['username'] = username
+		self.r.zadd(doc['counter_key'], score, item)
+		self.check_limits (doc)
+		doc.pop('username')
+			
+		# считаем события по target_host
+		doc['counter_key'] = "invalid_bad_logon|interactive|per_target_host|" + target_host
+		doc['norepeat_key'] = 'wlogon_019|'+ target_host + '|'
+		doc['event_id'] = 'wlogon_019'
+		doc['target_host'] = target_host
+		self.r.zadd(doc['counter_key'], score, item)
+		self.check_limits (doc)
+		doc.pop('target_host')
+
+		del doc
+		
 	def search (self) :
 		current_watcher_timestamp = datetime.now()
 		# Запрашиваем у редиса параметр watcher_lastcheck
@@ -154,19 +441,32 @@ class wlogon(object):
 			logon_type = int(hit['_source']['event_data']['LogonType'])
 			logon_event_id = hit['_id']
 			logon_index = hit['_index']
+			doc = {}
+			doc['log_type'] = self.log_type
+			doc['source_index'] = logon_index
+			doc['source_id'] = logon_event_id
+			doc['@timestamp'] = current_logon_time
+			doc['username'] = username
 			
 			if self.r.sismember("known_valid_logons", username):
 				last_logon_time = self.r.get(username+'|last_logon_time')
 				delta = (parsers.datetime(last_logon_time) - parsers.datetime(current_logon_time)).days
+				
 				if delta > 30 :
-					self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_002', username=username, days=delta)
+					doc['event_id'] = 'wlogon_002'
+					doc['days'] = delta
+					self.message(doc)
 				elif delta > 7 :
-					self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_003', username=username, days=delta)	
+					doc['event_id'] = 'wlogon_003'
+					doc['days'] = delta
+					self.message(doc)
 			else:
-				self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_001', username=username)
+				doc['event_id'] = 'wlogon_001'
+				self.message(doc)
 				self.r.sadd("known_valid_logons", username)
 			self.r.set(username+'|last_logon_time', current_logon_time)
 			self.r.set(username+'|last_logon_event', logon_index + "|" + logon_event_id)
+			
 			# считаем статистику валидных логонов
 			if logon_type in self.network_logon_types:
 				source_ip = hit['_source']['event_data']['IpAddress']
@@ -183,57 +483,10 @@ class wlogon(object):
 				score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
 				if self.r.zadd("valid_logon|network", score, item) == 0 :
 					break
-				# Группировка по юзерам. user to target
-				self.r.zadd("valid_logon|network|per_user|" + username, score, target_host)
-				for key,value in self.limits['wlogon_020'].iteritems() :
-					count = self.r.zcount("valid_logon|network|per_user|" + username, score - value[1], score)
-					if count > value[0] :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_020', username=username, period=key, count=count, norepeat_key='wlogon_020|'+ username + '|' + key)
-	
-				# Группировка по источникам. source_ip to target
-				# исключаем логон с адреса 127.0.0.1	
-				if not (source_ip in ['127.0.0.1','::1']) :
-					self.r.zadd("valid_logon|network|per_source_ip|" + source_ip, score, target_host)
-					for key,value in self.limits['wlogon_021'].iteritems() :
-						count = self.r.zcount("valid_logon|network|per_source_ip|" + source_ip, score - value[1], score)
-						if count > value[0] :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_021', source_ip=source_ip, period=key, count=count, norepeat_key= 'wlogon_021|'+ source_ip + '|' + key)
 
-				# target новые сетевые логоны, редкие логоны
-				oldscore = self.r.zscore ("valid_logon|network|per_target_host|by_source_ip|" + target_host, source_ip)
+				self.play_valid_network_logon(source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, username=username, source_ip=source_ip, target_host=target_host, score=score)
 				
-				if self.r.zadd("valid_logon|network|per_target_host|by_source_ip|" + target_host, score, source_ip):
-					self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_022', target_host=target_host, source_ip=source_ip)
-				else :
-					days = int((score - int(oldscore)) / 86400)
-					if days > 30 :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_023', target_host=target_host,source_ip=source_ip, days=days)
-					elif days > 7 :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_024', target_host=target_host,source_ip=source_ip, days=days)
-						
-				oldscore = self.r.zscore ("valid_logon|network|per_target_host|by_user|" + target_host, username)
-				
-				if self.r.zadd("valid_logon|network|per_target_host|by_user|" + target_host, score, username):
-					self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_025', target_host=target_host, username=username)
-				else :
-					days = int((score - int(oldscore)) / 86400)
-					if days > 30 :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_026', target_host=target_host,username=username, days=days)
-					elif days > 7 :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_027', target_host=target_host,username=username, days=days)
-						
-				oldscore = self.r.zscore ("valid_logon|network|per_target_host|by_user_ip_pair|" + target_host, username + "|" + source_ip)
-				
-				if self.r.zadd("valid_logon|network|per_target_host|by_user_ip_pair|" + target_host, score, username + "|" + source_ip):
-					self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_028', target_host=target_host, username=username, source_ip=source_ip)
-				else :
-					days = int((score - int(oldscore)) / 86400)
-					if days > 30 :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_029', target_host=target_host,username=username, source_ip=source_ip, days=days)
-					elif days > 7 :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_030', target_host=target_host,username=username, source_ip=source_ip, days=days)
-				
-			if logon_type in self.interactive_logon_types:
+			elif logon_type in self.interactive_logon_types:
 				target_host = hit['_source']['computer_name'].lower()
 				if target_host in self.interactive_logon_excepted_target_hosts :
 					break
@@ -241,25 +494,9 @@ class wlogon(object):
 				score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
 				if self.r.zadd("valid_logon|interactive", score, item) == 0 :
 					break
-				# Группировка по юзерам. user to target
+					
+				self.play_valid_interactive_logon(source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, username=username, target_host=target_host, score=score)
 				
-				self.r.zadd("valid_logon|interactive|per_user|" + username, score, target_host)
-				for key,value in self.limits['wlogon_031'].iteritems() :
-					count = self.r.zcount("valid_logon|interactive|per_user|" + username, score - value[1], score)
-					if count > value[0] :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_031', username=username, period=key, count=count, norepeat_key='wlogon_031|'+ username + '|' + key)
-
-				# target новые и редкие интерактивные логоны
-				oldscore = self.r.zscore ("valid_logon|interactive|per_target_host|by_user|" + target_host, username)
-				
-				if self.r.zadd("valid_logon|interactive|per_target_host|by_user|" + target_host, score, username):
-					self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_032', target_host=target_host, username=username)
-				else :
-					days = int((score - int(oldscore)) / 86400)
-					if days > 30 :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_033', target_host=target_host,username=username, days=days)
-					elif days > 7 :
-						self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_034', target_host=target_host,username=username, days=days)
 			
 		# Поиск новых инвалидных логонов в сети
 		myquery = {"query": {
@@ -306,29 +543,7 @@ class wlogon(object):
 					score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
 					if self.r.zadd("valid_bad_logon|network", score, item) == 0 :
 						break
-					self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_004', username=username, source_ip=source_ip, target_host=target_host)
-
-					item = logon_index + "|" + logon_event_id
-					# считаем события по юзеру
-					self.r.zadd("valid_bad_logon|network|per_user|" + username, score, item)
-					for key,value in self.limits['wlogon_005'].iteritems() :
-						count = self.r.zcount("valid_bad_logon|network|per_user|" + username, score - value[1], score)
-						if count > value[0] :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_005', username=username, period=key, count=count, norepeat_key='wlogon_005|'+ username + '|' + key)
-
-					# считаем события по IP источника
-					self.r.zadd("valid_bad_logon|network|per_source_ip|" + source_ip, score, item)
-					for key,value in self.limits['wlogon_006'].iteritems() :
-						count = self.r.zcount("valid_bad_logon|network|per_source_ip|" + source_ip, score - value[1], score)
-						if count > value[0] :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_006', source_ip=source_ip, period=key, count=count, norepeat_key='wlogon_006|'+ source_ip + '|' + key)
-	
-					# считаем события по target_host
-					self.r.zadd("valid_bad_logon|network|per_target_host|" + target_host, score, item)
-					for key,value in self.limits['wlogon_007'].iteritems() :
-						count = self.r.zcount("valid_bad_logon|network|per_target_host|" + target_host, score - value[1], score)
-						if count > value[0] :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_007', target_host=target_host, period=key, count=count, norepeat_key='wlogon_007|'+ target_host + '|' + key)
+					self.play_valid_bad_logon_network (source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, username=username, source_ip=source_ip, target_host=target_host, score=score)				
 	
 				elif logon_type in self.interactive_logon_types :
 					target_host = hit['_source']['computer_name'].lower()
@@ -336,101 +551,31 @@ class wlogon(object):
 					score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
 					if self.r.zadd("valid_bad_logon|interactive", score, item) == 0 :
 						break
-						
-					self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_008', username=username,target_host=target_host)
-
-					item = logon_index + "|" + logon_event_id
-					# считаем события по юзеру
-					self.r.zadd("valid_bad_logon|interactive|per_user|" + username, score, item)
-					for key,value in self.limits['wlogon_009'].iteritems() :
-						count = self.r.zcount("valid_bad_logon|interactive|per_user|" + username, score - value[1], score)
-						if count > value[0] :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_009', username=username, period=key, count=count, norepeat_key='wlogon_009|'+ username + '|' + key)
-
-					# считаем события по target_host
-					self.r.zadd("valid_bad_logon|interactive|per_target_host|" + target_host, score, item)
-					for key,value in self.limits['wlogon_010'].iteritems() :
-						count = self.r.zcount("valid_bad_logon|interactive|per_target_host|" + target_host, score - value[1], score)
-						if count > value[0] :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_010', target_host=target_host, period=key, count=count, norepeat_key='wlogon_010|'+ target_host + '|' + key)
+					self.play_valid_bad_logon_interactive(source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, username=username, target_host=target_host, score=score)
 					
-						
-			else:
-				if logon_type in self.network_logon_types :
-					source_ip = hit['_source']['event_data']['IpAddress']
-					if source_ip is None:
-						source_ip = '127.0.0.1'
-					try:
-						source_ip = str(IP(source_ip))
-					except:
-						source_ip = '127.0.0.1'
-					target_host = hit['_source']['computer_name']
-					item = username + "|" + source_ip + "|" + target_host + "|" + logon_index + "|" + logon_event_id
-					score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
-					if self.r.zadd("invalid_bad_logon|network", score, item) == 0 :
-						break
-					self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_011', username=username, source_ip=source_ip, target_host=target_host)
+			elif logon_type in self.network_logon_types :
+				source_ip = hit['_source']['event_data']['IpAddress']
+				if source_ip is None:
+					source_ip = '127.0.0.1'
+				try:
+					source_ip = str(IP(source_ip))
+				except:
+					source_ip = '127.0.0.1'
+				target_host = hit['_source']['computer_name']
+				item = username + "|" + source_ip + "|" + target_host + "|" + logon_index + "|" + logon_event_id
+				score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
+				if self.r.zadd("invalid_bad_logon|network", score, item) == 0 :
+					break
+				self.play_invalid_bad_logon_network(source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time,  username=username, source_ip=source_ip, target_host=target_host, score=score)
 
-					#считаем общие события по инвалидным юзерам
-					for key,value in self.limits['wlogon_012'].iteritems() :
-						count = self.r.zcount("invalid_bad_logon|network", score - value[1], score)
-						if count > value[0] :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_012', period=key, count=count, norepeat_key='wlogon_012|' + key)	
+			elif logon_type in self.interactive_logon_types :
+				target_host = hit['_source']['computer_name']
+				item = username + "|" + target_host + "|" + logon_index + "|" + logon_event_id
+				score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
+				if self.r.zadd("invalid_bad_logon|interactive", score, item) == 0 :
+					break
+				self.play_invalid_bad_logon_interactive(source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, username=username,target_host=target_host, score=score)
 
-					item = logon_index + "|" + logon_event_id
-					# считаем события по юзеру
-					self.r.zadd("invalid_bad_logon|network|per_user|" + username, score, item)
-					for key,value in self.limits['wlogon_013'].iteritems() :
-						count = self.r.zcount("invalid_bad_logon|network|per_user|" + username, score - value[1], score)
-						if count > value[0] :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_013', username=username, period=key, count=count, norepeat_key='wlogon_013|'+ username + '|' + key)
-
-					# считаем события по IP источника
-					self.r.zadd("invalid_bad_logon|network|per_source_ip|" + source_ip, score, item)
-					for key,value in self.limits['wlogon_014'].iteritems() :
-						count = self.r.zcount("invalid_bad_logon|network|per_source_ip|" + source_ip, score - value[1], score)
-						if count > value[0] :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_014', source_ip=source_ip, period=key, count=count, norepeat_key='wlogon_014|'+ source_ip + '|' + key)
-
-					# считаем события по target_host
-					self.r.zadd("invalid_bad_logon|network|per_target_host|" + target_host, score, item)
-					for key,value in self.limits['wlogon_015'].iteritems() :
-						count = self.r.zcount("invalid_bad_logon|network|per_target_host|" + target_host, score - value[1], score)
-						if count > value[0] :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_015', target_host=target_host, period=key, count=count, norepeat_key='wlogon_015|'+ target_host + '|' + key)
-
-				elif logon_type in self.interactive_logon_types :
-					target_host = hit['_source']['computer_name']
-					item = username + "|" + target_host + "|" + logon_index + "|" + logon_event_id
-					score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
-					if self.r.zadd("invalid_bad_logon|interactive", score, item) == 0 :
-						break
-					self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_016', username=username,target_host=target_host)
-
-					#считаем общие события по инвалидным юзерам
-					for key,value in self.limits['wlogon_017'].iteritems() :
-						count = self.r.zcount("invalid_bad_logon|interactive", score - value[1], score)
-						if count > value[0] :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_017', period=key, count=count, norepeat_key='wlogon_017|' + key)
-			
-					item = logon_index + "|" + logon_event_id
-					# считаем события по юзеру
-					self.r.zadd("invalid_bad_logon|interactive|per_user|" + username, score, item)
-					last_hour = score - 3600
-					count = self.r.zcount("invalid_bad_logon|interactive|per_user|" + username, last_hour, score)
-					for key,value in self.limits['wlogon_018'].iteritems() :
-						count = self.r.zcount("invalid_bad_logon|interactive|per_user|" + username, score - value[1], score)
-						if count > value[0] :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_018', username=username, period=key, count=count, norepeat_key='wlogon_018|'+ username + '|' + key)
-
-					# считаем события по target_host
-					self.r.zadd("invalid_bad_logon|interactive|per_target_host|" + target_host, score, item)
-					for key,value in self.limits['wlogon_019'].iteritems() :
-						count = self.r.zcount("invalid_bad_logon|interactive|per_target_host|" + target_host, score - value[1], score)
-						if count > value[0] :
-							self.message(log_type=self.log_type, source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, event_id= 'wlogon_019', target_host=target_host, period=key, count=count, norepeat_key='wlogon_019|'+ target_host + '|' + key)
-					
-				
 		self.r.set('logon_watcher_lastcheck', (current_watcher_timestamp - timedelta(seconds=10)).isoformat())
 			
 			
