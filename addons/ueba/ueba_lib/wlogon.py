@@ -26,7 +26,7 @@ class wlogon(object):
 			'wlogon_002': [1,u'ОЧЕНЬ ДАВНО НЕ ВСТРЕЧАЛСЯ ЮЗЕР. Пользователь с таким именем не появлялся более 30 дней'],
 			'wlogon_003': [1,u'ДАВНО НЕ ВСТРЕЧАЛСЯ ЮЗЕР. Пользователь с таким именем не появлялся больше недели'],
 			'wlogon_004': [3,u"НЕВЕРНЫЙ СЕТЕВОЙ ЛОГОН валидного юзера."],
-			'wlogon_005': [5,u"ПРЕВЫШЕН ПОРОГ. Количество неверных логонов валидного юзера превысило порог за период."],
+			'wlogon_005': [5,u"ПРЕВЫШЕН ПОРОГ. Количество неверных сетевых логонов валидного юзера превысило порог за период."],
 			'wlogon_006': [8,u"ПРЕВЫШЕН ПОРОГ. Количество неверных сетевых логонов валидных юзеров c одного источника превысило порог за период."],
 			'wlogon_007': [8,u"ПРЕВЫШЕН ПОРОГ. Количество неверных сетевых логонов валидных юзеров на один целевой хост превысило порог за период."],
 			'wlogon_008': [3,u"НЕВЕРНЫЙ ИНТЕРАКТИВНЫЙ ЛОГОН валидного юзера."],
@@ -136,35 +136,31 @@ class wlogon(object):
 				self.message(doc)
 		del doc	
 
-	def play_valid_network_logon (self, source_index=None, source_id=None, timestamp=None, username=None, source_ip=None, target_host=None, score=None):
-		doc = {}
-		doc['source_index'] = source_index
-		doc['source_id'] = source_id
-		doc['@timestamp'] = timestamp
-		doc['score'] = score
-		doc['log_type'] = self.log_type
+	def play_valid_network_logon (self, source_doc):
+		doc = source_doc.copy()
+		
 		
 		# Группировка по юзерам. user to target
+		doc.pop('source_ip')
+		doc.pop('target_host')
 		
-		doc['counter_key'] = "valid_logon|network|per_user|" + username
-		doc['norepeat_key'] = 'wlogon_020|'+ username + '|'
-		doc['event_id'] = 'wlogon_020'
-		doc['username'] = username		
-		
-		self.r.zadd(doc['counter_key'], score, target_host)
+		doc['counter_key'] = "valid_logon|network|per_user|" + source_doc['username']
+		doc['norepeat_key'] = 'wlogon_020|'+ source_doc['username']+ '|'
+		doc['event_id'] = 'wlogon_020'		
+		self.r.zadd(doc['counter_key'], source_doc['score'], source_doc['target_host'])
 		self.check_limits (doc) 
 		doc.pop('username')
 		
 
 		# Группировка по источникам. source_ip to target
 		# исключаем логон с адреса 127.0.0.1	
-		if not (source_ip in ['127.0.0.1','::1']) :
-			doc['counter_key'] = "valid_logon|network|per_source_ip|" + source_ip
-			doc['norepeat_key'] = 'wlogon_021|'+ source_ip + '|'
+		if not (source_doc['source_ip'] in ['127.0.0.1','::1']) :
+			doc['counter_key'] = "valid_logon|network|per_source_ip|" + source_doc['source_ip']
+			doc['norepeat_key'] = 'wlogon_021|'+ source_doc['source_ip']+ '|'
 			doc['event_id'] = 'wlogon_021'
-			doc['source_ip'] = source_ip		
+			doc['source_ip'] = source_doc['source_ip']		
 			
-			self.r.zadd(doc['counter_key'], score, target_host)
+			self.r.zadd(doc['counter_key'], source_doc['score'], source_doc['target_host'])
 			self.check_limits (doc)
 			doc.pop('source_ip')
 		# конец группировок
@@ -173,25 +169,25 @@ class wlogon(object):
 		
 		# target новые сетевые логоны, редкие логоны
 		
-		doc['target_host'] = target_host
-		doc['check_set'] = "valid_logon|network|per_target_host|by_source_ip|" + target_host
-		doc['source_ip'] = source_ip
+		doc['target_host'] = source_doc['target_host']
+		doc['check_set'] = "valid_logon|network|per_target_host|by_source_ip|" + source_doc['target_host']
+		doc['source_ip'] = source_doc['source_ip']
 		doc['events_for_check'] = {'new':['wlogon_022', 0],'old':['wlogon_024', 7], 'oldest':['wlogon_023', 30]}
 		doc['entities_for_check'] = ['source_ip']
 		
 		self.check_new_and_old (doc)
 		doc.pop('source_ip')
 
-		doc['check_set'] = "valid_logon|network|per_target_host|by_user|" + target_host		
-		doc['username'] = username
+		doc['check_set'] = "valid_logon|network|per_target_host|by_user|" + source_doc['target_host']		
+		doc['username'] = source_doc['username']
 		doc['events_for_check'] = {'new':['wlogon_025', 0],'old':['wlogon_027', 7], 'oldest':['wlogon_026', 30]}
 		doc['entities_for_check'] = ['username']
 		self.check_new_and_old (doc)
 		doc.pop('username')
 
-		doc['check_set'] = "valid_logon|network|per_target_host|by_user_ip_pair|" + target_host		
-		doc['username'] = username
-		doc['source_ip'] = source_ip
+		doc['check_set'] = "valid_logon|network|per_target_host|by_user_ip_pair|" + source_doc['target_host']		
+		doc['username'] = source_doc['username']
+		doc['source_ip'] = source_doc['source_ip']
 		doc['events_for_check'] = {'new':['wlogon_028', 0],'old':['wlogon_030', 7], 'oldest':['wlogon_029', 30]}
 		doc['entities_for_check'] = ['username','source_ip']
 		self.check_new_and_old (doc)
@@ -199,20 +195,14 @@ class wlogon(object):
 
 		del doc
 		
-	def play_valid_interactive_logon(self, source_index=None, source_id=None, timestamp=None, username=None, target_host=None, score=None) :
-		doc = {}
-		doc['source_index'] = source_index
-		doc['source_id'] = source_id
-		doc['@timestamp'] = timestamp
-		doc['score'] = score
-		doc['log_type'] = self.log_type
+	def play_valid_interactive_logon(self, source_doc) :
+		doc = source_doc.copy()
 		
-		doc['counter_key'] = "valid_logon|interactive|per_user|" + username
-		doc['norepeat_key'] = 'wlogon_031|'+ username + '|'
-		doc['event_id'] = 'wlogon_031'
-		doc['username'] = username		
-		
-		self.r.zadd(doc['counter_key'], score, target_host)
+		doc.pop('target_host')
+		doc['counter_key'] = "valid_logon|interactive|per_user|" + source_doc['username']
+		doc['norepeat_key'] = 'wlogon_031|'+ source_doc['username'] + '|'
+		doc['event_id'] = 'wlogon_031'		
+		self.r.zadd(doc['counter_key'], source_doc['score'], source_doc['target_host'])
 		self.check_limits (doc) 
 		doc.pop('username')
 		# конец группировок
@@ -220,181 +210,168 @@ class wlogon(object):
 		doc.pop('norepeat_key')
 
 		# target новые и редкие интерактивные логоны
-		doc['target_host'] = target_host
-		doc['check_set'] = "valid_logon|interactive|per_target_host|by_user|" + target_host		
-		doc['username'] = username
+		doc['target_host'] = source_doc['target_host']
+		doc['check_set'] = "valid_logon|interactive|per_target_host|by_user|" + source_doc['target_host']		
+		doc['username'] = source_doc['username']
 		doc['events_for_check'] = {'new':['wlogon_032', 0],'old':['wlogon_034', 7], 'oldest':['wlogon_033', 30]}
 		doc['entities_for_check'] = ['username']
 		self.check_new_and_old (doc)
 
 		del doc
 	
-	def play_valid_bad_logon_network (self, source_index=None, source_id=None, timestamp=None,  username=None, source_ip=None, target_host=None, score=None):
-		doc = {}
-		doc['source_index'] = source_index
-		doc['source_id'] = source_id
-		doc['@timestamp'] = timestamp
-		doc['log_type'] = self.log_type
+	def play_valid_bad_logon_network (self, source_doc):
+		doc = source_doc.copy()
+		doc.pop('score')
 		doc['event_id'] = 'wlogon_004'	
-		doc['source_ip'] = source_ip
-		doc['target_host'] = target_host
-		doc['username'] = username
 		#выводим сообщение о плохом логоне валидного юзера
 		self.message(doc)
-		
-		doc['score'] = score
+
+		doc['score'] = source_doc['score']
 		
 		item = doc['source_index'] + "|" + doc['source_id']
 		# считаем события по юзеру
-		
-		doc['counter_key'] = "valid_bad_logon|network|per_user|" + username
-		doc['norepeat_key'] = 'wlogon_005|'+ username + '|'
+		doc.pop('target_host')
+		doc.pop('source_ip')
+		doc['counter_key'] = "valid_bad_logon|network|per_user|" + source_doc['username']
+		doc['norepeat_key'] = 'wlogon_005|'+ source_doc['username'] + '|'
 		doc['event_id'] = 'wlogon_005'
-		doc['username'] = username
-		self.r.zadd(doc['counter_key'], score, item)
+		doc['username'] = source_doc['username']
+		self.r.zadd(doc['counter_key'], source_doc['score'], item)
 		self.check_limits (doc)
 		doc.pop('username')
 		
-		doc['counter_key'] = "valid_bad_logon|network|per_source_ip|" + source_ip
-		doc['norepeat_key'] = 'wlogon_006|'+ source_ip + '|'
+		doc['counter_key'] = "valid_bad_logon|network|per_source_ip|" + source_doc['source_ip']
+		doc['norepeat_key'] = 'wlogon_006|'+ source_doc['source_ip'] + '|'
 		doc['event_id'] = 'wlogon_006'
-		doc['source_ip'] = source_ip
-		self.r.zadd(doc['counter_key'], score, item)
+		doc['source_ip'] = source_doc['source_ip']
+		self.r.zadd(doc['counter_key'], source_doc['score'], item)
 		self.check_limits (doc)
 		doc.pop('source_ip')
 		
-		doc['counter_key'] = "valid_bad_logon|network|per_target_host|" + target_host
-		doc['norepeat_key'] = 'wlogon_007|'+ source_ip + '|'
+		doc['counter_key'] = "valid_bad_logon|network|per_target_host|" + source_doc['target_host']
+		doc['norepeat_key'] = 'wlogon_007|'+ source_doc['target_host'] + '|'
 		doc['event_id'] = 'wlogon_007'
-		doc['target_host'] = target_host
-		self.r.zadd(doc['counter_key'], score, item)
+		doc['target_host'] = source_doc['target_host']
+		self.r.zadd(doc['counter_key'], source_doc['score'], item)
 		self.check_limits (doc)
 		doc.pop('target_host')
 		
 		del doc
 		
-	def play_valid_bad_logon_interactive (self, source_index=None, source_id=None, timestamp=None, username=None, target_host=None, score=None):
-		doc = {}
-		doc['source_index'] = source_index
-		doc['source_id'] = source_id
-		doc['@timestamp'] = timestamp
-		doc['log_type'] = self.log_type
+	def play_valid_bad_logon_interactive (self, source_doc):
+		doc = source_doc.copy()
+		doc.pop('score')
 		doc['event_id'] = 'wlogon_008'	
-		doc['target_host'] = target_host
-		doc['username'] = username
+
 		#выводим сообщение о плохом логоне валидного юзера
 		self.message(doc)
 		
-		doc['score'] = score
+		doc['score'] = source_doc['score']
 		
 		item = doc['source_index'] + "|" + doc['source_id']
 		# считаем события по юзеру
-		doc['counter_key'] = "valid_bad_logon|interactive|per_user|" + username
-		doc['norepeat_key'] = 'wlogon_009|'+ username + '|'
+		doc.pop('target_host')
+		doc['counter_key'] = "valid_bad_logon|interactive|per_user|" + source_doc['username']
+		doc['norepeat_key'] = 'wlogon_009|'+ source_doc['username'] + '|'
 		doc['event_id'] = 'wlogon_009'
-		doc['username'] = username
-		self.r.zadd(doc['counter_key'], score, item)
+		doc['username'] = source_doc['username']
+		self.r.zadd(doc['counter_key'], source_doc['score'], item)
 		self.check_limits (doc)
 		doc.pop('username')
 		
 		# считаем события по target_host
-		doc['counter_key'] = "valid_bad_logon|interactive|per_target_host|" + target_host
-		doc['norepeat_key'] = 'wlogon_010|'+ target_host + '|'
+		doc['counter_key'] = "valid_bad_logon|interactive|per_target_host|" + source_doc['target_host']
+		doc['norepeat_key'] = 'wlogon_010|'+ source_doc['target_host'] + '|'
 		doc['event_id'] = 'wlogon_010'
-		doc['target_host'] = target_host
-		self.r.zadd(doc['counter_key'], score, item)
+		doc['target_host'] = source_doc['target_host']
+		self.r.zadd(doc['counter_key'], source_doc['score'], item)
 		self.check_limits (doc)
 		doc.pop('target_host')
 
 		del doc
 		
-	def play_invalid_bad_logon_network(self, source_index=None, source_id=None, timestamp=None,  username=None, source_ip=None, target_host=None, score=None):
-		doc = {}
-		doc['source_index'] = source_index
-		doc['source_id'] = source_id
-		doc['@timestamp'] = timestamp
-		doc['log_type'] = self.log_type
+	def play_invalid_bad_logon_network(self, source_doc):
+		doc = source_doc.copy()
 		doc['event_id'] = 'wlogon_011'	
-		doc['source_ip'] = source_ip
-		doc['target_host'] = target_host
-		doc['username'] = username
+		doc.pop('score')
 		#выводим сообщение о плохом логоне неизвестного юзера
 		self.message(doc)
 		
-		doc['score'] = score
+		doc['score'] = source_doc['score']
 		
 		item = doc['source_index'] + "|" + doc['source_id']
 		#считаем общие события по инвалидным юзерам
+		doc.pop('target_host')
+		doc.pop('source_ip')
+		doc.pop('username')
 		doc['counter_key'] = "invalid_bad_logon|network"
 		doc['norepeat_key'] = 'wlogon_012|'
 		doc['event_id'] = 'wlogon_012'
 		self.check_limits (doc)
 		
 		# считаем события по юзеру
-		doc['counter_key'] = "invalid_bad_logon|network|per_user|" + username
-		doc['norepeat_key'] = 'wlogon_013|'+ username + '|'
+		doc['counter_key'] = "invalid_bad_logon|network|per_user|" + source_doc['username']
+		doc['norepeat_key'] = 'wlogon_013|'+ source_doc['username'] + '|'
 		doc['event_id'] = 'wlogon_013'
-		doc['username'] = username
-		self.r.zadd(doc['counter_key'], score, item)
+		doc['username'] = source_doc['username']
+		self.r.zadd(doc['counter_key'], source_doc['score'], item)
 		self.check_limits (doc)
 		doc.pop('username')
 		
 		# считаем события по IP источника
-		doc['counter_key'] = "invalid_bad_logon|network|per_source_ip|" + source_ip
-		doc['norepeat_key'] = 'wlogon_014|'+ source_ip + '|'
+		doc['counter_key'] = "invalid_bad_logon|network|per_source_ip|" + source_doc['source_ip']
+		doc['norepeat_key'] = 'wlogon_014|'+ source_doc['source_ip'] + '|'
 		doc['event_id'] = 'wlogon_014'
-		doc['source_ip'] = source_ip
-		self.r.zadd(doc['counter_key'], score, item)
+		doc['source_ip'] = source_doc['source_ip']
+		self.r.zadd(doc['counter_key'], source_doc['score'], item)
 		self.check_limits (doc)
 		doc.pop('source_ip')
 		
 		# считаем события по target_host
-		doc['counter_key'] = "invalid_bad_logon|network|per_target_host|" + target_host
-		doc['norepeat_key'] = 'wlogon_015|'+ target_host + '|'
+		doc['counter_key'] = "invalid_bad_logon|network|per_target_host|" + source_doc['target_host']
+		doc['norepeat_key'] = 'wlogon_015|'+ source_doc['target_host'] + '|'
 		doc['event_id'] = 'wlogon_015'
-		doc['target_host'] = target_host
-		self.r.zadd(doc['counter_key'], score, item)
+		doc['target_host'] = source_doc['target_host']
+		self.r.zadd(doc['counter_key'], source_doc['score'], item)
 		self.check_limits (doc)
 		doc.pop('target_host')
 		
 		del doc
 		
-	def play_invalid_bad_logon_interactive (self, source_index=None, source_id=None, timestamp=None, username=None, target_host=None, score=None) :
-		doc = {}
-		doc['source_index'] = source_index
-		doc['source_id'] = source_id
-		doc['@timestamp'] = timestamp
-		doc['log_type'] = self.log_type
+	def play_invalid_bad_logon_interactive (self, source_doc) :
+		doc = source_doc.copy()
+		doc.pop('score')
 		doc['event_id'] = 'wlogon_016'	
-		doc['target_host'] = target_host
-		doc['username'] = username
+
 		#выводим сообщение о плохом логоне неизвестного юзера
 		self.message(doc)
 		
-		doc['score'] = score
+		doc['score'] = source_doc['score']
 		
 		item = doc['source_index'] + "|" + doc['source_id']
 		#считаем общие события по инвалидным юзерам
+		doc.pop('target_host')
+		doc.pop('username')
 		doc['counter_key'] = "invalid_bad_logon|interactive"
 		doc['norepeat_key'] = 'wlogon_017|'
 		doc['event_id'] = 'wlogon_017'
 		self.check_limits (doc)
 		
 		# считаем события по юзеру
-		doc['counter_key'] = "invalid_bad_logon|interactive|per_user|" + username
-		doc['norepeat_key'] = 'wlogon_018|'+ username + '|'
+		doc['counter_key'] = "invalid_bad_logon|interactive|per_user|" + source_doc['username']
+		doc['norepeat_key'] = 'wlogon_018|'+ source_doc['username'] + '|'
 		doc['event_id'] = 'wlogon_018'
-		doc['username'] = username
-		self.r.zadd(doc['counter_key'], score, item)
+		doc['username'] = source_doc['username']
+		self.r.zadd(doc['counter_key'], source_doc['score'], item)
 		self.check_limits (doc)
 		doc.pop('username')
 			
 		# считаем события по target_host
-		doc['counter_key'] = "invalid_bad_logon|interactive|per_target_host|" + target_host
-		doc['norepeat_key'] = 'wlogon_019|'+ target_host + '|'
+		doc['counter_key'] = "invalid_bad_logon|interactive|per_target_host|" + source_doc['target_host']
+		doc['norepeat_key'] = 'wlogon_019|'+ source_doc['target_host'] + '|'
 		doc['event_id'] = 'wlogon_019'
-		doc['target_host'] = target_host
-		self.r.zadd(doc['counter_key'], score, item)
+		doc['target_host'] = source_doc['target_host']
+		self.r.zadd(doc['counter_key'], source_doc['score'], item)
 		self.check_limits (doc)
 		doc.pop('target_host')
 
@@ -430,6 +407,7 @@ class wlogon(object):
 		res = self.es.search(index='winlogbeat-*',body=myquery)
 
 		for hit in res['hits']['hits']:
+			doc = {}
 			if 'TargetUserName' in hit['_source']['event_data'] :
 				username = hit['_source']['event_data']['TargetUserName'].lower()
 			else:
@@ -441,32 +419,21 @@ class wlogon(object):
 			logon_type = int(hit['_source']['event_data']['LogonType'])
 			logon_event_id = hit['_id']
 			logon_index = hit['_index']
-			doc = {}
+			
 			doc['log_type'] = self.log_type
 			doc['source_index'] = logon_index
 			doc['source_id'] = logon_event_id
 			doc['@timestamp'] = current_logon_time
 			doc['username'] = username
-			
-			if self.r.sismember("known_valid_logons", username):
-				last_logon_time = self.r.get(username+'|last_logon_time')
-				delta = (parsers.datetime(last_logon_time) - parsers.datetime(current_logon_time)).days
-				
-				if delta > 30 :
-					doc['event_id'] = 'wlogon_002'
-					doc['days'] = delta
-					self.message(doc)
-				elif delta > 7 :
-					doc['event_id'] = 'wlogon_003'
-					doc['days'] = delta
-					self.message(doc)
-			else:
-				doc['event_id'] = 'wlogon_001'
-				self.message(doc)
-				self.r.sadd("known_valid_logons", username)
-			self.r.set(username+'|last_logon_time', current_logon_time)
-			self.r.set(username+'|last_logon_event', logon_index + "|" + logon_event_id)
-			
+			doc['score'] = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
+			doc['check_set'] = 'known_valid_logons'
+			doc['events_for_check'] = {'new':['wlogon_001', 0],'old':['wlogon_003', 7], 'oldest':['wlogon_002', 30]}
+			doc['entities_for_check'] = ['username']		
+			self.check_new_and_old(doc)
+			doc.pop('check_set')
+			doc.pop('events_for_check')
+			doc.pop('entities_for_check')
+					
 			# считаем статистику валидных логонов
 			if logon_type in self.network_logon_types:
 				source_ip = hit['_source']['event_data']['IpAddress']
@@ -476,27 +443,32 @@ class wlogon(object):
 					source_ip = str(IP(source_ip))
 				except:
 					source_ip = '127.0.0.1'
+				doc['source_ip'] = source_ip
 				target_host = hit['_source']['computer_name'].lower()
 				if target_host in self.network_logon_excepted_target_hosts :
+					del doc
 					break
-				item = username + "|" + source_ip + "|" + target_host + "|" + logon_index + "|" + logon_event_id
-				score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
-				if self.r.zadd("valid_logon|network", score, item) == 0 :
+				doc['target_host'] = target_host
+				item = doc['username']+ "|" + doc['source_ip'] + "|" + doc['target_host'] + "|" + doc['source_index'] + "|" + doc['source_id']
+				if self.r.zadd("valid_logon|network", doc['score'], item) == 0 :
+					del doc
 					break
 
-				self.play_valid_network_logon(source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, username=username, source_ip=source_ip, target_host=target_host, score=score)
+				self.play_valid_network_logon(doc)
 				
 			elif logon_type in self.interactive_logon_types:
 				target_host = hit['_source']['computer_name'].lower()
 				if target_host in self.interactive_logon_excepted_target_hosts :
+					del doc
 					break
-				item = username + "|" + target_host + "|" + logon_index + "|" + logon_event_id
-				score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
-				if self.r.zadd("valid_logon|interactive", score, item) == 0 :
+				doc['target_host'] = target_host
+				item = doc['username'] + "|"  + doc['target_host'] + "|" + doc['source_index'] + "|" + doc['source_id']
+				if self.r.zadd("valid_logon|interactive", doc['score'], item) == 0 :
+					del doc
 					break
 					
-				self.play_valid_interactive_logon(source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, username=username, target_host=target_host, score=score)
-				
+				self.play_valid_interactive_logon(doc)
+			del doc	
 			
 		# Поиск новых инвалидных логонов в сети
 		myquery = {"query": {
@@ -528,8 +500,15 @@ class wlogon(object):
 			logon_type = int(hit['_source']['event_data']['LogonType'])
 			logon_event_id = hit['_id']
 			logon_index = hit['_index']
+			doc = {}
+			doc['log_type'] = self.log_type
+			doc['source_index'] = logon_index
+			doc['source_id'] = logon_event_id
+			doc['@timestamp'] = current_logon_time
+			doc['username'] = username
+			doc['score'] = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
 			
-			if self.r.sismember("known_valid_logons", username):
+			if self.r.zscore("known_valid_logons", doc['username']) is not None:
 				if logon_type in self.network_logon_types :
 					source_ip = hit['_source']['event_data']['IpAddress']
 					if source_ip is None:
@@ -538,20 +517,22 @@ class wlogon(object):
 						source_ip = str(IP(source_ip))
 					except:
 						source_ip = '127.0.0.1'
-					target_host = hit['_source']['computer_name'].lower()
-					item = username + "|" + source_ip + "|" + target_host + "|" + logon_index + "|" + logon_event_id
-					score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
-					if self.r.zadd("valid_bad_logon|network", score, item) == 0 :
+					doc['source_ip'] = source_ip
+					doc['target_host'] = hit['_source']['computer_name'].lower()
+					item = doc['username'] + "|" + doc['source_ip'] + "|" + doc['target_host'] + "|" + doc['source_index'] + "|" + doc['source_id']
+					
+					if self.r.zadd("valid_bad_logon|network", doc['score'], item) == 0 :
+						del doc
 						break
-					self.play_valid_bad_logon_network (source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, username=username, source_ip=source_ip, target_host=target_host, score=score)				
+					self.play_valid_bad_logon_network (doc)				
 	
 				elif logon_type in self.interactive_logon_types :
-					target_host = hit['_source']['computer_name'].lower()
-					item = username + "|" + target_host + "|" + logon_index + "|" + logon_event_id
-					score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
-					if self.r.zadd("valid_bad_logon|interactive", score, item) == 0 :
+					doc['target_host'] = hit['_source']['computer_name'].lower()
+					item = doc['username'] + "|" + doc['target_host'] + "|" + doc['source_index'] + "|" + doc['source_id']
+					if self.r.zadd("valid_bad_logon|interactive", doc['score'], item) == 0 :
+						del doc
 						break
-					self.play_valid_bad_logon_interactive(source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, username=username, target_host=target_host, score=score)
+					self.play_valid_bad_logon_interactive(doc)
 					
 			elif logon_type in self.network_logon_types :
 				source_ip = hit['_source']['event_data']['IpAddress']
@@ -561,21 +542,22 @@ class wlogon(object):
 					source_ip = str(IP(source_ip))
 				except:
 					source_ip = '127.0.0.1'
-				target_host = hit['_source']['computer_name']
-				item = username + "|" + source_ip + "|" + target_host + "|" + logon_index + "|" + logon_event_id
-				score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
-				if self.r.zadd("invalid_bad_logon|network", score, item) == 0 :
+				doc['source_ip'] = source_ip
+				doc['target_host'] = hit['_source']['computer_name']
+				item = doc['username'] + "|" + doc['source_ip'] + "|" + doc['target_host'] + "|" + doc['source_index'] + "|" + doc['source_id']
+				if self.r.zadd("invalid_bad_logon|network", doc['score'], item) == 0 :
+					del doc
 					break
-				self.play_invalid_bad_logon_network(source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time,  username=username, source_ip=source_ip, target_host=target_host, score=score)
+				self.play_invalid_bad_logon_network(doc)
 
 			elif logon_type in self.interactive_logon_types :
-				target_host = hit['_source']['computer_name']
-				item = username + "|" + target_host + "|" + logon_index + "|" + logon_event_id
-				score = int(time.mktime(parsers.datetime(current_logon_time).timetuple()))
-				if self.r.zadd("invalid_bad_logon|interactive", score, item) == 0 :
+				doc['target_host'] = hit['_source']['computer_name']
+				item = doc['username'] + "|" + doc['target_host'] + "|" + doc['source_index'] + "|" + doc['source_id']
+				if self.r.zadd("invalid_bad_logon|interactive", doc['score'], item) == 0 :
+					del doc
 					break
-				self.play_invalid_bad_logon_interactive(source_index=logon_index, source_id=logon_event_id, timestamp=current_logon_time, username=username,target_host=target_host, score=score)
-
+				self.play_invalid_bad_logon_interactive(doc)
+			del doc
 		self.r.set('logon_watcher_lastcheck', (current_watcher_timestamp - timedelta(seconds=10)).isoformat())
 			
 			
