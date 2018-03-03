@@ -82,7 +82,7 @@ class wlogon(object):
 	def message (self, source_doc) :
 		doc = source_doc.copy()
 		if ('source_index' in doc.keys()) and ('source_id' in doc.keys()) :
-			doc['source_url'] = self.kibana_base_url + '/app/kibana#/doc/winlogbeat-*/' + doc['source_index'] + '/winlogbeat?id=' + doc['source_id']
+			doc['source_url'] = self.kibana_base_url + '/app/kibana#/doc/winlogbeat-*/' + doc['source_index'] + '/doc?id=' + doc['source_id']
 			doc.pop('source_index')
 			doc.pop('source_id')
 		if 'event_id' in doc.keys() :
