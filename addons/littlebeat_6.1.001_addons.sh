@@ -159,8 +159,12 @@ if [ "$choise" == "UEBA LittleBeat Addon (ALFA)" ]; then
 		wget $github_url/addons/ueba/ueba_lib/__init__.py
 		if [ -e "wlogon.py" ]; then
 			rm wlogon.py
+			rm margin_corrector.py
+			rm garbage_collector.py
 		fi
 		wget $github_url/addons/ueba/ueba_lib/wlogon.py
+		wget $github_url/addons/ueba/ueba_lib/margin_corrector.py
+		wget $github_url/addons/ueba/ueba_lib/garbage_collector.py
 		chmod -R +x $homedir/bin/ueba
 		cd /lib/systemd/system
 		if [ -e "littlebeat-ueba.service" ]; then

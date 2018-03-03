@@ -4,8 +4,8 @@
     {
       "id": "feb62e90-1a23-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-27T09:53:03.857Z",
-      "version": 2,
+      "updated_at": "2018-02-27T10:39:01.427Z",
+      "version": 1,
       "attributes": {
         "title": "ueba-wlogon-count",
         "visState": "{\"title\":\"ueba-wlogon-count\",\"type\":\"metric\",\"params\":{\"addTooltip\":true,\"addLegend\":false,\"type\":\"metric\",\"metric\":{\"percentageMode\":false,\"useRanges\":false,\"colorSchema\":\"Green to Red\",\"metricColorMode\":\"None\",\"colorsRange\":[{\"from\":0,\"to\":10000}],\"labels\":{\"show\":false},\"invertColors\":false,\"style\":{\"bgFill\":\"#000\",\"bgColor\":false,\"labelColor\":false,\"subText\":\"\",\"fontSize\":24}}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}}]}",
@@ -21,8 +21,8 @@
     {
       "id": "ac64d990-1a26-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-27T09:54:12.333Z",
-      "version": 3,
+      "updated_at": "2018-02-27T10:39:01.427Z",
+      "version": 1,
       "attributes": {
         "title": "ueba-wlogon-events",
         "visState": "{\"title\":\"ueba-wlogon-events\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"severity\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"severity\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"event_desc\",\"size\":50,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"событие\"}}]}",
@@ -38,8 +38,8 @@
     {
       "id": "0e5653c0-1a29-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-27T09:55:01.795Z",
-      "version": 2,
+      "updated_at": "2018-02-27T10:39:01.427Z",
+      "version": 1,
       "attributes": {
         "title": "ueba-wlogon-source-ip",
         "visState": "{\"title\":\"ueba-wlogon-source-ip\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"source_ip\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"IP-источника\"}}]}",
@@ -55,8 +55,8 @@
     {
       "id": "708744c0-1a27-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-27T09:55:36.933Z",
-      "version": 2,
+      "updated_at": "2018-02-27T10:39:01.427Z",
+      "version": 1,
       "attributes": {
         "title": "ueba-wlogon-target",
         "visState": "{\"title\":\"ueba-wlogon-target\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"target_host\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Целевой хост\"}}]}",
@@ -72,8 +72,8 @@
     {
       "id": "4a245500-1a24-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-27T09:56:11.244Z",
-      "version": 2,
+      "updated_at": "2018-02-27T10:39:01.427Z",
+      "version": 1,
       "attributes": {
         "title": "ueba-wlogon-timeline",
         "visState": "{\"title\":\"ueba-wlogon-timeline\",\"type\":\"histogram\",\"params\":{\"type\":\"histogram\",\"grid\":{\"categoryLines\":true,\"style\":{\"color\":\"#eee\"},\"valueAxis\":\"ValueAxis-1\"},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Count\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"stacked\",\"data\":{\"label\":\"Count\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}}]}",
@@ -89,8 +89,8 @@
     {
       "id": "26cee4a0-1a27-11e8-ab95-711bc24f9c90",
       "type": "visualization",
-      "updated_at": "2018-02-27T09:56:54.879Z",
-      "version": 2,
+      "updated_at": "2018-02-27T10:39:01.427Z",
+      "version": 1,
       "attributes": {
         "title": "ueba-wlogon-users",
         "visState": "{\"title\":\"ueba-wlogon-users\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"к-во\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"username\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Юзер\"}}]}",
@@ -106,7 +106,7 @@
     {
       "id": "ad705d80-1a23-11e8-ab95-711bc24f9c90",
       "type": "search",
-      "updated_at": "2018-02-27T08:12:45.392Z",
+      "updated_at": "2018-02-28T15:57:52.771Z",
       "version": 2,
       "attributes": {
         "title": "ueba-wlogon",
@@ -119,7 +119,9 @@
           "username",
           "target_host",
           "source_ip",
-          "source_url"
+          "source_url",
+          "period",
+          "count"
         ],
         "sort": [
           "@timestamp",
@@ -134,20 +136,20 @@
     {
       "id": "ueba-*",
       "type": "index-pattern",
-      "updated_at": "2018-02-27T09:47:34.491Z",
-      "version": 19,
+      "updated_at": "2018-02-28T15:57:25.555Z",
+      "version": 6,
       "attributes": {
         "title": "ueba-*",
         "timeFieldName": "@timestamp",
-        "fields": "[{\"name\":\"@timestamp\",\"type\":\"date\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"@version\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"_source\",\"type\":\"_source\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"count\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"days\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"dest_hostname\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"dest_ip\",\"type\":\"ip\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"event_desc\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"event_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"image\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"log_type\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"period\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"severity\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_host\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_ip\",\"type\":\"ip\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_url\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"tags\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"target_host\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"username\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true}]",
+        "fields": "[{\"name\":\"@timestamp\",\"type\":\"date\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"@version\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"_source\",\"type\":\"_source\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"count\",\"type\":\"number\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"days\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"dest_hostname\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"dest_ip\",\"type\":\"ip\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"event_desc\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"event_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"image\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"log_type\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"period\",\"type\":\"string\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"severity\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_host\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_ip\",\"type\":\"ip\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"source_url\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"tags\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"target_host\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"username\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true}]",
         "fieldFormatMap": "{\"source_url\":{\"id\":\"url\",\"params\":{\"labelTemplate\":\"source_doc\"}}}"
       }
     },
     {
       "id": "8eb75bd0-1a2a-11e8-ab95-711bc24f9c90",
       "type": "dashboard",
-      "updated_at": "2018-02-27T10:05:27.957Z",
-      "version": 3,
+      "updated_at": "2018-02-27T10:39:01.427Z",
+      "version": 1,
       "attributes": {
         "title": "ueba-wlogon",
         "hits": 0,

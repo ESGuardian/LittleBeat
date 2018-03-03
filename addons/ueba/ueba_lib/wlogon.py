@@ -58,21 +58,21 @@ class wlogon(object):
 			'wlogon_034': [1,u"ДАВНО НЕ ВСТРЕЧАЛСЯ ЮЗЕР при интерактивном логоне на целевой хост."],
 		}
 		self.limits = {
-			'wlogon_005': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_006': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_007': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_009': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_010': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_012': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_013': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_014': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_015': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_017': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_018': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_019': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_020': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_021': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
-			'wlogon_031': {'hour':[5,3600], 'day':[10,86400], 'weak':[100,604800]},
+			'wlogon_005': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_006': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_007': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_009': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_010': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_012': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_013': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_014': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_015': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_017': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_018': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_019': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_020': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_021': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
+			'wlogon_031': {'hour':[5,3600], 'day':[10,86400], 'week':[100,604800]},
 			
 		}
 		self.norepeat_time = 600
@@ -103,8 +103,13 @@ class wlogon(object):
 		doc.pop('counter_key')
 		doc.pop('score')
 		for key,value in self.limits[source_doc['event_id']].iteritems() :
+			redis_counter_key = self.r.get("wlogon_top_margin|" + source_doc['counter_key'] + "|" + key)
+			if redis_counter_key is not None:
+				top_margin = int(redis_counter_key)
+			else:
+				top_margin = value[0]
 			count = self.r.zcount(source_doc['counter_key'], source_doc['score'] - value[1], source_doc['score'])
-			if (count > value[0]) and (not self.r.exists(source_doc['norepeat_key'] + key)) :
+			if (count > top_margin ) and (not self.r.exists(source_doc['norepeat_key'] + key)) :
 				self.r.set(source_doc['norepeat_key'] + key,'allredy_messaged')
 				self.r.expire(source_doc['norepeat_key']+ key, self.norepeat_time)				
 				doc['period'] = key
