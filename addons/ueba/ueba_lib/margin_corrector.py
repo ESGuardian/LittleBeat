@@ -14,6 +14,7 @@ class margin_corrector_wlogon(object):
 		self.counter_types = {
 			'wlogon_020':{'counters':[{'entity_field':'username','values':{'hour':6,'day':10,'week':100},'common_sufix':'valid_logon|network|per_user|','comment':'targets per user'}]},
 			'wlogon_021':{'counters':[{'entity_field':'source_ip','values':{'hour':6,'day':10,'week':100},'common_sufix':'valid_logon|network|per_source_ip|','comment':'targets per source ip'}]},
+			'wlogon_031':{'counters':[{'entity_field':'username','values':{'hour':6,'day':10,'week':100},'common_sufix':'valid_logon|interactive|per_user|','comment':'targets per user interactive'}]},
 		}
 		self.elastic_query_get_entity = {
 			"query":{
