@@ -102,7 +102,7 @@ if [ "$choise" == "iTop CMDB LittleBeat Addon" ]; then
     if [ ! -e "$install_dir/itop_addon_installed" ]; then
 		apt update
 		apt install docker.io -y
-		docker run --restart=always -d -p 127.0.0.1:3306:3306 --name=my-itop-db -e MYSQL_DATABASE=itop -e MYSQL_USER=itop -e MYSQL_PASSWORD=itop -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql:latest
+		docker run --restart=always -d -p 127.0.0.1:3306:3306 --name=my-itop-db -e MYSQL_DATABASE=itop -e MYSQL_USER=itop -e MYSQL_PASSWORD=itop -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql:5
 		docker run --restart=always -d -p 127.0.0.1:8081:80 --link=my-itop-db:db --name=my-itop supervisions/itop:latest
 		echo 'server {' >> /etc/nginx/sites-available/default
         echo '  listen            *:81;' >> /etc/nginx/sites-available/default
